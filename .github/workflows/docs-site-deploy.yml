@@ -150,4 +150,5 @@ jobs:
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
         with:
           apiToken: ${{ steps.cloudflare-token.outputs.token }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy

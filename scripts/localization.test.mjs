@@ -112,6 +112,7 @@ describe('bilingual documentation', () => {
 
     expect(workflow).toContain('repository: EvanL1/AetherEdge');
     expect(workflow).toContain('AETHER_EDGE_DOCS_ROOT:');
+    expect(workflow).toContain('accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}');
     expect(workflow).toContain('test -f dist/en/index.html');
     expect(workflow).toContain('test -f dist/en/llms.txt');
     expect(workflow).toContain('node scripts/check-language.mjs dist');
