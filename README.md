@@ -36,9 +36,10 @@ rebuilds daily so source documentation changes do not leave the unified site
 permanently stale.
 
 The production workflow deploys only when the repository variable
-`CLOUDFLARE_DEPLOY_ENABLED` is `true` and the `CLOUDFLARE_API_TOKEN` Actions
-secret is configured. This gate allows a safe handover from an existing
-deployment owner without two repositories racing to publish the same Worker.
+`CLOUDFLARE_DEPLOY_ENABLED` is `true`, the `CLOUDFLARE_ACCOUNT_ID` repository
+variable is configured, and the `CLOUDFLARE_API_TOKEN` Actions secret is
+present. This gate allows a safe handover from an existing deployment owner
+without two repositories racing to publish the same Worker.
 
 ```bash
 npm ci
