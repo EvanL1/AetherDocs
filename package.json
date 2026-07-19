@@ -1,17 +1,18 @@
 {
-  "name": "aether-docs",
+  "name": "aetherdocs",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "license": "MIT OR Apache-2.0",
+  "repository": "https://github.com/EvanL1/AetherDocs",
   "engines": {
     "node": ">=22.13.0"
   },
   "scripts": {
     "sync": "node scripts/sync-content.mjs",
-    "check:agent-index": "node ../scripts/build-agent-docs.mjs --check",
     "check:language": "node scripts/check-language.mjs",
     "check:audience": "node scripts/check-audience.mjs",
-    "build": "npm run check:agent-index && npm run sync && npm run check:language && npm run check:audience && astro build && node scripts/build-docs.mjs",
-    "check": "npm run check:agent-index && npm run sync && npm run check:language && npm run check:audience && astro check",
+    "build": "npm run sync && npm run check:language && npm run check:audience && astro build && node scripts/build-docs.mjs",
+    "check": "npm run sync && npm run check:language && npm run check:audience && astro check",
     "dev": "npm run sync && npm run check:language && npm run check:audience && astro dev",
     "preview": "npm run build && wrangler dev",
     "test": "vitest run",

@@ -1,0 +1,153 @@
+name: Documentation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - aetheredge-docs-changed
+      - aethercloud-docs-changed
+      - aethercontracts-docs-changed
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('aetherdocs-pr-{0}', github.event.pull_request.number) || 'aetherdocs-production' }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      AETHER_EDGE_DOCS_ROOT: ${{ github.workspace }}/.docs-sources/AetherEdge
+      AETHER_CLOUD_DOCS_ROOT: ${{ github.workspace }}/.docs-sources/AetherCloud
+      AETHER_CONTRACTS_DOCS_ROOT: ${{ github.workspace }}/.docs-sources/AetherContracts
+
+    steps:
+      - name: Checkout AetherDocs
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout AetherEdge documentation source
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        with:
+          repository: EvanL1/AetherEdge
+          path: .docs-sources/AetherEdge
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout AetherCloud documentation source
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        with:
+          repository: EvanL1/AetherCloud
+          path: .docs-sources/AetherCloud
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout AetherContracts documentation source
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        with:
+          repository: EvanL1/AetherContracts
+          path: .docs-sources/AetherContracts
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type, content, and language check
+        run: npm run check
+
+      - name: Unit tests
+        run: npm run test:coverage
+
+      - name: Worker unit tests
+        run: npm run test:worker
+
+      - name: Build dual-mode documentation
+        run: npm run build
+
+      - name: Verify HTML and agent representations
+        shell: bash
+        run: |
+          test -f dist/index.html
+          test -f dist/index.md
+          test -f dist/llms.txt
+          test ! -e dist/llms-full.txt
+          test -f dist/en/index.html
+          test -f dist/en.md
+          test -f dist/en/llms.txt
+          test ! -e dist/en/llms-full.txt
+          node scripts/check-language.mjs dist
+
+      - name: Explain staged deployment
+        if: ${{ github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED != 'true' }}
+        run: echo "Cloudflare deployment is disabled until the repository secret is configured."
+
+      - name: Normalize Cloudflare API token
+        if: ${{ github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' }}
+        id: cloudflare-token
+        shell: bash
+        env:
+          RAW_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          trim() {
+            local value=$1
+            value="${value#"${value%%[![:space:]]*}"}"
+            value="${value%"${value##*[![:space:]]}"}"
+            printf '%s' "$value"
+          }
+
+          token=$(trim "$RAW_TOKEN")
+          if [[ "$token" =~ ^(export[[:space:]]+)?CLOUDFLARE_API_TOKEN[[:space:]]*=[[:space:]]*(.*)$ ]]; then
+            token=${BASH_REMATCH[2]}
+          fi
+          token=$(trim "$token")
+
+          if (( ${#token} >= 2 )); then
+            first=${token:0:1}
+            last=${token: -1}
+            if [[ ( "$first" == '"' && "$last" == '"' ) \
+              || ( "$first" == "'" && "$last" == "'" ) ]]; then
+              token=${token:1:${#token}-2}
+              token=$(trim "$token")
+            fi
+          fi
+
+          if [[ "${token,,}" == bearer\ * ]]; then
+            token=${token#* }
+            token=$(trim "$token")
+          fi
+
+          if [[ -z "$token" || "$token" =~ [[:space:]] ]]; then
+            echo "CLOUDFLARE_API_TOKEN must resolve to one non-empty token without whitespace." >&2
+            exit 1
+          fi
+
+          echo "::add-mask::$token"
+          printf 'token=%s\n' "$token" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy to Cloudflare Workers
+        if: ${{ github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' }}
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ steps.cloudflare-token.outputs.token }}
+          command: deploy

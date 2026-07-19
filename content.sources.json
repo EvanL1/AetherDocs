@@ -1,11 +1,13 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "sources": [
     {
       "id": "aetheredge",
       "label": "AetherEdge",
-      "root": "..",
-      "manifest": "content.manifest.txt",
+      "root": "../AetherEdge",
+      "rootEnv": "AETHER_EDGE_DOCS_ROOT",
+      "manifest": "ai/public-docs.manifest.txt",
+      "manifestBase": "source",
       "destinationPrefix": "en",
       "stripPrefix": "docs/",
       "githubBlobBase": "https://github.com/EvanL1/AetherEdge/blob/main",
@@ -14,7 +16,7 @@
     {
       "id": "aethercloud",
       "label": "AetherCloud",
-      "root": "../../AetherCloud",
+      "root": "../AetherCloud",
       "rootEnv": "AETHER_CLOUD_DOCS_ROOT",
       "manifest": "content.aethercloud.manifest.txt",
       "destinationPrefix": "en/aethercloud",
@@ -24,7 +26,7 @@
     {
       "id": "aethercontracts",
       "label": "AetherContracts",
-      "root": "../../AetherContracts",
+      "root": "../AetherContracts",
       "rootEnv": "AETHER_CONTRACTS_DOCS_ROOT",
       "manifest": "content.aethercontracts.manifest.txt",
       "destinationPrefix": "en/aethercontracts",
@@ -38,7 +40,7 @@
       "manifest": "content.site-en.manifest.txt",
       "destinationPrefix": "en",
       "stripPrefix": "locales/en/",
-      "githubBlobBase": "https://github.com/EvanL1/AetherEdge/blob/main/docs-site/locales/en",
+      "githubBlobBase": "https://github.com/EvanL1/AetherDocs/blob/main/locales/en",
       "attribution": false
     },
     {
@@ -48,7 +50,7 @@
       "manifest": "content.zh-cn.manifest.txt",
       "destinationPrefix": "",
       "stripPrefix": "locales/zh-CN/",
-      "githubBlobBase": "https://github.com/EvanL1/AetherEdge/blob/main/docs-site/locales/zh-CN",
+      "githubBlobBase": "https://github.com/EvanL1/AetherDocs/blob/main/locales/zh-CN",
       "attribution": false
     }
   ]

@@ -30,7 +30,7 @@ export default defineConfig({
       },
       defaultLocale: 'root',
       social: [
-        { icon: 'github', label: 'GitHub', href: 'https://github.com/EvanL1/AetherEdge' },
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/EvanL1/AetherDocs' },
       ],
       sidebar: [
         {

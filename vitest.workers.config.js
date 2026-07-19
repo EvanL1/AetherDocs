@@ -1,4 +1,4 @@
-// Separate Vitest config for the Cloudflare Worker (docs-site/worker/entry.js).
+// Separate Vitest config for the Cloudflare Worker (worker/entry.js).
 // Kept apart from the default `npm test` config because @cloudflare/vitest-pool-workers
 // runs tests inside the actual `workerd` runtime, which is incompatible with the plain
 // Node environment used by scripts/*.test.mjs. Run via `npm run test:worker`.

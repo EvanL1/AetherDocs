@@ -108,8 +108,10 @@ describe('bilingual documentation', () => {
   });
 
   it('verifies both locales in deployment without rejecting the Chinese publication', () => {
-    const workflow = read('../.github/workflows/docs-site-deploy.yml');
+    const workflow = read('.github/workflows/docs-site-deploy.yml');
 
+    expect(workflow).toContain('repository: EvanL1/AetherEdge');
+    expect(workflow).toContain('AETHER_EDGE_DOCS_ROOT:');
     expect(workflow).toContain('test -f dist/en/index.html');
     expect(workflow).toContain('test -f dist/en/llms.txt');
     expect(workflow).toContain('node scripts/check-language.mjs dist');
@@ -121,7 +123,7 @@ describe('bilingual documentation', () => {
     const chineseHome = read('locales/zh-CN/index.md');
     const englishHome = read('locales/en/index.md');
     const builder = read('scripts/build-docs.mjs');
-    const workflow = read('../.github/workflows/docs-site-deploy.yml');
+    const workflow = read('.github/workflows/docs-site-deploy.yml');
 
     expect(chineseHome).not.toContain('llms.txt');
     expect(englishHome).not.toContain('llms.txt');

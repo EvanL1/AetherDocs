@@ -6,7 +6,6 @@ import fg from 'fast-glob';
 import { computeSlug, slugToSitePath } from './slug.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const DOCS_SITE_ROOT = path.resolve(__dirname, '..');
 const CONTENT_DIR = path.join(DOCS_SITE_ROOT, 'src', 'content', 'docs');
 const SOURCE_CONFIG_PATH = path.join(DOCS_SITE_ROOT, 'content.sources.json');
@@ -140,7 +139,6 @@ export function stripRedundantTitleHeading(content) {
 
 const MD_LINK_RE = /\[([^\]]*)\]\((?!https?:\/\/|mailto:|#|\/)([^)\s]+)\)/g;
 const SITE_ROOT_LINK_RE = /\[([^\]]*)\]\((\/(?!\/)[^)\s]*)\)/g;
-const GITHUB_BLOB_BASE = 'https://github.com/EvanL1/AetherEdge/blob/main';
 
 export function addSourceAttribution(content, sourceRelPath, source) {
   if (!source) return content;
@@ -169,7 +167,10 @@ export function addSourceAttribution(content, sourceRelPath, source) {
 // points at a file that actually exists.
 export function rewriteRelativeLinks(content, sourceRelPath, syncedSourceSet, options = {}) {
   const sourceDir = path.posix.dirname(sourceRelPath);
-  const githubBlobBase = options.githubBlobBase ?? GITHUB_BLOB_BASE;
+  const githubBlobBase = options.githubBlobBase;
+  if (!githubBlobBase) {
+    throw new TypeError('rewriteRelativeLinks requires options.githubBlobBase');
+  }
   const publicBaseUrl = (options.publicBaseUrl ?? DEFAULT_PUBLIC_BASE_URL).replace(/\/+$/, '');
   const rewritten = content.replace(MD_LINK_RE, (full, text, target) => {
     const [targetPath, anchor] = target.split('#');
@@ -207,7 +208,7 @@ function findExternalLinkTargets(content, sourceRelPath, syncedSourceSet) {
   return targets;
 }
 
-async function pathExistsInRepo(repoRelativePath, repoRoot = REPO_ROOT) {
+async function pathExistsInRepo(repoRelativePath, repoRoot) {
   try {
     await fs.access(path.join(repoRoot, repoRelativePath));
     return true;
@@ -229,6 +230,9 @@ export async function findBrokenExternalLinks(
   syncedSourceSet,
   options = {}
 ) {
+  if (!options.repoRoot) {
+    throw new TypeError('findBrokenExternalLinks requires options.repoRoot');
+  }
   const targets = findExternalLinkTargets(content, sourceRelPath, syncedSourceSet);
   const problems = [];
   for (const { text, resolved } of targets) {
@@ -340,7 +344,13 @@ async function main() {
       const repoRoot = configuredRoot
         ? path.resolve(configuredRoot)
         : path.resolve(DOCS_SITE_ROOT, source.root);
-      const manifestPath = path.resolve(DOCS_SITE_ROOT, source.manifest);
+      if (!source.githubBlobBase) {
+        throw new Error(`sync-content: ${source.id} must declare githubBlobBase`);
+      }
+      const manifestPath =
+        source.manifestBase === 'source'
+          ? path.resolve(repoRoot, source.manifest)
+          : path.resolve(DOCS_SITE_ROOT, source.manifest);
       const manifestText = await fs.readFile(manifestPath, 'utf8');
       const patterns = readManifestPatterns(manifestText);
       const perPatternMatches = await Promise.all(

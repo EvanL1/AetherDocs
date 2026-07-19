@@ -1,6 +1,6 @@
 # AetherIoT Documentation
 
-This directory publishes unified Simplified Chinese and English documentation
+This repository publishes unified Simplified Chinese and English documentation
 for AetherEdge, AetherCloud, and AetherContracts through a dual-mode Cloudflare
 Worker. Chinese is the root locale and English is served from `/en/`.
 
@@ -25,6 +25,9 @@ content scope.
 
 `content.sources.json` declares the three product repositories plus site-owned
 English and Chinese content. Every source manifest is a publication allowlist.
+The AetherEdge public allowlist is owned by AetherEdge at
+`ai/public-docs.manifest.txt`; Cloud and Contracts allowlists currently live in
+this repository.
 Public compatibility, operator migration, and fail-closed recovery runbooks
 are product documentation.
 Do not publish internal agent instructions, plans, ADRs, competitive analysis,
@@ -51,9 +54,19 @@ For Chinese bold labels, keep punctuation outside the emphasis marker, for
 example `**成功标准**：运行命令`; `**成功标准：**运行命令` is ambiguous
 under CommonMark and renders as literal asterisks.
 
-Local development expects sibling `AetherCloud` and `AetherContracts`
-checkouts unless `AETHER_CLOUD_DOCS_ROOT` and `AETHER_CONTRACTS_DOCS_ROOT`
-provide explicit roots. CI checks out all sources before synchronization.
+Local development expects sibling `AetherEdge`, `AetherCloud`, and
+`AetherContracts` checkouts unless `AETHER_EDGE_DOCS_ROOT`,
+`AETHER_CLOUD_DOCS_ROOT`, and `AETHER_CONTRACTS_DOCS_ROOT` provide explicit
+roots. CI checks out all sources before synchronization.
+
+## Repository boundary
+
+- Product repositories own their authoritative English product documentation.
+- This repository owns unified navigation, site-owned umbrella pages,
+  Simplified Chinese localization, publication code, and deployment.
+- Do not copy product implementation documentation into `locales/en/`.
+- Keep deployment disabled until the Cloudflare secret is present and the
+  previous deployment owner has been retired.
 
 ## Build pipeline
 

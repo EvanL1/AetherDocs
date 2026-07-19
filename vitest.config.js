@@ -8,6 +8,7 @@ export default defineConfig({
   test: {
     exclude: [
       ...configDefaults.exclude,
+      '.docs-sources/**',
       'worker/entry.test.js',
       'worker/test-fixtures/**',
     ],

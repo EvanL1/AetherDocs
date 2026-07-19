@@ -1,4 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, describe, expect, it } from 'vitest';
 import {
   addSourceAttribution,
   computeDestPath,
@@ -10,6 +13,30 @@ import {
   synthesizeFrontmatter,
 } from './sync-content.mjs';
 import { computeSlug, slugToSitePath } from './slug.mjs';
+
+const edgeLinkOptions = {
+  githubBlobBase: 'https://github.com/EvanL1/AetherEdge/blob/main',
+};
+const temporaryRoots = [];
+
+afterEach(async () => {
+  await Promise.all(
+    temporaryRoots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))
+  );
+});
+
+async function makeRepositoryFixture(files = []) {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'aetherdocs-source-'));
+  temporaryRoots.push(root);
+  await Promise.all(
+    files.map(async (relativePath) => {
+      const absolutePath = path.join(root, relativePath);
+      await fs.mkdir(path.dirname(absolutePath), { recursive: true });
+      await fs.writeFile(absolutePath, '# Fixture\n', 'utf8');
+    })
+  );
+  return root;
+}
 
 describe('computeDestPath', () => {
   it('mirrors docs/ paths with the prefix stripped', () => {
@@ -260,7 +287,12 @@ describe('rewriteRelativeLinks', () => {
   it('rewrites a link whose resolved target is not in the synced set to a GitHub URL', () => {
     const content = 'See [Control Strategies](../domain/control-strategies.md) for details.';
     const syncedSourceSet = new Set(['docs/guides/writing-rules.md']);
-    const out = rewriteRelativeLinks(content, 'docs/guides/writing-rules.md', syncedSourceSet);
+    const out = rewriteRelativeLinks(
+      content,
+      'docs/guides/writing-rules.md',
+      syncedSourceSet,
+      edgeLinkOptions
+    );
     expect(out).toBe(
       'See [Control Strategies](https://github.com/EvanL1/AetherEdge/blob/main/docs/domain/control-strategies.md) for details.'
     );
@@ -269,7 +301,12 @@ describe('rewriteRelativeLinks', () => {
   it('preserves an anchor fragment when rewriting an excluded target', () => {
     const content = '[Safe Operations](../guides/safe-operations.md#some-heading)';
     const syncedSourceSet = new Set(['docs/guides/ai-assistants.md']);
-    const out = rewriteRelativeLinks(content, 'docs/guides/ai-assistants.md', syncedSourceSet);
+    const out = rewriteRelativeLinks(
+      content,
+      'docs/guides/ai-assistants.md',
+      syncedSourceSet,
+      edgeLinkOptions
+    );
     expect(out).toBe(
       '[Safe Operations](https://github.com/EvanL1/AetherEdge/blob/main/docs/guides/safe-operations.md#some-heading)'
     );
@@ -278,13 +315,27 @@ describe('rewriteRelativeLinks', () => {
   it('leaves a same-page anchor link unchanged', () => {
     const content = 'Jump to [the section](#section) below.';
     const syncedSourceSet = new Set(['docs/guides/ai-assistants.md']);
-    expect(rewriteRelativeLinks(content, 'docs/guides/ai-assistants.md', syncedSourceSet)).toBe(content);
+    expect(
+      rewriteRelativeLinks(
+        content,
+        'docs/guides/ai-assistants.md',
+        syncedSourceSet,
+        edgeLinkOptions
+      )
+    ).toBe(content);
   });
 
   it('leaves an already-absolute link unchanged', () => {
     const content = 'See [example](https://example.com) for more.';
     const syncedSourceSet = new Set(['docs/guides/ai-assistants.md']);
-    expect(rewriteRelativeLinks(content, 'docs/guides/ai-assistants.md', syncedSourceSet)).toBe(content);
+    expect(
+      rewriteRelativeLinks(
+        content,
+        'docs/guides/ai-assistants.md',
+        syncedSourceSet,
+        edgeLinkOptions
+      )
+    ).toBe(content);
   });
 
   it('reproduces the real ai-assistants.md -> guides/safe-operations.md case', () => {
@@ -296,7 +347,12 @@ describe('rewriteRelativeLinks', () => {
       'docs/concepts/data-model.md',
       'AGENTS.md',
     ]);
-    const out = rewriteRelativeLinks(content, 'docs/guides/ai-assistants.md', syncedSourceSet);
+    const out = rewriteRelativeLinks(
+      content,
+      'docs/guides/ai-assistants.md',
+      syncedSourceSet,
+      edgeLinkOptions
+    );
     expect(out).toBe(
       'Before enabling writes, read [Safe Operations for AI Agents](https://github.com/EvanL1/AetherEdge/blob/main/docs/guides/safe-operations.md), which explains the control envelope.'
     );
@@ -305,7 +361,12 @@ describe('rewriteRelativeLinks', () => {
   it('rewrites a link whose resolved target is in the synced set to its document route', () => {
     const content = 'See [Rule Engine](../concepts/rule-engine.md) for details.';
     const syncedSourceSet = new Set(['docs/guides/writing-rules.md', 'docs/concepts/rule-engine.md']);
-    const out = rewriteRelativeLinks(content, 'docs/guides/writing-rules.md', syncedSourceSet);
+    const out = rewriteRelativeLinks(
+      content,
+      'docs/guides/writing-rules.md',
+      syncedSourceSet,
+      edgeLinkOptions
+    );
     expect(out).toBe(
       'See [Rule Engine](https://docs.aetheriot.workers.dev/concepts/rule-engine) for details.'
     );
@@ -314,7 +375,12 @@ describe('rewriteRelativeLinks', () => {
   it('preserves an anchor fragment when rewriting a synced target to a site path', () => {
     const content = '[Rule Engine](../concepts/rule-engine.md#some-heading)';
     const syncedSourceSet = new Set(['docs/guides/writing-rules.md', 'docs/concepts/rule-engine.md']);
-    const out = rewriteRelativeLinks(content, 'docs/guides/writing-rules.md', syncedSourceSet);
+    const out = rewriteRelativeLinks(
+      content,
+      'docs/guides/writing-rules.md',
+      syncedSourceSet,
+      edgeLinkOptions
+    );
     expect(out).toBe(
       '[Rule Engine](https://docs.aetheriot.workers.dev/concepts/rule-engine#some-heading)'
     );
@@ -326,7 +392,12 @@ describe('rewriteRelativeLinks', () => {
       'crates/aether-testkit/README.md',
       'crates/aether-ports/README.md',
     ]);
-    const out = rewriteRelativeLinks(content, 'crates/aether-testkit/README.md', syncedSourceSet);
+    const out = rewriteRelativeLinks(
+      content,
+      'crates/aether-testkit/README.md',
+      syncedSourceSet,
+      edgeLinkOptions
+    );
     expect(out).toBe(
       'See [aether-ports](https://docs.aetheriot.workers.dev/crates/aether-ports) for details.'
     );
@@ -362,6 +433,7 @@ describe('rewriteRelativeLinks', () => {
       {
         destinationPrefix: 'en',
         stripPrefix: 'locales/en/',
+        githubBlobBase: 'https://github.com/EvanL1/AetherDocs/blob/main/locales/en',
       }
     );
 
@@ -396,7 +468,13 @@ describe('findBrokenExternalLinks', () => {
   it('flags a relative link whose resolved target does not exist on disk', async () => {
     const content = '[Bad Link](../domain/typo-nonexistent-file.md)';
     const syncedSourceSet = new Set(['docs/guides/ai-assistants.md']);
-    const problems = await findBrokenExternalLinks(content, 'docs/guides/ai-assistants.md', syncedSourceSet);
+    const repoRoot = await makeRepositoryFixture();
+    const problems = await findBrokenExternalLinks(
+      content,
+      'docs/guides/ai-assistants.md',
+      syncedSourceSet,
+      { repoRoot }
+    );
     expect(problems).toEqual([
       {
         source: 'docs/guides/ai-assistants.md',
@@ -409,14 +487,26 @@ describe('findBrokenExternalLinks', () => {
   it('does not flag a relative link whose resolved target exists on disk, even though it is excluded from the manifest', async () => {
     const content = '[Safe Operations](../guides/safe-operations.md)';
     const syncedSourceSet = new Set(['docs/guides/ai-assistants.md']);
-    const problems = await findBrokenExternalLinks(content, 'docs/guides/ai-assistants.md', syncedSourceSet);
+    const repoRoot = await makeRepositoryFixture(['docs/guides/safe-operations.md']);
+    const problems = await findBrokenExternalLinks(
+      content,
+      'docs/guides/ai-assistants.md',
+      syncedSourceSet,
+      { repoRoot }
+    );
     expect(problems).toEqual([]);
   });
 
   it('does not flag a link whose resolved target is in the synced set', async () => {
     const content = '[Rule Engine](../concepts/rule-engine.md)';
     const syncedSourceSet = new Set(['docs/guides/writing-rules.md', 'docs/concepts/rule-engine.md']);
-    const problems = await findBrokenExternalLinks(content, 'docs/guides/writing-rules.md', syncedSourceSet);
+    const repoRoot = await makeRepositoryFixture();
+    const problems = await findBrokenExternalLinks(
+      content,
+      'docs/guides/writing-rules.md',
+      syncedSourceSet,
+      { repoRoot }
+    );
     expect(problems).toEqual([]);
   });
 });

@@ -3,15 +3,22 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const edgeRoot = path.resolve(
+  process.env.AETHER_EDGE_DOCS_ROOT ?? path.join(docsRoot, '..', 'AetherEdge')
+);
 
-function read(relativePath) {
-  return readFileSync(path.join(repositoryRoot, relativePath), 'utf8');
+function readDocs(relativePath) {
+  return readFileSync(path.join(docsRoot, relativePath), 'utf8');
+}
+
+function readEdge(relativePath) {
+  return readFileSync(path.join(edgeRoot, relativePath), 'utf8');
 }
 
 describe('AetherIoT product-family documentation', () => {
   it('defines one umbrella project and three core products', () => {
-    const overview = read('docs/overview/platform.md');
+    const overview = readEdge('docs/overview/platform.md');
 
     expect(overview).toContain('AetherIoT is the open-source, AI-native project identity');
     expect(overview).toContain('AetherEdge       deterministic edge runtime');
@@ -22,7 +29,7 @@ describe('AetherIoT product-family documentation', () => {
   });
 
   it('pins a tested compatibility baseline without claiming production CloudLink', () => {
-    const matrix = read('docs/compatibility/version-matrix.md');
+    const matrix = readEdge('docs/compatibility/version-matrix.md');
 
     expect(matrix).toContain('`v0.5.0`');
     expect(matrix).toContain('`v0.1.0-alpha.3`');
@@ -31,7 +38,7 @@ describe('AetherIoT product-family documentation', () => {
   });
 
   it('renames repository-facing identity while preserving software and protocol names', () => {
-    const migration = read('docs/migration/aetheriot-to-aetheredge.md');
+    const migration = readEdge('docs/migration/aetheriot-to-aetheredge.md');
 
     expect(migration).toContain('https://github.com/EvanL1/AetherEdge');
     expect(migration).toContain('The `aether` CLI and `aether-*` binaries');
@@ -40,7 +47,7 @@ describe('AetherIoT product-family documentation', () => {
   });
 
   it('publishes detailed Cloud and Contracts source collections', () => {
-    const sources = JSON.parse(read('docs-site/content.sources.json'));
+    const sources = JSON.parse(readDocs('content.sources.json'));
     expect(sources.sources.map(({ id }) => id)).toEqual([
       'aetheredge',
       'aethercloud',
@@ -49,7 +56,15 @@ describe('AetherIoT product-family documentation', () => {
       'site-zh-cn',
     ]);
 
-    const cloudManifest = read('docs-site/content.aethercloud.manifest.txt');
+    const edgeSource = sources.sources.find(({ id }) => id === 'aetheredge');
+    expect(edgeSource).toMatchObject({
+      root: '../AetherEdge',
+      rootEnv: 'AETHER_EDGE_DOCS_ROOT',
+      manifest: 'ai/public-docs.manifest.txt',
+      manifestBase: 'source',
+    });
+
+    const cloudManifest = readDocs('content.aethercloud.manifest.txt');
     expect(cloudManifest).toContain('docs/get-started/*');
     expect(cloudManifest).toContain('docs/concepts/!(current-state-audit).md');
     expect(cloudManifest).not.toContain('\ndocs/concepts/*\n');
@@ -57,7 +72,7 @@ describe('AetherIoT product-family documentation', () => {
     expect(cloudManifest).toContain('docs/recovery/*');
     expect(cloudManifest).toContain('docs/reference/*');
 
-    const contractsManifest = read('docs-site/content.aethercontracts.manifest.txt');
+    const contractsManifest = readDocs('content.aethercontracts.manifest.txt');
     expect(contractsManifest).toContain('docs/getting-started.md');
     expect(contractsManifest).toContain('docs/compatibility.md');
     expect(contractsManifest).toContain('docs/conformance.md');
@@ -70,7 +85,7 @@ describe('AetherIoT product-family documentation', () => {
   });
 
   it('gives both products detailed generated sidebars', () => {
-    const config = read('docs-site/astro.config.mjs');
+    const config = readDocs('astro.config.mjs');
 
     expect(config).toContain("directory: 'aethercloud/concepts'");
     expect(config).toContain("directory: 'aethercloud/guides'");
@@ -83,21 +98,21 @@ describe('AetherIoT product-family documentation', () => {
   });
 
   it('disambiguates concept pages from crate reference pages in agent indexes', () => {
-    expect(read('docs/concepts/data-processing.md')).toContain(
+    expect(readEdge('docs/concepts/data-processing.md')).toContain(
       'title: Aether Data Processing'
     );
-    expect(read('crates/aether-data-processing/README.md')).toMatch(
+    expect(readEdge('crates/aether-data-processing/README.md')).toMatch(
       /^# aether-data-processing crate$/m
     );
-    expect(read('docs-site/locales/zh-CN/crates/aether-data-processing.md')).toContain(
+    expect(readDocs('locales/zh-CN/crates/aether-data-processing.md')).toContain(
       'title: "aether-data-processing 组件库"'
     );
   });
 
   it('keeps the cross-product integration guide inside Guides without a Tutorials section', () => {
-    const config = read('docs-site/astro.config.mjs');
-    const edgeManifest = read('docs-site/content.manifest.txt');
-    const chineseManifest = read('docs-site/content.zh-cn.manifest.txt');
+    const config = readDocs('astro.config.mjs');
+    const edgeManifest = readEdge('ai/public-docs.manifest.txt');
+    const chineseManifest = readDocs('content.zh-cn.manifest.txt');
 
     expect(config).not.toContain("label: 'Tutorials'");
     expect(config).toContain(
@@ -115,8 +130,8 @@ describe('AetherIoT product-family documentation', () => {
   });
 
   it('makes pagination direction labels primary and keeps page names compact', () => {
-    const config = read('docs-site/astro.config.mjs');
-    const styles = read('docs-site/src/styles/custom.css');
+    const config = readDocs('astro.config.mjs');
+    const styles = readDocs('src/styles/custom.css');
 
     expect(config).toContain("customCss: ['./src/styles/custom.css']");
     expect(styles).toMatch(/\.pagination-links a > span[\s\S]*font-size:\s*1\.125rem/);
