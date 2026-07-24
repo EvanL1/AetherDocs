@@ -20,7 +20,7 @@ AetherCloud 是 IoT 队列、数据、工件和受管工作控制平面。多云
 - 能力驱动的云提供商描述符、目录、云连接和只读发现基础，以及内存一致性基础设施
 - 一个HTTP组合根，包含公共卫生/平台路由和经过身份验证的审计JSON/有限可恢复SSE查询路由
 - 代理文档索引、清单、技能、不变量、 ADR 和契约测试
-- [网关身份和注册](/aethercloud/concepts/gateway-identity-and-enrollment)中描述的网关身份和注册域/应用程序基础
+- [网关身份和注册](/zh/aethercloud/concepts/gateway-identity-and-enrollment)中描述的网关身份和注册域/应用程序基础
 - 传输中立CloudLink会话/心跳域/应用程序基础，具有纪元防护、游标恢复、凭据验证端口和内存适配器
 - AetherEdge运行时清单v1 报告/查询域/应用程序基础，具有规范校验和验证、单调历史记录和内存适配器
 - 重放安全物联网遥测批量摄取/历史域/应用程序基础，具有无损位置、冲突/间隙/重新排序处理和原子内存收件箱/历史记录/审核/发件箱证据
@@ -43,7 +43,7 @@ AetherCloud 是 IoT 队列、数据、工件和受管工作控制平面。多云
 - PostgreSQL、对象存储、时间序列、持久发件箱、集成/导出工作进程、生产 Webhook 发送方/目标机密/签名、实时 SSE、WebSocket、MCP 线路/根和剩余工具、队列操作、配额或成本适配器
 - 生产网关 CA、KMS 令牌服务、证书吊销、恢复或注册 HTTP 端点
 
-以下计划项目代表契约和交付方向，并不是当前可调用的端点或协议消息。[物联网云路线图](/aethercloud/guides/iot-cloud-roadmap)会区分已经可用的能力和仍缺少的生产能力。
+以下计划项目代表契约和交付方向，并不是当前可调用的端点或协议消息。[物联网云路线图](/zh/aethercloud/guides/iot-cloud-roadmap)会区分已经可用的能力和仍缺少的生产能力。
 
 ## 能力地图
 
@@ -97,4 +97,4 @@ Outbox -> projections, notifications, webhooks, exports, and SSE/WebSocket
 | 操作可观察性 | 部署配置仅 | 不是产品命令 | 有限的信号损失；永远不会改变业务成果 | 实现可选适配器和遥测装饰器；计划更广泛的根检测/部署 |
 | AI 原生/MCP | 与底层用例相同的权限 | 与底层命令相同的风险和确认 | 计划的功能被拒绝，从不模拟 | 部分：功能/审核资源和数据导出/作业工具接口已实现；线路/根、生产身份和计划的剩余暴露 |
 
-阅读[架构](/aethercloud/concepts/architecture)了解进程和持久化边界，阅读 [CloudLink 可靠传输与生命周期](/aethercloud/concepts/cloudlink-and-core-state-machines)了解故障语义，阅读[交付路线图](/aethercloud/guides/iot-cloud-roadmap)了解当前可用能力。
+阅读[架构](/zh/aethercloud/concepts/architecture)了解进程和持久化边界，阅读 [CloudLink 可靠传输与生命周期](/zh/aethercloud/concepts/cloudlink-and-core-state-machines)了解故障语义，阅读[交付路线图](/zh/aethercloud/guides/iot-cloud-roadmap)了解当前可用能力。

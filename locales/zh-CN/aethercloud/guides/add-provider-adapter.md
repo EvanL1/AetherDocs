@@ -60,4 +60,4 @@ export class ExampleProviderAdapter implements ProviderAdapter {
 
 基础设施规划现在在单独的仅计划 `InfrastructureEngine` 端口后面实施。实现真正的本地OpenTofu计划流程执行； Terraform 流程执行和基础设施变更仍在计划中。未来的提供程序适配器可以选择版本化的提供程序模块并标准化提供程序观察，但不要向只读发现方法添加 `plan`、`apply`、`destroy`、导入或状态修复。
 
-读取[多云融合](/aethercloud/concepts/multi-cloud-fusion)以了解状态和权限规则，并读取[仓库布局](/aethercloud/reference/repository-layout)以了解依赖关系放置。
+读取[多云融合](/zh/aethercloud/concepts/multi-cloud-fusion)以了解状态和权限规则，并读取[仓库布局](/zh/aethercloud/reference/repository-layout)以了解依赖关系放置。

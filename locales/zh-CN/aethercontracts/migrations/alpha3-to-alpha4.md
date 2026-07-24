@@ -64,5 +64,5 @@ alpha.3 发布字节。如果产品必须回到已发布基线，应恢复确切
 - 重连、重启、重复消息、冲突、数据丢失、重命名、删除、过期代次、提供方错误、超时和延迟状态证据；
 - 能够保留旧行为以及边缘侧物理控制最终决定权的回滚证据。
 
-修改状态前，请阅读[兼容性与发布门槛](/aethercontracts/compatibility/)和
-[一致性与使用方验证](/aethercontracts/conformance/)。机器可读的产品证据矩阵位于 AetherContracts 仓库的 `compatibility/product-matrix.json`。
+修改状态前，请阅读[兼容性与发布门槛](/zh/aethercontracts/compatibility/)和
+[一致性与使用方验证](/zh/aethercontracts/conformance/)。机器可读的产品证据矩阵位于 AetherContracts 仓库的 `compatibility/product-matrix.json`。

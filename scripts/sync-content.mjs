@@ -190,6 +190,16 @@ export function rewriteRelativeLinks(content, sourceRelPath, syncedSourceSet, op
   );
 }
 
+// Product repositories still carry absolute published URLs written when
+// English lived under /en/. English now lives at the site root, so strip the
+// legacy locale prefix at sync time. Remove this shim once every upstream
+// source links to the root-locale English URLs directly.
+export function stripLegacyEnglishPrefix(content, publicBaseUrl) {
+  const base = (publicBaseUrl ?? DEFAULT_PUBLIC_BASE_URL).replace(/\/+$/, '');
+  const escaped = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return content.replace(new RegExp(`${escaped}/en(?=[/#?)"'\\s]|$)`, 'g'), base);
+}
+
 // Pure: finds every relative-link target in content that resolves OUTSIDE
 // the synced manifest (i.e. the candidates rewriteRelativeLinks would turn
 // into a GitHub blob URL). Does not touch the filesystem.
@@ -321,7 +331,10 @@ async function syncFile(source, sourceRelPath, raw, syncedSourceSet) {
   const destRelPath = computeDestPath(sourceRelPath, options);
   const destAbsPath = path.join(CONTENT_DIR, destRelPath);
 
-  const rewritten = rewriteRelativeLinks(raw, sourceRelPath, syncedSourceSet, options);
+  const rewritten = stripLegacyEnglishPrefix(
+    rewriteRelativeLinks(raw, sourceRelPath, syncedSourceSet, options),
+    options.publicBaseUrl
+  );
   const attributed = addSourceAttribution(
     rewritten,
     sourceRelPath,

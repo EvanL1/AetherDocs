@@ -8,7 +8,7 @@
       "rootEnv": "AETHER_EDGE_DOCS_ROOT",
       "manifest": "ai/public-docs.manifest.txt",
       "manifestBase": "source",
-      "destinationPrefix": "en",
+      "destinationPrefix": "",
       "stripPrefix": "docs/",
       "githubBlobBase": "https://github.com/EvanL1/AetherEdge/blob/main",
       "attribution": false
@@ -19,7 +19,7 @@
       "root": "../AetherCloud",
       "rootEnv": "AETHER_CLOUD_DOCS_ROOT",
       "manifest": "content.aethercloud.manifest.txt",
-      "destinationPrefix": "en/aethercloud",
+      "destinationPrefix": "aethercloud",
       "stripPrefix": "docs/",
       "githubBlobBase": "https://github.com/EvanL1/AetherCloud/blob/main"
     },
@@ -29,7 +29,7 @@
       "root": "../AetherContracts",
       "rootEnv": "AETHER_CONTRACTS_DOCS_ROOT",
       "manifest": "content.aethercontracts.manifest.txt",
-      "destinationPrefix": "en/aethercontracts",
+      "destinationPrefix": "aethercontracts",
       "stripPrefix": "docs/",
       "githubBlobBase": "https://github.com/EvanL1/AetherContracts/blob/main"
     },
@@ -38,7 +38,7 @@
       "label": "AetherIoT Documentation",
       "root": ".",
       "manifest": "content.site-en.manifest.txt",
-      "destinationPrefix": "en",
+      "destinationPrefix": "",
       "stripPrefix": "locales/en/",
       "githubBlobBase": "https://github.com/EvanL1/AetherDocs/blob/main/locales/en",
       "attribution": false
@@ -48,7 +48,7 @@
       "label": "AetherIoT 中文文档",
       "root": ".",
       "manifest": "content.zh-cn.manifest.txt",
-      "destinationPrefix": "",
+      "destinationPrefix": "zh",
       "stripPrefix": "locales/zh-CN/",
       "githubBlobBase": "https://github.com/EvanL1/AetherDocs/blob/main/locales/zh-CN",
       "attribution": false

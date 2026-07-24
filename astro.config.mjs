@@ -7,7 +7,7 @@ export default defineConfig({
   site: 'https://docs.aetheriot.dev',
   redirects: {
     '/tutorials/edge-contracts-cloud': '/guides/edge-contracts-cloud',
-    '/en/tutorials/edge-contracts-cloud': '/en/guides/edge-contracts-cloud',
+    '/zh/tutorials/edge-contracts-cloud': '/zh/guides/edge-contracts-cloud',
   },
   integrations: [
     starlight({
@@ -21,12 +21,12 @@ export default defineConfig({
       expressiveCode: {
         getBlockLocale({ file }) {
           const sourcePath = (file.url?.pathname ?? file.path ?? '').replaceAll('\\', '/');
-          return /(^|\/)en(?:\/|$)/.test(sourcePath) ? 'en' : 'zh-CN';
+          return /(^|\/)zh(?:\/|$)/.test(sourcePath) ? 'zh-CN' : 'en';
         },
       },
       locales: {
-        root: { label: '简体中文', lang: 'zh-CN' },
-        en: { label: 'English', lang: 'en' },
+        root: { label: 'English', lang: 'en' },
+        zh: { label: '简体中文', lang: 'zh-CN' },
       },
       defaultLocale: 'root',
       social: [

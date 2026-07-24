@@ -61,4 +61,4 @@ status: normative
 
 **租户** — 主要安全和数据隔离边界。
 
-使用[资源模型](/aethercloud/concepts/resource-model) 来制定所有权和身份规则。
+使用[资源模型](/zh/aethercloud/concepts/resource-model) 来制定所有权和身份规则。

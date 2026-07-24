@@ -58,6 +58,6 @@ pnpm test:tck
 `device.power.set.v1`，目标必须绑定到已经接受的确切拓扑代次、稳定实体和布尔型
 `is_on` 数据点。它要求显式确认、高风险权限、到期时间、幂等、审计和边缘侧最终决定。公开消息不能选择 Home Assistant 领域或操作，也不能携带提供方参数、地址、令牌或任意对象。
 
-具体约束见[受治理控制规范](/aethercontracts/spec/integration-control-v1alpha1/)。
+具体约束见[受治理控制规范](/zh/aethercontracts/spec/integration-control-v1alpha1/)。
 
 Home Assistant 返回成功只能记录为提供方已接受请求，不能证明物理设备已经完成预期变化。

@@ -35,4 +35,4 @@ status: partial
 
 凭据拒绝、签名或身份不匹配、持续游标缺口、数据丢失证据、冲突重放或旧代次反复连接时，必须转交人工处理。普通断线和有界重连不要求人工确认，但身份或持久顺序不确定时，智能体必须停止自动恢复。
 
-继续阅读[CloudLink 可靠传输与生命周期](/aethercloud/concepts/cloudlink-and-core-state-machines)、[CloudLink 协议参考](/aethercloud/reference/cloudlink-mqtt-v1)和[边缘端、云端与提供商的权威边界](/aethercloud/concepts/edge-cloud-boundary)。
+继续阅读[CloudLink 可靠传输与生命周期](/zh/aethercloud/concepts/cloudlink-and-core-state-machines)、[CloudLink 协议参考](/zh/aethercloud/reference/cloudlink-mqtt-v1)和[边缘端、云端与提供商的权威边界](/zh/aethercloud/concepts/edge-cloud-boundary)。

@@ -316,9 +316,9 @@ SHM live authority ──► history persistence/query
 
 ## 相关页面
 
-- [Aether数据处理](/concepts/data-processing) — 目的、任务契约、处理器边界和非目标
-- [数据流](/concepts/data-flow) — 权威上行链路和控制路径
-- [共享内存](/concepts/shared-memory) — 当前实时状态权限和写入者所有权
-- [系统架构](/concepts/architecture) — 运行时服务和可选扩展
-- [规则引擎](/concepts/rule-engine) — 确定性调度和执行
-- [应用程序和代理的安全操作](/guides/safe-operations) — 控制安全和授权策略
+- [Aether数据处理](/zh/concepts/data-processing) — 目的、任务契约、处理器边界和非目标
+- [数据流](/zh/concepts/data-flow) — 权威上行链路和控制路径
+- [共享内存](/zh/concepts/shared-memory) — 当前实时状态权限和写入者所有权
+- [系统架构](/zh/concepts/architecture) — 运行时服务和可选扩展
+- [规则引擎](/zh/concepts/rule-engine) — 确定性调度和执行
+- [应用程序和代理的安全操作](/zh/guides/safe-operations) — 控制安全和授权策略

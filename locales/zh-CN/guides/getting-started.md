@@ -80,7 +80,7 @@ aether services start
 aether doctor
 ```
 
-`aether services start` 调出 Docker Compose 堆栈。撰写文件引用预先构建的图像；在尚未安装 `aetherems:latest` 的计算机上，通过运行 `./scripts/build-installer.sh`（从交叉编译的二进制文件构建映像）来生成它，或使用 `docker load` 加载预构建的映像存档 — 请参阅[部署](/guides/deployment)。
+`aether services start` 调出 Docker Compose 堆栈。撰写文件引用预先构建的图像；在尚未安装 `aetherems:latest` 的计算机上，通过运行 `./scripts/build-installer.sh`（从交叉编译的二进制文件构建映像）来生成它，或使用 `docker load` 加载预构建的映像存档 — 请参阅[部署](/zh/guides/deployment)。
 
 `aether doctor` 检查所需的本地运行时，如果有任何必需的组件，则以非零值退出失败：
 
@@ -90,7 +90,7 @@ aether doctor
 4. **配置文件** — `global.yaml`、`io/io.yaml`、`automation/automation.yaml` 和 `automation/instances.yaml` 存在。
 5. **共享内存** — 存在段文件 `/dev/shm/aether-rtdb.shm` 存在，并且具有可读、有效的数据平面标头和新的 IO 写入器心跳。丢失、陈旧、截断、符号链接或无效的 SHM 都是错误，因为它是权威的活动状态平面。当安装故意使用其他位置时，`AETHER_SHM_PATH` 会覆盖平台默认值。
 
-一切正常时，这些端口正在侦听（有关每个服务的作用，请参阅[系统架构](/concepts/architecture)）。打包组合仅远程公开经过身份验证的 API 网关；其他五个进程API监听`127.0.0.1`：
+一切正常时，这些端口正在侦听（有关每个服务的作用，请参阅[系统架构](/zh/concepts/architecture)）。打包组合仅远程公开经过身份验证的 API 网关；其他五个进程API监听`127.0.0.1`：
 
 | 服务 | 端口 |
 |---------|------|
@@ -121,7 +121,7 @@ aether rules list
 
 ## 后续步骤
 
-- [连接设备](/guides/connect-devices) — 添加真实通道并将其点映射到实例
-- [写入规则](/guides/writing-rules) — 使用规则引擎自动控制
-- [AI 助手](/guides/ai-assistants) — 通过 AI 驱动 Aether agent
-- [部署](/guides/deployment) — Docker Compose 详细信息和边缘安装程序
+- [连接设备](/zh/guides/connect-devices) — 添加真实通道并将其点映射到实例
+- [写入规则](/zh/guides/writing-rules) — 使用规则引擎自动控制
+- [AI 助手](/zh/guides/ai-assistants) — 通过 AI 驱动 Aether agent
+- [部署](/zh/guides/deployment) — Docker Compose 详细信息和边缘安装程序

@@ -35,4 +35,4 @@ status: partial
 
 持续获取超时或任何锁释放失败都需要基础设施运维人员处理。禁止自动强制解锁。人员必须先确认锁持有者、后端、租约和活动工作进程；缺少这些证据时，部署堆栈必须保持隔离。
 
-继续阅读[安全规划基础设施](/aethercloud/guides/plan-infrastructure)、[多云融合](/aethercloud/concepts/multi-cloud-fusion)和[术语表](/aethercloud/reference/terminology)。
+继续阅读[安全规划基础设施](/zh/aethercloud/guides/plan-infrastructure)、[多云融合](/zh/aethercloud/concepts/multi-cloud-fusion)和[术语表](/zh/aethercloud/reference/terminology)。

@@ -1564,7 +1564,7 @@ aether mcp --allow-write
 
 MCP 桥读取 `AETHER_ACCESS_TOKEN`，将其作为 `Authorization: Bearer` 凭据发送，并为每个受管控的 HTTP 请求生成一个 `X-Request-ID`。保留返回的 `request_id`/`command_id` 值，并且在超时或不完整的审核或发布响应后不会自动重试写入；首先检查状态和审计记录。通道突变成功可能包含降级的运行时间预测；使用其 `request_id`、`resulting_revision` 和 `reconciliation_required` 而不是重试。
 
-请参阅[连接 AI 助手](/guides/ai-assistants)，了解如何连接 MCP 客户端。
+请参阅[连接 AI 助手](/zh/guides/ai-assistants)，了解如何连接 MCP 客户端。
 
 ## 退出代码和 JSON 模式
 
@@ -1588,6 +1588,6 @@ MCP 桥读取 `AETHER_ACCESS_TOKEN`，将其作为 `Authorization: Bearer` 凭�
 
 ## 相关页面
 
-- [入门](/guides/getting-started) — 构建、初始化和启动 Aether
-- [连接 AI 助手](/guides/ai-assistants) — 将智能体连接到 CLI 和 MCP 服务器
-- [系统架构](/concepts/architecture) — 这些命令管理的服务
+- [入门](/zh/guides/getting-started) — 构建、初始化和启动 Aether
+- [连接 AI 助手](/zh/guides/ai-assistants) — 将智能体连接到 CLI 和 MCP 服务器
+- [系统架构](/zh/concepts/architecture) — 这些命令管理的服务

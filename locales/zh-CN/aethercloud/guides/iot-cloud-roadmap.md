@@ -149,7 +149,7 @@ status: planned
 
 **不包括。** 部署调度或边缘激活。
 
-已实现的层合约和剩余生产边界在 [Artifact 注册表和不可变发布](/aethercloud/concepts/artifact-registry) 中详细介绍。
+已实现的层合约和剩余生产边界在 [Artifact 注册表和不可变发布](/zh/aethercloud/concepts/artifact-registry) 中详细介绍。
 
 ## 第 7 阶段：所需、报告和应用的部署
 
@@ -171,7 +171,7 @@ status: planned
 
 **不包括**。通用边缘功能命令。
 
-请参阅[所需、报告和应用的部署](/aethercloud/concepts/desired-reported-applied-deployment)以了解已实现的边界。
+请参阅[所需、报告和应用的部署](/zh/aethercloud/concepts/desired-reported-applied-deployment)以了解已实现的边界。
 
 ## 阶段 8：受控功能作业
 
@@ -193,7 +193,7 @@ status: planned
 
 **不包括**。默认启用物理控制；默认情况下，此类功能仍然被拒绝，并且需要额外的策略证据。
 
-请参阅[受管理的功能作业](/aethercloud/concepts/governed-capability-jobs) 了解已实现的边界。
+请参阅[受管理的功能作业](/zh/aethercloud/concepts/governed-capability-jobs) 了解已实现的边界。
 
 ## 阶段 9：审核、查询、集成、操作和可观察性
 

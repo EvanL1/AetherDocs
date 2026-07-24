@@ -70,7 +70,7 @@ PostgreSQL 是默认的事务性 AetherCloud 产品存储。第一个 Gateway Id
 
 第一个实验性 CloudLink 线合约在 MQTT 上使用版本化的严格 JSON，因此 TypeScript 和 Rust 可以执行相同的装置。更高版本的二进制编码需要联合 AetherCloud/AetherEdge 审核，并且无法更改业务身份或确认语义。序列字段保留规范的十进制字符串，无需不安全的JavaScript-数字转换。
 
-请参阅[多云融合](/aethercloud/concepts/multi-cloud-fusion)了解提供程序、状态、凭证和执行边界。
+请参阅[多云融合](/zh/aethercloud/concepts/multi-cloud-fusion)了解提供程序、状态、凭证和执行边界。
 
 ## 服务提取规则
 
@@ -85,7 +85,7 @@ PostgreSQL 是默认的事务性 AetherCloud 产品存储。第一个 Gateway Id
 
 ## IoT 上下文协作
 
-完整的有界上下文映射在 [IoT 云功能映射](/aethercloud/concepts/iot-cloud-capability-map) 中维护。上下文公开应用程序契约或事件而不是数据库记录：
+完整的有界上下文映射在 [IoT 云功能映射](/zh/aethercloud/concepts/iot-cloud-capability-map) 中维护。上下文公开应用程序契约或事件而不是数据库记录：
 ```text
 Identity and Access -> authorization decisions
 Fleet Identity -> CloudLink credential verification
@@ -125,9 +125,9 @@ PostgreSQL最初可能会实现历史存储适配器，但应用程序端口保�
 
 命令事务以原子方式写入其聚合更改、所需的审核记录和发件箱消息。边缘摄取在 CloudLink 确认之前自动记录其重复数据删除身份和接受的业务事实。工作进程租用工作，在有界策略内重试，并使死信状态可见。
 
-PostgreSQL支持的交付是默认设置。 Kafka 或其他代理仅在测量吞吐量、保留或消费者隔离要求后才引入，并且永远不会更改命令幂等性或持久确认语义。出站 Webhook 尝试意图在网络 I/O 之前保留，在有界重试中使用一个稳定的传递身份，并在耗尽时变成可见的死信。数据导出发布不可变的对象引用，而不是通过 API 进程返回无限制的历史记录。请参阅[审核和集成](/aethercloud/concepts/audit-and-integrations)。
+PostgreSQL支持的交付是默认设置。 Kafka 或其他代理仅在测量吞吐量、保留或消费者隔离要求后才引入，并且永远不会更改命令幂等性或持久确认语义。出站 Webhook 尝试意图在网络 I/O 之前保留，在有界重试中使用一个稳定的传递身份，并在耗尽时变成可见的死信。数据导出发布不可变的对象引用，而不是通过 API 进程返回无限制的历史记录。请参阅[审核和集成](/zh/aethercloud/concepts/audit-and-integrations)。
 
-多云可移植性是通过可独立部署的单元和提供商数据库配置文件来表达的，而不是通用的最低公分母数据库API。一个单元具有一个权威的 PostgreSQL 写入器拓扑；租户有一个明确的家庭单元。跨云备份、灾难恢复和租户迁移需要防护和受管控的工作流程。读取[PostgreSQL持久性和多云单元](/aethercloud/concepts/persistence-and-multi-cloud-cells)。
+多云可移植性是通过可独立部署的单元和提供商数据库配置文件来表达的，而不是通用的最低公分母数据库API。一个单元具有一个权威的 PostgreSQL 写入器拓扑；租户有一个明确的家庭单元。跨云备份、灾难恢复和租户迁移需要防护和受管控的工作流程。读取[PostgreSQL持久性和多云单元](/zh/aethercloud/concepts/persistence-and-multi-cloud-cells)。
 
 ## 租户隔离
 
@@ -135,6 +135,6 @@ PostgreSQL支持的交付是默认设置。 Kafka 或其他代理仅在测量吞
 
 计划的 PostgreSQL 适配器将应用程序强制作用域、复合租户密钥和行级安全性结合起来作为深度防御。跨租户访问只能通过具有单独权限和审核证据的显式平台用例来实现。
 
-实现 CloudLink 集成前，请阅读 [CloudLink MQTT 参考](/aethercloud/reference/cloudlink-mqtt-v1)和 [CloudLink 可靠传输与生命周期](/aethercloud/concepts/cloudlink-and-core-state-machines)。
+实现 CloudLink 集成前，请阅读 [CloudLink MQTT 参考](/zh/aethercloud/reference/cloudlink-mqtt-v1)和 [CloudLink 可靠传输与生命周期](/zh/aethercloud/concepts/cloudlink-and-core-state-machines)。
 
-在增加历史记录或数据摄取前，请阅读 [IoT 业务遥测](/aethercloud/concepts/iot-telemetry)；在增加监测手段前，请阅读[运行可观测性](/aethercloud/concepts/operational-observability)。当前可用能力和仍在规划中的部分以[物联网云路线图](/aethercloud/guides/iot-cloud-roadmap)为准。
+在增加历史记录或数据摄取前，请阅读 [IoT 业务遥测](/zh/aethercloud/concepts/iot-telemetry)；在增加监测手段前，请阅读[运行可观测性](/zh/aethercloud/concepts/operational-observability)。当前可用能力和仍在规划中的部分以[物联网云路线图](/zh/aethercloud/guides/iot-cloud-roadmap)为准。

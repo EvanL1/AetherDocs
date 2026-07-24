@@ -35,4 +35,4 @@ status: partial
 
 任何高风险或不可安全重放的物理操作进入 `unknown` 后，都必须由人员检查边缘端证据；必要时还要检查物理环境。人员决定继续保留未知状态、请求取消，还是创建一个经过独立确认的新意图。智能体不得根据交付、超时或连接消失推断操作已经完成。
 
-继续阅读[受治理能力作业](/aethercloud/concepts/governed-capability-jobs)、[期望、报告与应用部署](/aethercloud/concepts/desired-reported-applied-deployment)和[受治理的 Home Assistant 电源控制](/aethercloud/concepts/home-assistant-governed-control)。
+继续阅读[受治理能力作业](/zh/aethercloud/concepts/governed-capability-jobs)、[期望、报告与应用部署](/zh/aethercloud/concepts/desired-reported-applied-deployment)和[受治理的 Home Assistant 电源控制](/zh/aethercloud/concepts/home-assistant-governed-control)。

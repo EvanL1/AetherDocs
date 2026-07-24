@@ -66,4 +66,4 @@ tests/                   repository-wide contract tests
 
 从一个可观察用例及其域语言开始。在选择持久性之前添加测试和应用程序契约。如果上下文需要适配器，请提供内存一致性实现，以便默认测试保持独立。
 
-仅在上下文更改系统职责或依赖项时更新[架构](/aethercloud/concepts/architecture)；例行文件添加属于此参考页或包自述文件。
+仅在上下文更改系统职责或依赖项时更新[架构](/zh/aethercloud/concepts/architecture)；例行文件添加属于此参考页或包自述文件。

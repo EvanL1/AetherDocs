@@ -4,16 +4,16 @@ const LEGACY_GUIDE_PATHS = new Map([
   ['/tutorials/edge-contracts-cloud', '/guides/edge-contracts-cloud/'],
   ['/tutorials/edge-contracts-cloud/', '/guides/edge-contracts-cloud/'],
   ['/tutorials/edge-contracts-cloud.md', '/guides/edge-contracts-cloud.md'],
-  ['/en/tutorials/edge-contracts-cloud', '/en/guides/edge-contracts-cloud/'],
-  ['/en/tutorials/edge-contracts-cloud/', '/en/guides/edge-contracts-cloud/'],
-  ['/en/tutorials/edge-contracts-cloud.md', '/en/guides/edge-contracts-cloud.md'],
+  ['/zh/tutorials/edge-contracts-cloud', '/zh/guides/edge-contracts-cloud/'],
+  ['/zh/tutorials/edge-contracts-cloud/', '/zh/guides/edge-contracts-cloud/'],
+  ['/zh/tutorials/edge-contracts-cloud.md', '/zh/guides/edge-contracts-cloud.md'],
 ]);
 
-function successHeaders(sourceHeaders, contentType) {
+function successHeaders(sourceHeaders, contentType, vary = 'Accept') {
   const headers = new Headers(sourceHeaders);
   if (contentType) headers.set('Content-Type', contentType);
   headers.set('X-Content-Type-Options', 'nosniff');
-  headers.set('Vary', 'Accept');
+  headers.set('Vary', vary);
   return headers;
 }
 
@@ -41,6 +41,43 @@ function legacyGuideRedirect(url) {
   return Response.redirect(redirectUrl, 308);
 }
 
+// English moved from /en/ to the site root. Permanently redirect every legacy
+// /en URL to the same path with the prefix stripped, preserving query strings.
+function legacyEnglishPrefixRedirect(url) {
+  const { pathname } = url;
+  let stripped = null;
+  if (pathname === '/en' || pathname === '/en/') stripped = '/';
+  else if (pathname === '/en.md') stripped = '/index.md';
+  else if (pathname.startsWith('/en/')) stripped = pathname.slice('/en'.length);
+  if (stripped === null) return null;
+
+  const redirectUrl = new URL(url);
+  redirectUrl.pathname = stripped;
+  return Response.redirect(redirectUrl, 301);
+}
+
+// True when the Accept-Language header ranks some Chinese variant strictly
+// above every English variant. Absent languages count as q=0; ties keep the
+// English root experience.
+function prefersChinese(acceptLanguage) {
+  if (!acceptLanguage) return false;
+  let chinese = 0;
+  let english = 0;
+  for (const part of acceptLanguage.split(',')) {
+    const [rawTag, ...params] = part.trim().split(';');
+    const tag = rawTag.trim().toLowerCase();
+    if (!tag) continue;
+    let quality = 1;
+    for (const param of params) {
+      const match = param.trim().match(/^q=(\d+(?:\.\d+)?)$/i);
+      if (match) quality = Number.parseFloat(match[1]);
+    }
+    if (tag === 'zh' || tag.startsWith('zh-')) chinese = Math.max(chinese, quality);
+    if (tag === 'en' || tag.startsWith('en-')) english = Math.max(english, quality);
+  }
+  return chinese > english;
+}
+
 async function fetchAsset(request, env, assetPath) {
   const sourceUrl = new URL(request.url);
   const assetUrl = assetPath ? new URL(assetPath, sourceUrl) : sourceUrl;
@@ -56,11 +93,29 @@ export default {
     }
 
     const url = new URL(request.url);
+    const englishRedirect = legacyEnglishPrefixRedirect(url);
+    if (englishRedirect) return englishRedirect;
     const redirect = legacyGuideRedirect(url);
     if (redirect) return redirect;
 
     const accept = request.headers.get('Accept') || '';
     const wantsMarkdown = url.pathname.endsWith('.md') || accept.includes('text/markdown');
+
+    // Language negotiation applies to HTML requests for exactly the root
+    // path. Requests for /index.md, any Markdown representation, or any
+    // other path are never negotiated.
+    const negotiatesLanguage = url.pathname === '/' && !wantsMarkdown;
+    if (negotiatesLanguage && prefersChinese(request.headers.get('Accept-Language'))) {
+      const redirectUrl = new URL(url);
+      redirectUrl.pathname = '/zh/';
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: redirectUrl.toString(),
+          Vary: 'Accept, Accept-Language',
+        },
+      });
+    }
 
     if (wantsMarkdown) {
       const assetPath = markdownAssetPath(url.pathname);
@@ -91,10 +146,11 @@ export default {
       return plainResponse('Documentation temporarily unavailable.\n', 503, request.method);
     }
     const contentType = url.pathname.endsWith('.txt') ? TEXT_CONTENT_TYPE : undefined;
+    const vary = negotiatesLanguage ? 'Accept, Accept-Language' : 'Accept';
     return new Response(request.method === 'HEAD' ? null : response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers: successHeaders(response.headers, contentType),
+      headers: successHeaders(response.headers, contentType, vary),
     });
   },
 };

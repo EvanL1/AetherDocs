@@ -82,4 +82,4 @@ registered -> awaiting-claim -> claimed -> credential-pending -> active
 
 索赔是短暂的并且可以更换；活动凭证是单独版本的。撤销将永久隔离凭证生成。恢复需要显式授权并创建新一代，而不是重新激活已撤销的材料。
 
-[物联网云路线图](/aethercloud/guides/iot-cloud-roadmap)说明了当前可用的凭证、持久化和公共接口能力，以及仍在规划中的部分。
+[物联网云路线图](/zh/aethercloud/guides/iot-cloud-roadmap)说明了当前可用的凭证、持久化和公共接口能力，以及仍在规划中的部分。

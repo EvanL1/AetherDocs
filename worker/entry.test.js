@@ -30,8 +30,8 @@ describe('dual-mode documentation service', () => {
       'https://example.com/guides/edge-contracts-cloud.md',
     ],
     [
-      '/en/tutorials/edge-contracts-cloud?source=old',
-      'https://example.com/en/guides/edge-contracts-cloud/?source=old',
+      '/zh/tutorials/edge-contracts-cloud?source=old',
+      'https://example.com/zh/guides/edge-contracts-cloud/?source=old',
     ],
   ])('permanently redirects the legacy guide route %s', async (path, location) => {
     const response = await run(path, {
@@ -43,13 +43,27 @@ describe('dual-mode documentation service', () => {
     expect(response.headers.get('Location')).toBe(location);
   });
 
+  it.each([
+    ['/en', 'https://example.com/'],
+    ['/en/', 'https://example.com/'],
+    ['/en.md', 'https://example.com/index.md'],
+    ['/en/llms.txt', 'https://example.com/llms.txt'],
+    ['/en/agent-quickstart/', 'https://example.com/agent-quickstart/'],
+    ['/en/agent-quickstart.md?ref=index', 'https://example.com/agent-quickstart.md?ref=index'],
+  ])('permanently strips the retired /en prefix from %s', async (path, location) => {
+    const response = await run(path, { redirect: 'manual' });
+
+    expect(response.status).toBe(301);
+    expect(response.headers.get('Location')).toBe(location);
+  });
+
   it('serves HTML to a normal browser request', async () => {
     const response = await run('/agent-quickstart/');
 
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toContain('text/html');
     expect(response.headers.get('Vary')).toBe('Accept');
-    expect(await response.text()).toContain('<h1>智能体快速入门</h1>');
+    expect(await response.text()).toContain('<h1>Agent Quickstart</h1>');
   });
 
   it('serves Markdown when the client requests text/markdown', async () => {
@@ -60,17 +74,17 @@ describe('dual-mode documentation service', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8');
     expect(response.headers.get('Vary')).toBe('Accept');
-    expect(await response.text()).toMatch(/^# 智能体快速入门/);
+    expect(await response.text()).toMatch(/^# Agent Quickstart/);
   });
 
-  it('serves the independent English locale under /en', async () => {
-    const html = await run('/en/agent-quickstart/');
-    const markdown = await run('/en/agent-quickstart/', {
+  it('serves the independent Chinese locale under /zh', async () => {
+    const html = await run('/zh/agent-quickstart/');
+    const markdown = await run('/zh/agent-quickstart/', {
       headers: { Accept: 'text/markdown' },
     });
 
-    expect(await html.text()).toContain('<h1>Agent Quickstart</h1>');
-    expect(await markdown.text()).toMatch(/^# Agent Quickstart/);
+    expect(await html.text()).toContain('<h1>智能体快速入门</h1>');
+    expect(await markdown.text()).toMatch(/^# 智能体快速入门/);
   });
 
   it('serves direct .md routes as Markdown', async () => {
@@ -89,14 +103,62 @@ describe('dual-mode documentation service', () => {
     expect(await markdown.text()).toMatch(/^# Aether/);
   });
 
-  it('serves generated agent indexes as text/plain', async () => {
-    const response = await run('/llms.txt');
-    const english = await run('/en/llms.txt');
+  it('redirects a Chinese-preferring browser from the root to /zh/', async () => {
+    const response = await run('/', {
+      headers: { 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8' },
+      redirect: 'manual',
+    });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.get('Location')).toBe('https://example.com/zh/');
+    expect(response.headers.get('Vary')).toBe('Accept, Accept-Language');
+  });
+
+  it('serves English at the root to an English-preferring browser', async () => {
+    const response = await run('/', {
+      headers: { 'Accept-Language': 'en-US,en;q=0.9,zh;q=0.8' },
+    });
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('Content-Type')).toBe('text/plain; charset=utf-8');
-    expect(await response.text()).toContain('## 概览');
+    expect(response.headers.get('Vary')).toBe('Accept, Accept-Language');
+    expect(await response.text()).toContain('<h1>Aether Documentation</h1>');
+  });
+
+  it('never negotiates language for the root Markdown representation', async () => {
+    const markdown = await run('/', {
+      headers: {
+        Accept: 'text/markdown',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+      },
+    });
+    const twin = await run('/index.md', {
+      headers: { 'Accept-Language': 'zh-CN,zh;q=0.9' },
+    });
+
+    expect(markdown.status).toBe(200);
+    expect(await markdown.text()).toMatch(/^# Aether/);
+    expect(twin.status).toBe(200);
+    expect(twin.headers.get('Vary')).toBe('Accept');
+  });
+
+  it('leaves non-root paths untouched by language negotiation', async () => {
+    const response = await run('/agent-quickstart/', {
+      headers: { 'Accept-Language': 'zh-CN,zh;q=0.9' },
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('Vary')).toBe('Accept');
+    expect(await response.text()).toContain('<h1>Agent Quickstart</h1>');
+  });
+
+  it('serves generated agent indexes as text/plain', async () => {
+    const english = await run('/llms.txt');
+    const chinese = await run('/zh/llms.txt');
+
+    expect(english.status).toBe(200);
+    expect(english.headers.get('Content-Type')).toBe('text/plain; charset=utf-8');
     expect(await english.text()).toContain('## Overview');
+    expect(await chinese.text()).toContain('## 概览');
   });
 
   it('returns a plain-text 404 when a requested Markdown twin does not exist', async () => {

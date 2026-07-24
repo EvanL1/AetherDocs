@@ -1,5 +1,5 @@
-# Aether 文档
+# Aether Documentation
 
-## 概览
+## Overview
 
-- [智能体快速入门](/agent-quickstart)
+- [Agent Quickstart](/agent-quickstart)

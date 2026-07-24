@@ -29,4 +29,4 @@ description: 在不建立第二权威来源、不重复未知结果命令的前�
 
 没有已验证制品、权威表损坏、对账持续漂移、共享内存代次不一致或无法判断原操作是否提交时，应保持隔离并交由人工处理。
 
-另请参阅[配置参考](/reference/configuration/)、[安全操作](/guides/safe-operations/)和[安全停止与控制撤销](/recovery/safe-stop-and-control-revocation/)。
+另请参阅[配置参考](/zh/reference/configuration/)、[安全操作](/zh/guides/safe-operations/)和[安全停止与控制撤销](/zh/recovery/safe-stop-and-control-revocation/)。

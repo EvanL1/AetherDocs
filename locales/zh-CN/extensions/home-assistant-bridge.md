@@ -27,7 +27,7 @@ CloudLink 发布和控制三个运行时开关都显式开启时装配固定开�
 
 预编译发行版、安装器和 Compose 尚未启用这些路径；目前也没有 YAML 配置项、命令行入口、
 公开查询接口、生产级 OAuth 流程、通用设备命令表面或生产密钥轮换与撤销。协议边界见
-[集成控制协议](/aethercontracts/spec/integration-control-v1alpha1/)。
+[集成控制协议](/zh/aethercontracts/spec/integration-control-v1alpha1/)。
 
 连接地址、环境密钥引用、首次快照、可选 CloudLink 发布、断线恢复和故障排查见
-[接入 Home Assistant](/guides/home-assistant)。
+[接入 Home Assistant](/zh/guides/home-assistant)。

@@ -101,4 +101,4 @@ TenantId、ProjectId、GatewayId、PointId、原始负载和任意事件类型�
 - CloudLink MQTT 适配器：实验性编解码器/bridge/ingress 和已实施的共享 alpha.3 AetherEdge 固定清单；桥接器消耗持久的 ACK 投影，而生产数据库/工作线程组成和会话持久性仍保持计划。
 - HTTP历史适配器：已计划。
 
-阅读[运行可观测性](/aethercloud/concepts/operational-observability)，了解为什么链路、指标和日志必须与持久化 IoT 业务遥测分开处理。
+阅读[运行可观测性](/zh/aethercloud/concepts/operational-observability)，了解为什么链路、指标和日志必须与持久化 IoT 业务遥测分开处理。

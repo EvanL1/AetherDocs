@@ -6,7 +6,7 @@ updated: 2026-07-13
 
 # MCP 工具参考
 
-由 `scripts/gen-mcp-docs.sh` 从服务器的 `tools/list` 生成。总共 45 个工具；仅当服务器与 `--allow-write` 一起运行时，才会注册标记为 **写入** 的工具。启用写入之前，请参阅[应用程序和代理的安全操作](/guides/safe-operations)。
+由 `scripts/gen-mcp-docs.sh` 从服务器的 `tools/list` 生成。总共 45 个工具；仅当服务器与 `--allow-write` 一起运行时，才会注册标记为 **写入** 的工具。启用写入之前，请参阅[应用程序和代理的安全操作](/zh/guides/safe-operations)。
 
 ## 警报
 
@@ -429,6 +429,6 @@ updated: 2026-07-13
 
 ## 相关页面
 
-- [连接 AI 助手](/guides/ai-assistants)
-- [应用程序和代理的安全操作](/guides/safe-operations)
-- [CLI 参考](/reference/cli)
+- [连接 AI 助手](/zh/guides/ai-assistants)
+- [应用程序和代理的安全操作](/zh/guides/safe-operations)
+- [CLI 参考](/zh/reference/cli)

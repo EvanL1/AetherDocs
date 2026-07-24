@@ -28,22 +28,23 @@ function visibleMarkdownProse(content) {
 }
 
 describe('bilingual documentation', () => {
-  it('serves Simplified Chinese at the root and English under /en', () => {
+  it('serves English at the root and Simplified Chinese under /zh', () => {
     const config = read('astro.config.mjs');
 
-    expect(config).toContain("root: { label: '简体中文', lang: 'zh-CN' }");
-    expect(config).toContain("en: { label: 'English', lang: 'en' }");
+    expect(config).toContain("root: { label: 'English', lang: 'en' }");
+    expect(config).toContain("zh: { label: '简体中文', lang: 'zh-CN' }");
     expect(config).toContain("defaultLocale: 'root'");
   });
 
-  it('publishes English mirrors only inside the English locale', () => {
+  it('publishes the Chinese translation only inside the /zh locale', () => {
     const sources = JSON.parse(read('content.sources.json'));
     const byId = Object.fromEntries(sources.sources.map((source) => [source.id, source]));
 
-    expect(byId.aetheredge.destinationPrefix).toBe('en');
-    expect(byId.aethercloud.destinationPrefix).toBe('en/aethercloud');
-    expect(byId.aethercontracts.destinationPrefix).toBe('en/aethercontracts');
-    expect(byId['site-zh-cn'].destinationPrefix).toBe('');
+    expect(byId.aetheredge.destinationPrefix).toBe('');
+    expect(byId.aethercloud.destinationPrefix).toBe('aethercloud');
+    expect(byId.aethercontracts.destinationPrefix).toBe('aethercontracts');
+    expect(byId['site-en'].destinationPrefix).toBe('');
+    expect(byId['site-zh-cn'].destinationPrefix).toBe('zh');
   });
 
   it('localizes navigation labels without translating product identities', () => {
@@ -113,8 +114,8 @@ describe('bilingual documentation', () => {
     expect(workflow).toContain('repository: EvanL1/AetherEdge');
     expect(workflow).toContain('AETHER_EDGE_DOCS_ROOT:');
     expect(workflow).toContain('accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}');
-    expect(workflow).toContain('test -f dist/en/index.html');
-    expect(workflow).toContain('test -f dist/en/llms.txt');
+    expect(workflow).toContain('test -f dist/zh/index.html');
+    expect(workflow).toContain('test -f dist/zh/llms.txt');
     expect(workflow).toContain('node scripts/check-language.mjs dist');
     expect(workflow).not.toContain('rg --pcre2');
     expect(workflow).not.toContain('Published agent documentation must be English-only.');
@@ -131,7 +132,7 @@ describe('bilingual documentation', () => {
     expect(builder).not.toContain('renderLlmsFull');
     expect(builder).not.toContain('llms-full.txt');
     expect(workflow).toContain('test ! -e dist/llms-full.txt');
-    expect(workflow).toContain('test ! -e dist/en/llms-full.txt');
+    expect(workflow).toContain('test ! -e dist/zh/llms-full.txt');
   });
 
   it('keeps known untranslated labels and fragments out of Chinese user documentation', () => {

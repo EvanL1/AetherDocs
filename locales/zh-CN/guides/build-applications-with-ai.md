@@ -8,7 +8,7 @@ updated: 2026-07-16
 
 AetherEdge 在设计上不提供固定通用控制台。它提供确定性的边缘运行时，以及智能体构建站点专用应用所需要的机器可读契约。生成的网页、移动应用、CLI 或后端只是可替换客户端，绝不拥有实时状态、期望状态或安全权威。
 
-这是 AetherIoT 更完整 AI 原生方向的一项现有基础：用户描述目标，智能体发现物理空间并生成受治理变更，契约让变更可以检查，AetherEdge 在没有模型时继续执行已经投运的行为。完整的最终用户对话、仿真和持续调整闭环尚未作为产品交付，边界见 [AI 原生平台](/overview/ai-native-platform/)。
+这是 AetherIoT 更完整 AI 原生方向的一项现有基础：用户描述目标，智能体发现物理空间并生成受治理变更，契约让变更可以检查，AetherEdge 在没有模型时继续执行已经投运的行为。完整的最终用户对话、仿真和持续调整闭环尚未作为产品交付，边界见 [AI 原生平台](/zh/overview/ai-native-platform/)。
 
 ## 可选智能体技能
 
@@ -97,8 +97,8 @@ bunx skills add EvanL1/AetherEdge --skill aether-iot
 
 ## 相关页面
 
-- [智能体快速入门](/agent-quickstart/)：从零安装并连接运行时
-- [连接 AI 助手](/guides/ai-assistants/)：配置 MCP 和写权限门禁
-- [HTTP API](/reference/http-api/)：公开接口与操作契约
-- [系统架构](/concepts/architecture/)：服务与数据边界
-- [快速开始](/guides/getting-started/)：安全空运行时配置
+- [智能体快速入门](/zh/agent-quickstart/)：从零安装并连接运行时
+- [连接 AI 助手](/zh/guides/ai-assistants/)：配置 MCP 和写权限门禁
+- [HTTP API](/zh/reference/http-api/)：公开接口与操作契约
+- [系统架构](/zh/concepts/architecture/)：服务与数据边界
+- [快速开始](/zh/guides/getting-started/)：安全空运行时配置

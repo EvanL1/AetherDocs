@@ -288,7 +288,7 @@ systemctl status aether.target
 journalctl -u aether-io -f
 ```
 
-`aether services` 和 `aether doctor` 会自动检测此模式——请参阅 [CLI 参考：aether services](/reference/cli#aether-服务) 和 [aether doctor](/reference/cli#aether-doctor)——无需额外标志。检测逻辑（`tools/aether/src/deploy_mode.rs`）会检查 `/etc/systemd/system/aether.target` 以及 PATH 中的 `systemctl`；任一条件不满足时，就回退到 Docker Compose 路径。在 systemd 模式下，`aether services start/stop/restart/status` 会把规范服务名（例如 `aether-io`）直接传给 `systemctl <verb>`；未指定服务时使用 `aether.target`。`aether services logs <service>` 则调用 `journalctl -u <service>`。`aether services build/pull/clean` 在此模式下都会返回错误，因为裸机安装不存在容器镜像，而 `.run` 安装包也不是原地升级器。`aether services refresh --smart` 会退化为普通的 `systemctl restart`，并提示没有镜像可供比较，因此 `--smart` 不产生额外效果。Redis 不属于默认健康检查合约；启用扩展的运维人员可以单独检查其单元或配置文件。
+`aether services` 和 `aether doctor` 会自动检测此模式——请参阅 [CLI 参考：aether services](/zh/reference/cli#aether-服务) 和 [aether doctor](/zh/reference/cli#aether-doctor)——无需额外标志。检测逻辑（`tools/aether/src/deploy_mode.rs`）会检查 `/etc/systemd/system/aether.target` 以及 PATH 中的 `systemctl`；任一条件不满足时，就回退到 Docker Compose 路径。在 systemd 模式下，`aether services start/stop/restart/status` 会把规范服务名（例如 `aether-io`）直接传给 `systemctl <verb>`；未指定服务时使用 `aether.target`。`aether services logs <service>` 则调用 `journalctl -u <service>`。`aether services build/pull/clean` 在此模式下都会返回错误，因为裸机安装不存在容器镜像，而 `.run` 安装包也不是原地升级器。`aether services refresh --smart` 会退化为普通的 `systemctl restart`，并提示没有镜像可供比较，因此 `--smart` 不产生额外效果。Redis 不属于默认健康检查合约；启用扩展的运维人员可以单独检查其单元或配置文件。
 
 六个 Rust 服务单元均未声明 `Requires=aether-redis.service`。默认目标启动并保持其SHM/SQLite独立工作；启用的 Redis 镜像不能成为服务可用性依赖项。
 
@@ -333,10 +333,10 @@ aether doctor              # Docker, core services, SQLite, config files,
                            # shared memory
 ```
 
-`aether services refresh` 从设备上已安装的合成和映像集重新创建容器。这是相同版本的恢复操作，不支持替换已安装版本的路径。请参阅[入门](/guides/getting-started) 了解健康的 `aether doctor` 运行涵盖的内容。
+`aether services refresh` 从设备上已安装的合成和映像集重新创建容器。这是相同版本的恢复操作，不支持替换已安装版本的路径。请参阅[入门](/zh/guides/getting-started) 了解健康的 `aether doctor` 运行涵盖的内容。
 
 ## 相关页面
 
-- [入门](/guides/getting-started) — 构建、初始化和验证新的签出
-- [连接设备](/guides/connect-devices) — 在堆栈建立后添加通道和映射点running
-- [系统架构](/concepts/architecture) — 这些容器运行的服务
+- [入门](/zh/guides/getting-started) — 构建、初始化和验证新的签出
+- [连接设备](/zh/guides/connect-devices) — 在堆栈建立后添加通道和映射点running
+- [系统架构](/zh/concepts/architecture) — 这些容器运行的服务

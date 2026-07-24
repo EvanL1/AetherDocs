@@ -9,9 +9,9 @@ covering
 
 - Browsers receive a searchable Astro + Starlight site.
 - Agents can append `.md` or request `Accept: text/markdown`.
-- Simplified Chinese is served from `/`; English is served from `/en/`.
-- `/llms.txt` provides the Chinese agent index.
-- `/en/llms.txt` provides the English agent index.
+- English is served from `/`; Simplified Chinese is served from `/zh/`.
+- `/llms.txt` provides the English agent index.
+- `/zh/llms.txt` provides the Chinese agent index.
 
 The service deliberately does not publish a concatenated full-corpus file.
 Agents use the compact index and fetch only the Markdown pages needed for the

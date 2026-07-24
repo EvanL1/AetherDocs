@@ -130,7 +130,7 @@ describe("AetherIoT documentation brand system", () => {
 
     expect(astroConfig).toContain("expressiveCode:");
     expect(astroConfig).toContain(
-      "return /(^|\\/)en(?:\\/|$)/.test(sourcePath) ? 'en' : 'zh-CN'",
+      "return /(^|\\/)zh(?:\\/|$)/.test(sourcePath) ? 'zh-CN' : 'en'",
     );
     expect(contentConfig).toContain(
       "import { docsLoader, i18nLoader } from '@astrojs/starlight/loaders'",

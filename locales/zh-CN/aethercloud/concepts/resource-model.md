@@ -58,4 +58,4 @@ Tenant
 
 将 `desired` 用于云创作的目标，`reported` 用于边缘观察，仅当边缘报告成功激活时才使用 `applied`。使用 `connected` 作为最近经过身份验证的会话，而不是作为网关后面的设备正常运行的证据。
 
-添加新的州名称之前，请参阅[术语参考](/aethercloud/reference/terminology)。请参阅[网关身份和注册](/aethercloud/concepts/gateway-identity-and-enrollment) 了解已实施的基础和明确的排除。
+添加新的州名称之前，请参阅[术语参考](/zh/aethercloud/reference/terminology)。请参阅[网关身份和注册](/zh/aethercloud/concepts/gateway-identity-and-enrollment) 了解已实施的基础和明确的排除。

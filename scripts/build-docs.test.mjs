@@ -130,30 +130,45 @@ describe('renderLlmsIndex', () => {
       '- [Agent Quickstart](https://docs.aetheriot.dev/agent-quickstart.md): Install Aether.'
     );
     expect(output).not.toContain('[Aether](https://docs.aetheriot.dev/)');
+    expect(output).not.toContain('/zh/');
     expect(findLlmsCoverageViolations(documents, output)).toEqual([]);
   });
 
-  it('renders a Chinese-only task taxonomy for the root locale', () => {
+  it('renders a Chinese-only task taxonomy for the /zh locale', () => {
     const documents = [
-      { slug: '', title: 'AetherIoT 中文文档', description: '统一中文文档。' },
-      { slug: 'overview/platform', title: '平台概览', description: '了解产品关系。' },
+      {
+        slug: '',
+        publicSlug: 'zh',
+        title: 'AetherIoT 中文文档',
+        description: '统一中文文档。',
+      },
+      {
+        slug: 'overview/platform',
+        publicSlug: 'zh/overview/platform',
+        title: '平台概览',
+        description: '了解产品关系。',
+      },
       {
         slug: 'guides/deployment',
+        publicSlug: 'zh/guides/deployment',
         title: '部署边缘运行时',
         description: '部署并验证边缘运行时。',
       },
       {
         slug: 'security/safe-operations',
+        publicSlug: 'zh/security/safe-operations',
         title: '安全操作',
         description: '确认权限、风险和审计要求。',
       },
       {
         slug: 'recovery/gateway-identity',
+        publicSlug: 'zh/recovery/gateway-identity',
         title: '恢复网关身份',
         description: '重新建立可信身份。',
       },
       {
         slug: 'compatibility/version-matrix',
+        publicSlug: 'zh/compatibility/version-matrix',
         title: '版本兼容性',
         description: '选择经过验证的版本组合。',
       },
@@ -171,6 +186,9 @@ describe('renderLlmsIndex', () => {
     expect(output).toContain('## 平台参考');
     expect(output).toContain('## 兼容性与状态');
     expect(output).toContain('文档页面支持 Markdown');
+    expect(output).toContain(
+      '- [部署边缘运行时](https://docs.aetheriot.dev/zh/guides/deployment.md): 部署并验证边缘运行时。'
+    );
     expect(output).not.toContain('## Agent Task Manual');
     expect(output).not.toContain('## Tutorials');
     expect(output).not.toContain('/en/');
@@ -230,18 +248,18 @@ describe('findLlmsCoverageViolations', () => {
 });
 
 describe('partitionDocumentsByLocale', () => {
-  it('separates English documents and normalizes their locale-relative slugs', () => {
+  it('separates Chinese documents and normalizes their locale-relative slugs', () => {
     const partitions = partitionDocumentsByLocale([
-      { slug: '', title: '中文首页' },
-      { slug: 'aethercloud/index', title: '中文云端' },
-      { slug: 'en', title: 'English home' },
-      { slug: 'en/aethercloud/index', title: 'English cloud' },
+      { slug: '', title: 'English home' },
+      { slug: 'aethercloud/index', title: 'English cloud' },
+      { slug: 'zh', title: '中文首页' },
+      { slug: 'zh/aethercloud/index', title: '中文云端' },
     ]);
 
-    expect(partitions['zh-CN'].map(({ slug }) => slug)).toEqual(['', 'aethercloud/index']);
-    expect(partitions.en.map(({ slug, publicSlug }) => ({ slug, publicSlug }))).toEqual([
-      { slug: '', publicSlug: 'en' },
-      { slug: 'aethercloud/index', publicSlug: 'en/aethercloud/index' },
+    expect(partitions.en.map(({ slug }) => slug)).toEqual(['', 'aethercloud/index']);
+    expect(partitions['zh-CN'].map(({ slug, publicSlug }) => ({ slug, publicSlug }))).toEqual([
+      { slug: '', publicSlug: 'zh' },
+      { slug: 'aethercloud/index', publicSlug: 'zh/aethercloud/index' },
     ]);
   });
 });
@@ -285,12 +303,12 @@ describe('findLocalizedUiViolations', () => {
     expect(
       findLocalizedUiViolations([
         {
-          path: 'guides/example/index.html',
+          path: 'zh/guides/example/index.html',
           html:
             '<button title="复制到剪贴板" data-copied="已复制！"></button><span>终端窗口</span><span>上一页</span>',
         },
         {
-          path: 'en/guides/example/index.html',
+          path: 'guides/example/index.html',
           html:
             '<button title="Copy to clipboard" data-copied="Copied!"></button><span>Terminal window</span><span>Next</span>',
         },
@@ -302,32 +320,32 @@ describe('findLocalizedUiViolations', () => {
     expect(
       findLocalizedUiViolations([
         {
-          path: 'guides/example/index.html',
+          path: 'zh/guides/example/index.html',
           html: '<button title="Copy to clipboard"></button><span>Next</span>',
         },
         {
-          path: 'en/guides/example/index.html',
+          path: 'guides/example/index.html',
           html: '<button data-copied="已复制！"></button><span>上一页</span>',
         },
       ])
     ).toEqual([
       {
-        path: 'guides/example/index.html',
+        path: 'zh/guides/example/index.html',
         locale: 'zh-CN',
         text: 'title="Copy to clipboard"',
       },
       {
-        path: 'guides/example/index.html',
+        path: 'zh/guides/example/index.html',
         locale: 'zh-CN',
         text: '>Next<',
       },
       {
-        path: 'en/guides/example/index.html',
+        path: 'guides/example/index.html',
         locale: 'en',
         text: 'data-copied="已复制！"',
       },
       {
-        path: 'en/guides/example/index.html',
+        path: 'guides/example/index.html',
         locale: 'en',
         text: '>上一页<',
       },

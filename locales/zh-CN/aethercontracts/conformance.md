@@ -29,7 +29,7 @@ pnpm test:tck
 
 黑盒运行器验证有界解析、规范整数行为、Thing Model 迁移、CloudLink 夹具结果、上下文重放和游标规则，以及清单一致性。默认检查完全离线。
 
-运行器契约见 [TCK v1 alpha](/aethercontracts/spec/tck-v1alpha1/)，公共失败语义见[基础规范](/aethercontracts/spec/foundation/)。
+运行器契约见 [TCK v1 alpha](/zh/aethercontracts/spec/tck-v1alpha1/)，公共失败语义见[基础规范](/zh/aethercontracts/spec/foundation/)。
 
 ## 语言绑定证据
 
@@ -67,4 +67,4 @@ pnpm check
 
 AetherEdge 与 AetherCloud 在各自仓库中补充真实消息代理、重启、PostgreSQL 与故障证据。这些结果可以满足某项发布门槛，但不会改变 AetherContracts 标签。同样，通过公开 TCK 也不能证明产品已经具备生产密钥生命周期、持久发件箱事务、运维部署或回滚路径。
 
-在宣称实现一致，或改变旧传输默认值之前，请查看[兼容性与发布门槛](/aethercontracts/compatibility/)。
+在宣称实现一致，或改变旧传输默认值之前，请查看[兼容性与发布门槛](/zh/aethercontracts/compatibility/)。

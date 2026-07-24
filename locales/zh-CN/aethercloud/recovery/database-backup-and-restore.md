@@ -36,4 +36,4 @@ status: planned
 
 所有恢复、故障转移、时间点回退或可能丢弃已提交证据的操作，都必须由数据库与安全人员批准。如果无法确定旧写入方已经隔离、备份身份尚未验证或租户隔离尚未通过，就不得让恢复后的数据库接受写入。
 
-继续阅读[PostgreSQL 持久化与多云单元](/aethercloud/concepts/persistence-and-multi-cloud-cells)、[术语表](/aethercloud/reference/terminology)和[物联网云路线图](/aethercloud/guides/iot-cloud-roadmap)。
+继续阅读[PostgreSQL 持久化与多云单元](/zh/aethercloud/concepts/persistence-and-multi-cloud-cells)、[术语表](/zh/aethercloud/reference/terminology)和[物联网云路线图](/zh/aethercloud/guides/iot-cloud-roadmap)。

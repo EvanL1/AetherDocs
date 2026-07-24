@@ -36,4 +36,4 @@ AetherCloud 目前没有凭据暂停、吊销、轮换、恢复或重新登记�
 
 疑似泄露、登记响应遗失、硬件替换、所有权冲突或任何跨租户歧义都必须由安全人员批准。在生产吊销用例实现之前，智能体必须明确报告“当前无法执行恢复”，不能把登记声明签发描述成完整恢复。
 
-继续阅读[网关身份与登记](/aethercloud/concepts/gateway-identity-and-enrollment)、[CloudLink 协议参考](/aethercloud/reference/cloudlink-mqtt-v1)和[物联网云能力地图](/aethercloud/concepts/iot-cloud-capability-map)。
+继续阅读[网关身份与登记](/zh/aethercloud/concepts/gateway-identity-and-enrollment)、[CloudLink 协议参考](/zh/aethercloud/reference/cloudlink-mqtt-v1)和[物联网云能力地图](/zh/aethercloud/concepts/iot-cloud-capability-map)。

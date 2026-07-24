@@ -127,4 +127,4 @@ alpha 遥测范围目前只携带遥测或状态点的有限 JSON 数字。非�
 
 核心遥测范围没有冻结精确的有符号 `int64`、`uint64`、十进制、字节或字符串样本编码。JSON 数字不能替代精确 64 位整数契约。
 
-CloudLink 核心和只读 Integration 扩展都不包含物理控制、直接共享内存或直接寄存器操作。独立版本、默认关闭的 `aether.cloudlink.integration-control.v1alpha1` 由 [Integration Control 规范](/aethercontracts/spec/integration-control-v1alpha1/)定义；它只公开一个受治理的语义电源设定动作，不提供任意远程调用。
+CloudLink 核心和只读 Integration 扩展都不包含物理控制、直接共享内存或直接寄存器操作。独立版本、默认关闭的 `aether.cloudlink.integration-control.v1alpha1` 由 [Integration Control 规范](/zh/aethercontracts/spec/integration-control-v1alpha1/)定义；它只公开一个受治理的语义电源设定动作，不提供任意远程调用。

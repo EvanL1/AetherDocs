@@ -72,7 +72,7 @@ Home Assistant 或保存它的令牌。即使 Home Assistant 不可用，AetherE
 
 ## 在源码构建中启用
 
-先按[快速开始](/guides/getting-started)准备好源码检出和运行配置，再使用可选适配器构建并启动
+先按[快速开始](/zh/guides/getting-started)准备好源码检出和运行配置，再使用可选适配器构建并启动
 `aether-io`：
 
 ```bash
@@ -384,4 +384,4 @@ Home Assistant 不为这条连接提供可持久恢复的事件游标。发生�
 
 上游传输协议见 Home Assistant 官方
 [WebSocket API](https://developers.home-assistant.io/docs/api/websocket/)；AetherEdge
-控制安全边界见[安全操作](/guides/safe-operations)。
+控制安全边界见[安全操作](/zh/guides/safe-operations)。

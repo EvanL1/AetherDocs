@@ -104,4 +104,4 @@ Home Assistant 注册表条目标识映射为稳定的 `entity_id`，当前实�
 `v0.1.0-alpha.3`，且不包含该扩展。alpha.4 源码声明公共数据契约、实验性 CloudLink
 Integration 封装及其仓库 TCK。该模块保持只读，不声明完整 AetherEdge 适配器、云端投影、
 两个扩展的语言绑定支持或生产消息代理与重启证据。设备控制由独立、默认关闭的
-[Integration Control 规范](/aethercontracts/spec/integration-control-v1alpha1/)定义。
+[Integration Control 规范](/zh/aethercontracts/spec/integration-control-v1alpha1/)定义。

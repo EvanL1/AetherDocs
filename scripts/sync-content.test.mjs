@@ -9,6 +9,7 @@ import {
   findCollisions,
   findRouteCollisions,
   rewriteRelativeLinks,
+  stripLegacyEnglishPrefix,
   stripRedundantTitleHeading,
   synthesizeFrontmatter,
 } from './sync-content.mjs';
@@ -425,20 +426,20 @@ describe('rewriteRelativeLinks', () => {
   });
 
   it('converts an existing site-root document link into a complete public URL', () => {
-    const content = 'Read [Platform Overview](/en/overview/platform/).';
+    const content = 'Read [Platform Overview](/overview/platform/).';
     const out = rewriteRelativeLinks(
       content,
       'locales/en/index.md',
       new Set(['locales/en/index.md']),
       {
-        destinationPrefix: 'en',
+        destinationPrefix: '',
         stripPrefix: 'locales/en/',
         githubBlobBase: 'https://github.com/EvanL1/AetherDocs/blob/main/locales/en',
       }
     );
 
     expect(out).toBe(
-      'Read [Platform Overview](https://docs.aetheriot.dev/en/overview/platform/).'
+      'Read [Platform Overview](https://docs.aetheriot.dev/overview/platform/).'
     );
   });
 
@@ -457,6 +458,39 @@ describe('rewriteRelativeLinks', () => {
     expect(out).toBe(
       'Read [the invariants](https://github.com/EvanL1/AetherCloud/blob/main/ai/invariants.md).'
     );
+  });
+});
+
+describe('stripLegacyEnglishPrefix', () => {
+  it('strips the retired /en prefix from published document URLs', () => {
+    const content =
+      'Start with the [Agent Quickstart](https://docs.aetheriot.dev/en/agent-quickstart/), ' +
+      'then read [Compatibility](https://docs.aetheriot.dev/en/aethercontracts/compatibility/).';
+
+    expect(stripLegacyEnglishPrefix(content)).toBe(
+      'Start with the [Agent Quickstart](https://docs.aetheriot.dev/agent-quickstart/), ' +
+        'then read [Compatibility](https://docs.aetheriot.dev/aethercontracts/compatibility/).'
+    );
+  });
+
+  it('maps the bare legacy English root to the site root', () => {
+    expect(
+      stripLegacyEnglishPrefix('See [docs.aetheriot.dev](https://docs.aetheriot.dev/en/). Or (https://docs.aetheriot.dev/en).')
+    ).toBe('See [docs.aetheriot.dev](https://docs.aetheriot.dev/). Or (https://docs.aetheriot.dev).');
+  });
+
+  it('leaves non-locale path segments and other hosts unchanged', () => {
+    const content =
+      '[Energy](https://docs.aetheriot.dev/energy-pack/) and ' +
+      '[elsewhere](https://example.com/en/agent-quickstart/).';
+
+    expect(stripLegacyEnglishPrefix(content)).toBe(content);
+  });
+
+  it('respects a configured public base URL', () => {
+    expect(
+      stripLegacyEnglishPrefix('[Guide](https://staging.example.dev/en/guides/x/)', 'https://staging.example.dev')
+    ).toBe('[Guide](https://staging.example.dev/guides/x/)');
   });
 });
 

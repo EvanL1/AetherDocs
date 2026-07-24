@@ -27,4 +27,4 @@ description: 在不丢弃未确认事实、不伪造交付证据的前提下恢�
 
 没有已验证备份或协议允许的丢数证据路径时，应停止并交由人工处理。丢失遥测数据也比伪造连续持久确认更安全。
 
-另请参阅[本地存储扩展](/extensions/store-local/)、[云端连接参考](/reference/cloudlink-mqtt-v1/)和[网关身份恢复](/recovery/gateway-identity-recovery/)。
+另请参阅[本地存储扩展](/zh/extensions/store-local/)、[云端连接参考](/zh/reference/cloudlink-mqtt-v1/)和[网关身份恢复](/zh/recovery/gateway-identity-recovery/)。

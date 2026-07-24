@@ -98,8 +98,8 @@ Aether 对物理工厂进行三层建模：产品（设备类型模板）、实�
 
 ## 相关页面
 
-- [系统架构](/concepts/architecture) — 服务及其通信方式
-- [共享内存](/concepts/shared-memory) — 深入了解 SHM 平面：槽、seqlock、写入器所有权
-- [数据Flow](/concepts/data-flow) — 端到端的上行链路和下行链路路径
+- [系统架构](/zh/concepts/architecture) — 服务及其通信方式
+- [共享内存](/zh/concepts/shared-memory) — 深入了解 SHM 平面：槽、seqlock、写入器所有权
+- [数据Flow](/zh/concepts/data-flow) — 端到端的上行链路和下行链路路径
 - [产品模型](https://github.com/EvanL1/AetherEdge/blob/main/docs/domain/product-models.md) — 产品库及其域含义
-- [安全操作](/guides/safe-operations) — 为什么控制写入被门控以及故障如何传播
+- [安全操作](/zh/guides/safe-operations) — 为什么控制写入被门控以及故障如何传播

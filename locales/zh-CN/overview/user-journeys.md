@@ -18,11 +18,11 @@ updated: 2026-07-16
 4. 只为具体任务临时启用写会话，保留确认与审计证据，任务结束后恢复只读。
 5. 通过智能体解释结果或撤销带版本的变更，不直接修改 SHM、SQLite 或内部服务。
 
-未来版本将补充类型化意图与方案契约、历史回放仿真、带有效期的临时行为和持续效果评估。完整目标流程见 [AI 原生平台](/overview/ai-native-platform/)。
+未来版本将补充类型化意图与方案契约、历史回放仿真、带有效期的临时行为和持续效果评估。完整目标流程见 [AI 原生平台](/zh/overview/ai-native-platform/)。
 
 ## 评估本地边缘运行时
 
-1. 打开 [AetherEdge 产品概览](/aetheredge/)。
+1. 打开 [AetherEdge 产品概览](/zh/aetheredge/)。
 2. 启动不包含设备和外部服务的安全空组合。
 3. 检查运行时健康状态和机器可读清单。
 4. 只有应用确实需要时，才添加协议适配器和领域 Pack。
@@ -36,14 +36,14 @@ updated: 2026-07-16
 
 ## 把边缘节点连接到云端
 
-1. 在[兼容性矩阵](/compatibility/version-matrix/)中选择经过验证的产品版本组合。
+1. 在[兼容性矩阵](/zh/compatibility/version-matrix/)中选择经过验证的产品版本组合。
 2. 分别验证 Edge 和 Cloud 中通过摘要锁定的 AetherContracts 消费者锁。
-3. 运行[边缘端、公共协议与云端联动任务](https://docs.aetheriot.dev/guides/edge-contracts-cloud/)完成开发验证。
+3. 运行[边缘端、公共协议与云端联动任务](https://docs.aetheriot.dev/zh/guides/edge-contracts-cloud/)完成开发验证。
 4. 在所有公开发行门槛通过前，CloudLink 继续保持实验性，并保留旧版兼容路径。
 
 ## 实现独立客户端或运行时
 
-1. 阅读 [AetherContracts 产品概览](/aethercontracts/)。
+1. 阅读 [AetherContracts 产品概览](/zh/aethercontracts/)。
 2. 按照规范语义和封闭结构定义实现协议。
 3. 执行公开测试夹具和黑盒 TCK。
 4. 只报告已经取得的互操作证据，不能把它扩大解释为生产部署或生产认证。

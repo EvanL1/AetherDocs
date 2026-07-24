@@ -136,7 +136,7 @@ Docker Compose 和服务使用的关键变量（大多数可选值在 `.env.exam
 | `AETHER_HOME_ASSISTANT_GENERATION_STORE_PATH` | 未设置 | 必填的绝对文件路径，用于保存可跨重启恢复且由进程独占锁定的拓扑世代号账本 |
 
 系统禁止使用 `AETHER_HOME_ASSISTANT_ACCESS_TOKEN`，因为它会把凭据原文放入普通配置。完整的
-源码构建和存储约束见[接入 Home Assistant](/guides/home-assistant)。
+源码构建和存储约束见[接入 Home Assistant](/zh/guides/home-assistant)。
 
 以下变量启用独立且默认关闭的只读 CloudLink 发布路径。只有包含
 `home-assistant-cloudlink` 构建特性的二进制文件才会接受这组配置。
@@ -182,7 +182,7 @@ Docker Compose 和服务使用的关键变量（大多数可选值在 `.env.exam
 账本、策略和审计路径必须彼此不同。在 Unix 系统上，账本、审计和锁文件不能向组用户或
 其他用户开放权限；新建敏感文件使用 0600。系统拒绝符号链接文件和作为直接父目录的符号
 链接。MQTT 发布确认绝不会删除控制回执。策略格式和执行边界见
-[接入 Home Assistant](/guides/home-assistant#实验性受治理开关控制)。
+[接入 Home Assistant](/zh/guides/home-assistant#实验性受治理开关控制)。
 
 ### 实验性 CloudLink MQTT 设置
 
@@ -213,8 +213,8 @@ API 还需要对历史数据库/WAL/SHM 目录具有独立的只读操作系统�
 
 ## 相关页面
 
-- [入门](/guides/getting-started) — 首次设置和启动演练
-- [连接设备](/guides/connect-devices) — 实践中的通道和点配置
-- [写作Rules](/guides/writing-rules) — 位于 `automation/rules/`
-- [HTTP API](/reference/http-api) 下的规则 JSON — 运行时 API 同步的配置源
-- [系统架构](/concepts/architecture) — 每个服务适合的位置
+- [入门](/zh/guides/getting-started) — 首次设置和启动演练
+- [连接设备](/zh/guides/connect-devices) — 实践中的通道和点配置
+- [写作Rules](/zh/guides/writing-rules) — 位于 `automation/rules/`
+- [HTTP API](/zh/reference/http-api) 下的规则 JSON — 运行时 API 同步的配置源
+- [系统架构](/zh/concepts/architecture) — 每个服务适合的位置

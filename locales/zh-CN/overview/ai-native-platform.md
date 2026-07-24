@@ -103,4 +103,4 @@ AetherEdge        实时状态和确定性的物理执行
 
 **尚未形成完整产品：** 家庭语义上下文、最终用户对话智能体、意图到策略的编译器、历史回放仿真、按需生成的确认体验、自动效果评估和持续调整闭环。
 
-请在[平台状态](/roadmap/status/)中查看各组件的具体证据；使用当前开发基础时，请继续阅读[使用 AI 构建应用](/guides/build-applications-with-ai/)；启用任何写能力之前，必须先阅读[安全操作](/guides/safe-operations/)。
+请在[平台状态](/zh/roadmap/status/)中查看各组件的具体证据；使用当前开发基础时，请继续阅读[使用 AI 构建应用](/zh/guides/build-applications-with-ai/)；启用任何写能力之前，必须先阅读[安全操作](/zh/guides/safe-operations/)。

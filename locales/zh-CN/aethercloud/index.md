@@ -24,4 +24,4 @@ AetherEdge 继续负责数据采集、确定性规则、安全联锁和最终物
 
 AetherCloud 管理期望状态，基础设施提供方管理其实际资源，AetherEdge 管理实时点状态与最终物理执行。
 
-继续阅读 [AI 原生平台](/overview/ai-native-platform/)、[AetherCloud 架构](/aethercloud/concepts/architecture/)和[平台状态](/roadmap/status/)。
+继续阅读 [AI 原生平台](/zh/overview/ai-native-platform/)、[AetherCloud 架构](/zh/aethercloud/concepts/architecture/)和[平台状态](/zh/roadmap/status/)。

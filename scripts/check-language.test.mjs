@@ -93,10 +93,10 @@ describe('findEnglishHeadingOccurrences', () => {
 });
 
 describe('localeForPath', () => {
-  it('treats /en as English and the root locale as Simplified Chinese', () => {
-    expect(localeForPath('en/guides/getting-started.md')).toBe('en');
-    expect(localeForPath('en.md')).toBe('en');
-    expect(localeForPath('aethercontracts/getting-started.md')).toBe('zh-CN');
+  it('treats /zh as Simplified Chinese and the root locale as English', () => {
+    expect(localeForPath('zh/guides/getting-started.md')).toBe('zh-CN');
+    expect(localeForPath('zh.md')).toBe('zh-CN');
+    expect(localeForPath('aethercontracts/getting-started.md')).toBe('en');
   });
 });
 
@@ -104,15 +104,15 @@ describe('assertLocaleIsolation', () => {
   it('rejects CJK text from the English publication', () => {
     expect(() =>
       assertLocaleIsolation([
-        { path: 'en/first.md', content: 'English.\n中文。\n' },
+        { path: 'first.md', content: 'English.\n中文。\n' },
       ])
-    ).toThrow(/en\/first\.md:2/);
+    ).toThrow(/first\.md:2/);
   });
 
   it('rejects untranslated prose from the Chinese publication', () => {
     expect(() =>
       assertLocaleIsolation([
-        { path: 'aethercloud/guide.md', content: '# Cloud guide\n\nEnglish only.\n' },
+        { path: 'zh/aethercloud/guide.md', content: '# Cloud guide\n\nEnglish only.\n' },
       ])
     ).toThrow(/Chinese publication/);
   });
@@ -121,7 +121,7 @@ describe('assertLocaleIsolation', () => {
     expect(() =>
       assertLocaleIsolation([
         {
-          path: 'aethercloud/guide.md',
+          path: 'zh/aethercloud/guide.md',
           content: '# 中文指南\n\n这是中文说明。\n\nUse the existing application boundary.\n',
         },
       ])
@@ -132,7 +132,7 @@ describe('assertLocaleIsolation', () => {
     expect(() =>
       assertLocaleIsolation([
         {
-          path: 'aethercloud/guide.md',
+          path: 'zh/aethercloud/guide.md',
           content: '# 中文指南\n\n这是中文说明。\n\n### Schema\n',
         },
       ])
@@ -142,8 +142,8 @@ describe('assertLocaleIsolation', () => {
   it('accepts isolated Chinese and English documents', () => {
     expect(() =>
       assertLocaleIsolation([
-        { path: 'guide.md', content: '# 中文指南\n\n使用 AetherEdge。\n' },
-        { path: 'en/guide.md', content: '# English guide\n\nUse AetherEdge.\n' },
+        { path: 'zh/guide.md', content: '# 中文指南\n\n使用 AetherEdge。\n' },
+        { path: 'guide.md', content: '# English guide\n\nUse AetherEdge.\n' },
       ])
     ).not.toThrow();
   });

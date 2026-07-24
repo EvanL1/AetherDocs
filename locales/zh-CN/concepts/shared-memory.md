@@ -6,7 +6,7 @@ updated: 2026-07-13
 
 # 共享内存
 
-Aether 中的实时值不会通过热路径上的代理或数据库传输。 io（通信服务）和自动化（模型/规则服务）共享 IO 拥有的点段以及单独的通道运行状况段，并通过 Unix 域套接字交换固定大小的通知。一个小的提交见证人证明这两个段来自相同的物理拓扑发布。设备读取数据会在数十纳秒内进入共享内存。本页描述了该段本身以及构建在其之上的两个基于套接字的信令平面。有关其周围的服务，请参阅[架构](/concepts/architecture)；有关值的含义，请参阅[数据模型](/concepts/data-model)。
+Aether 中的实时值不会通过热路径上的代理或数据库传输。 io（通信服务）和自动化（模型/规则服务）共享 IO 拥有的点段以及单独的通道运行状况段，并通过 Unix 域套接字交换固定大小的通知。一个小的提交见证人证明这两个段来自相同的物理拓扑发布。设备读取数据会在数十纳秒内进入共享内存。本页描述了该段本身以及构建在其之上的两个基于套接字的信令平面。有关其周围的服务，请参阅[架构](/zh/concepts/architecture)；有关值的含义，请参阅[数据模型](/zh/concepts/data-model)。
 
 事实来源：`crates/aether-dataplane/`（物理标头、槽、锁定）、`extensions/shm-bridge/`（类型化清单、点/运行状况发布和自我修复读取器）和 `services/io/src/core/channels/shm_listener.rs`（命令侦听器）。通过 v4 滚动兼容性门后，旧版 SHM 聚合箱已被删除。
 
@@ -61,7 +61,7 @@ Aether 中的实时值不会通过热路径上的代理或数据库传输。 io�
 
 ## 命令通知
 
-当自动化发出命令时 - 规则操作或 HTTP 控制请求（请参阅[应用程序和代理的安全操作](/guides/safe-operations) 了解允许到达设备的内容） - `ShmDeviceCommandSink` 将 C/A 值镜像到固定写入器生成中，并通过 Unix 域套接字发送通知(`/tmp/aether-m2c.sock`) 因此 io 立即做出反应而不是轮询。在测量中，通知路径是亚毫秒级的； ~1–2 毫秒是调度代码记录的快乐路径的设计预算。
+当自动化发出命令时 - 规则操作或 HTTP 控制请求（请参阅[应用程序和代理的安全操作](/zh/guides/safe-operations) 了解允许到达设备的内容） - `ShmDeviceCommandSink` 将 C/A 值镜像到固定写入器生成中，并通过 Unix 域套接字发送通知(`/tmp/aether-m2c.sock`) 因此 io 立即做出反应而不是轮询。在测量中，通知路径是亚毫秒级的； ~1–2 毫秒是调度代码记录的快乐路径的设计预算。
 
 通知 (`DeviceCommandFrame`) 是一个固定的 56 字节帧，承载路由目标（通道、点类型、点）、命令负载（值位加上发出和到期时间戳）和生产者排序（`producer_id`，每次自动化重启时都会更改的每个化身 ID，加上单调`seq`）。因为帧携带完整的命令，所以 io 永远不必读回插槽 - 并且对同一点的两次快速写入作为两个事件到达，而不是合并为一个事件。
 
@@ -69,18 +69,18 @@ io 的 `ShmCommandListener` 绑定套接字，立即将其限制为模式 0600�
 
 ## PointWatch 事件平面
 
-命令流自动化 → io; PointWatch 是相反的方向，它使规则引擎成为事件驱动的（请参阅[规则引擎](/concepts/rule-engine)）。每次 T/S 槽写入后，io 都会查阅**订阅位图** — 一个覆盖所有槽的原子 u64 字的独立 12,504 字节 mmap 文件（`aether-rtdb-point-watch-subs.shm`，位于主段旁边）。 io 在启动时将其创建为零填充；自动化在加载或重新加载规则时设置位。热路径检查是单个宽松的原子负载和位测试，大约 1–2 ns，常见情况（槽未订阅）立即返回。
+命令流自动化 → io; PointWatch 是相反的方向，它使规则引擎成为事件驱动的（请参阅[规则引擎](/zh/concepts/rule-engine)）。每次 T/S 槽写入后，io 都会查阅**订阅位图** — 一个覆盖所有槽的原子 u64 字的独立 12,504 字节 mmap 文件（`aether-rtdb-point-watch-subs.shm`，位于主段旁边）。 io 在启动时将其创建为零填充；自动化在加载或重新加载规则时设置位。热路径检查是单个宽松的原子负载和位测试，大约 1–2 ns，常见情况（槽未订阅）立即返回。
 
 命中时，io 构建 56 字节 `PointWatchEvent` — 通道、点、点类型、值位、原始位、槽索引、时间戳、生产者 ID — 并将其推送到由后台任务耗尽的有界进程内通道（容量 2048）每次写入专用套接字时最多可批量处理 64 个事件（`/tmp/aether-point-watch-automation.sock`、aether-automation 侦听、aether-io 连接、与命令平面相同的 1-5 秒重新连接退避）。由于事件本身带有值，因此自动化可以直接根据事件评估死区，而无需回读；重复事件是无害的（最坏的情况是额外的死区检查），这就是帧没有序列字段的原因。
 
 在自动化方面，管道保持端到端有界：侦听器将帧转发到 1024 容量通道，调度程序（`libs/aether-rules/` 中的 `PointWatchDispatcher`）映射 `(channel, point) → rule IDs` 并将唤醒事件转发到调度程序自己的 1024 容量通道。每个阶段都使用非阻塞`try_send`；溢出时，事件将被丢弃，并且 `dropped_count` 计数器会递增，而不是阻塞 io 的写入路径。丢弃的事件由规则引擎的周期性滴答恢复，因此过载会降级为旧的轮询延迟，而不是失去正确性。
 
-在生产硬件（Cortex-A55 @ 1.4 GHz、ECU-1170）上针对初始 PointWatch 基准测试测量的回报：P50 处的点更改到事件传递延迟为 206 µs，P99 处为 526 µs（规则评估带来累积数字）到约 215 µs P50 — 请参阅[数据流](/concepts/data-flow))，而之前的 Redis-tick 模型下为 50–150 毫秒 — 中位数大约提高了 500 倍。
+在生产硬件（Cortex-A55 @ 1.4 GHz、ECU-1170）上针对初始 PointWatch 基准测试测量的回报：P50 处的点更改到事件传递延迟为 206 µs，P99 处为 526 µs（规则评估带来累积数字）到约 215 µs P50 — 请参阅[数据流](/zh/concepts/data-flow))，而之前的 Redis-tick 模型下为 50–150 毫秒 — 中位数大约提高了 500 倍。
 
 ## 相关页面
 
-- [架构](/concepts/architecture) — 共享此段的服务
-- [数据模型](/concepts/data-model) — T/S/C/A 值的含义和 NaN 哨兵
-- [数据流](/concepts/data-flow) — 上行链路/下行链路路径和延迟预算
-- [规则引擎](/concepts/rule-engine) — PointWatch 事件的使用方
-- [应用程序和应用程序的安全操作Agents](/guides/safe-operations) — 写入到达设备
+- [架构](/zh/concepts/architecture) — 共享此段的服务
+- [数据模型](/zh/concepts/data-model) — T/S/C/A 值的含义和 NaN 哨兵
+- [数据流](/zh/concepts/data-flow) — 上行链路/下行链路路径和延迟预算
+- [规则引擎](/zh/concepts/rule-engine) — PointWatch 事件的使用方
+- [应用程序和应用程序的安全操作Agents](/zh/guides/safe-operations) — 写入到达设备

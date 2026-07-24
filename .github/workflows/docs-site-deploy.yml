@@ -90,10 +90,10 @@ jobs:
           test -f dist/index.md
           test -f dist/llms.txt
           test ! -e dist/llms-full.txt
-          test -f dist/en/index.html
-          test -f dist/en.md
-          test -f dist/en/llms.txt
-          test ! -e dist/en/llms-full.txt
+          test -f dist/zh/index.html
+          test -f dist/zh.md
+          test -f dist/zh/llms.txt
+          test ! -e dist/zh/llms-full.txt
           node scripts/check-language.mjs dist
 
       - name: Explain staged deployment

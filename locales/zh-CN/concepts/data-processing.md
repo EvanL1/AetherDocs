@@ -89,7 +89,7 @@ authenticated HTTP / in-process application work
 - 行业包声明任务语义和功能角色。站点调试将这些角色绑定到具体实例和点。
 - 组合根选择具体适配器并决定处理是否需要进程隔离。核心包从不依赖于行业包或处理器扩展。
 
-请参阅[数据处理流程](/concepts/data-processing-flow)，了解详细的组装、请求、验证和失败序列，包括哪些可选结果路径仍将在未来工作。
+请参阅[数据处理流程](/zh/concepts/data-processing-flow)，了解详细的组装、请求、验证和失败序列，包括哪些可选结果路径仍将在未来工作。
 
 ### 已实现的历史记录和时间语义
 
@@ -225,9 +225,9 @@ Aether数据处理不是：
 
 ## 相关页面
 
-- [数据处理流程](/concepts/data-processing-flow) — 框架组装、处理器请求、验证、缓存和故障
-- [系统架构](/concepts/architecture) — 核心服务和依赖边界
-- [数据流](/concepts/data-flow) — 权威上行链路和控制路径
-- [共享内存](/concepts/shared-memory) — 实时状态权限和写入者所有权
-- [规则引擎](/concepts/rule-engine) — 确定性自动化行为
-- [应用程序和代理的安全操作](/guides/safe-operations) — 权限、确认、审核和控制策略
+- [数据处理流程](/zh/concepts/data-processing-flow) — 框架组装、处理器请求、验证、缓存和故障
+- [系统架构](/zh/concepts/architecture) — 核心服务和依赖边界
+- [数据流](/zh/concepts/data-flow) — 权威上行链路和控制路径
+- [共享内存](/zh/concepts/shared-memory) — 实时状态权限和写入者所有权
+- [规则引擎](/zh/concepts/rule-engine) — 确定性自动化行为
+- [应用程序和代理的安全操作](/zh/guides/safe-operations) — 权限、确认、审核和控制策略

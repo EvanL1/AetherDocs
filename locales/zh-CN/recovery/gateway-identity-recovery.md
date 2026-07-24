@@ -27,4 +27,4 @@ description: 隔离丢失或泄露的网关凭据，并在不削弱边缘端权�
 
 当前会话接受消息、心跳确认和应用确认仍有文档明确记录的认证缺口。实验性重连成功不等于生产身份已经成立。
 
-另请参阅[云端连接参考](/reference/cloudlink-mqtt-v1/)、[配置参考](/reference/configuration/)和[云端连接待发送队列恢复](/recovery/cloudlink-spool-recovery/)。
+另请参阅[云端连接参考](/zh/reference/cloudlink-mqtt-v1/)、[配置参考](/zh/reference/configuration/)和[云端连接待发送队列恢复](/zh/recovery/cloudlink-spool-recovery/)。

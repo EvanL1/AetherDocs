@@ -7,10 +7,10 @@ hero:
   tagline: 用语言描述目标，让智能体生成受治理的现实行为。
   actions:
     - text: 了解 AI 原生平台
-      link: /overview/ai-native-platform/
+      link: /zh/overview/ai-native-platform/
       icon: right-arrow
     - text: 从 AetherEdge 开始
-      link: /aetheredge/
+      link: /zh/aetheredge/
       variant: minimal
       icon: open-book
 ---
@@ -23,14 +23,14 @@ AetherIoT 是 AetherEdge、AetherCloud 和 AetherContracts 的共同项目。Aet
 
 从负责您任务的产品开始：
 
-- [AetherEdge](/aetheredge/) 掌握实时状态，并确定性地执行已经投运的行为。
-- [AetherCloud](/aethercloud/) 承载逐步演进的智能体上下文、期望状态、受治理作业和多云协调能力。
-- [AetherContracts](/aethercontracts/) 定义类型化能力、共享协议、结构定义、测试夹具和 TCK。
+- [AetherEdge](/zh/aetheredge/) 掌握实时状态，并确定性地执行已经投运的行为。
+- [AetherCloud](/zh/aethercloud/) 承载逐步演进的智能体上下文、期望状态、受治理作业和多云协调能力。
+- [AetherContracts](/zh/aethercontracts/) 定义类型化能力、共享协议、结构定义、测试夹具和 TCK。
 
-- 先阅读 [AI 原生平台](https://docs.aetheriot.dev/overview/ai-native-platform/)，再通过[平台概览](https://docs.aetheriot.dev/overview/platform/)了解产品边界。
-- 运行完整的[边缘端、公共协议与云端联动任务](https://docs.aetheriot.dev/guides/edge-contracts-cloud/)。
-- 在[兼容性矩阵](/compatibility/version-matrix/)中选择经过验证的版本组合。
-- 在[状态与路线图](/roadmap/status/)中区分已实现、实验性和规划中的能力。
-- 按照[智能体快速入门](/agent-quickstart/)安装边缘运行时并连接只读能力。
+- 先阅读 [AI 原生平台](https://docs.aetheriot.dev/zh/overview/ai-native-platform/)，再通过[平台概览](https://docs.aetheriot.dev/zh/overview/platform/)了解产品边界。
+- 运行完整的[边缘端、公共协议与云端联动任务](https://docs.aetheriot.dev/zh/guides/edge-contracts-cloud/)。
+- 在[兼容性矩阵](/zh/compatibility/version-matrix/)中选择经过验证的版本组合。
+- 在[状态与路线图](/zh/roadmap/status/)中区分已实现、实验性和规划中的能力。
+- 按照[智能体快速入门](/zh/agent-quickstart/)安装边缘运行时并连接只读能力。
 
 浏览器访问时会得到渲染后的文档页面。智能体可以在任意文档地址后添加 `.md`，或者发送 `Accept: text/markdown` 请求头，直接获取 Markdown 原文。各产品仓库仍是实现细节的权威来源，AetherContracts 仍是共享协议的唯一权威来源。

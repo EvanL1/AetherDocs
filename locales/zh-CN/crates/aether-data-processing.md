@@ -14,7 +14,7 @@ v1 有线格式使用精度不超过毫秒的 UTC `Z` 时间戳，保留可选�
 
 此箱子不包含 HTTP 客户端、存储访问、回调或模型运行时。协议适配器依赖于它；该域不依赖于任何适配器。
 
-请参阅[规范契约参考](/reference/data-processing-contracts)、[JSON Schemas](https://github.com/EvanL1/AetherEdge/blob/main/contracts/data-processing/README.md) 和可选的[HTTP 适配器](/extensions/http-data-processor)。
+请参阅[规范契约参考](/zh/reference/data-processing-contracts)、[JSON Schemas](https://github.com/EvanL1/AetherEdge/blob/main/contracts/data-processing/README.md) 和可选的[HTTP 适配器](/zh/extensions/http-data-processor)。
 ```bash
 cargo test -p aether-data-processing
 ```

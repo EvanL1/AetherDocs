@@ -21,4 +21,4 @@ AetherEdge 可以停用具体资源，但尚未提供一个覆盖所有设备的
 
 提供者接受、消息代理确认和边缘命令回执都不能证明物理过程已经进入安全状态。必须按照站点投运规则检查相关传感器或设备反馈。
 
-另请参阅[安全操作](/guides/safe-operations/)、[智能体工具参考](/reference/mcp-tools/)和[配置回退](/recovery/configuration-rollback/)。
+另请参阅[安全操作](/zh/guides/safe-operations/)、[智能体工具参考](/zh/reference/mcp-tools/)和[配置回退](/zh/recovery/configuration-rollback/)。

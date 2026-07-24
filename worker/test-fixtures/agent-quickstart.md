@@ -1,3 +1,3 @@
-# 智能体快速入门
+# Agent Quickstart
 
-使用人工智能编码助手安装并配置 Aether。
+Install and configure Aether with an AI coding agent.

@@ -70,7 +70,7 @@ export function findPublishedLinkViolations(documents) {
   );
 
   return documents.flatMap(({ path: sourcePath, content }) => {
-    const sourceIsEnglish = sourcePath === 'en/index.md' || sourcePath.startsWith('en/');
+    const sourceIsEnglish = !sourcePath.startsWith('zh/');
     return content.split('\n').flatMap((lineText, index) =>
       [...lineText.matchAll(MARKDOWN_LINK_PATTERN)].flatMap((match) => {
         const [, text, target] = match;
@@ -95,7 +95,7 @@ export function findPublishedLinkViolations(documents) {
           ];
         }
 
-        const targetIsEnglish = route === '/en' || route.startsWith('/en/');
+        const targetIsEnglish = route !== '/zh' && !route.startsWith('/zh/');
         if (
           sourceIsEnglish !== targetIsEnglish &&
           !LANGUAGE_SWITCH_PATTERN.test(text)

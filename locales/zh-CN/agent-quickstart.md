@@ -26,7 +26,7 @@ cargo build --release -p aether
 sudo cp target/release/aether /usr/local/bin/aether
 ~~~
 
-如果构建失败，请先检查[入门指南](/guides/getting-started/)中的环境要求。
+如果构建失败，请先检查[入门指南](/zh/guides/getting-started/)中的环境要求。
 
 有正式发布版本时，也可以从 GitHub 发布页下载与系统匹配的压缩包，并在解压前验证校验值：
 
@@ -92,7 +92,7 @@ aether services start
 
 **成功标准**：`aether --json services status` 显示所有请求启动的服务都在运行。
 
-如果本机还没有兼容的 `aetherems:latest` 运行时镜像，请先按照[部署指南](/guides/deployment/)构建或载入镜像。保留这个历史镜像名称，不表示 AetherEMS 属于当前仓库。
+如果本机还没有兼容的 `aetherems:latest` 运行时镜像，请先按照[部署指南](/zh/guides/deployment/)构建或载入镜像。保留这个历史镜像名称，不表示 AetherEMS 属于当前仓库。
 
 ## 5. 检查运行状态
 
@@ -118,11 +118,11 @@ claude mcp add aether -- aether mcp
 claude mcp add aether -- aether mcp --allow-write
 ~~~
 
-在连接真实硬件前，请先阅读[应用与智能体安全操作](/guides/safe-operations/)。
+在连接真实硬件前，请先阅读[应用与智能体安全操作](/zh/guides/safe-operations/)。
 
 **成功标准**：客户端返回的工具列表中包含 `channels_list`。默认服务只提供读取工具。
 
-`allow-write` 只会注册当前允许的受治理写入命令，并不等于用户已经确认操作。每次写入仍需明确传入 `confirmed: true`。不要自动重试结果不完整的写入；通道变更应保存 `request_id`、`resulting_revision` 和 `reconciliation_required`。更多连接方式请查看[连接智能助手](/guides/ai-assistants/)。
+`allow-write` 只会注册当前允许的受治理写入命令，并不等于用户已经确认操作。每次写入仍需明确传入 `confirmed: true`。不要自动重试结果不完整的写入；通道变更应保存 `request_id`、`resulting_revision` 和 `reconciliation_required`。更多连接方式请查看[连接智能助手](/zh/guides/ai-assistants/)。
 
 最后，可以向智能体提出下面的要求：
 

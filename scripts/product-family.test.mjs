@@ -119,7 +119,7 @@ describe('AetherIoT product-family documentation', () => {
       "'/tutorials/edge-contracts-cloud': '/guides/edge-contracts-cloud'"
     );
     expect(config).toContain(
-      "'/en/tutorials/edge-contracts-cloud': '/en/guides/edge-contracts-cloud'"
+      "'/zh/tutorials/edge-contracts-cloud': '/zh/guides/edge-contracts-cloud'"
     );
     expect(edgeManifest).toContain('docs/guides/*');
     expect(edgeManifest).not.toContain('docs/tutorials/*');

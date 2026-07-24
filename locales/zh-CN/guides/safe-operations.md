@@ -48,8 +48,8 @@ AI 可以提出、解释或调用受治理的应用程序功能。它不得参�
 
 ## 相关页面
 
-- [使用 AI 构建应用程序](/guides/build-applications-with-ai)
-- [连接 AI 助手](/guides/ai-assistants)
-- [HTTP API 参考](/reference/http-api)
-- [MCP 工具参考](/reference/mcp-tools)
-- [共享内存](/concepts/shared-memory)
+- [使用 AI 构建应用程序](/zh/guides/build-applications-with-ai)
+- [连接 AI 助手](/zh/guides/ai-assistants)
+- [HTTP API 参考](/zh/reference/http-api)
+- [MCP 工具参考](/zh/reference/mcp-tools)
+- [共享内存](/zh/concepts/shared-memory)

@@ -6,7 +6,7 @@ updated: 2026-07-10
 
 # 写作规则
 
-规则是 Aether 的控制逻辑：读取测量点 (M)、评估条件和写入操作点 (A) 的流程。它们执行内部自动化（端口 6002），并通过应用程序 API 直接或通过下游产品控制台编写。本指南涵盖了创作机制；有关引擎如何调度和执行规则的信息，请参阅[规则引擎](/concepts/rule-engine)，有关有效的控制策略，请参阅[控制策略](https://github.com/EvanL1/AetherEdge/blob/main/docs/domain/control-strategies.md)。
+规则是 Aether 的控制逻辑：读取测量点 (M)、评估条件和写入操作点 (A) 的流程。它们执行内部自动化（端口 6002），并通过应用程序 API 直接或通过下游产品控制台编写。本指南涵盖了创作机制；有关引擎如何调度和执行规则的信息，请参阅[规则引擎](/zh/concepts/rule-engine)，有关有效的控制策略，请参阅[控制策略](https://github.com/EvanL1/AetherEdge/blob/main/docs/domain/control-strategies.md)。
 
 ## 规则剖析
 
@@ -22,11 +22,11 @@ SQLite `rules` 表中的规则行包含：
   - `{"type": "on_change", "point_refs": [{"instance": 1, "point_type": "measurement", "point": 0}], "time_deadband_ms": 200, "value_deadband": null}` — 订阅点更改时的事件驱动评估，通过时间死区（触发器之间的最小间隙）和可选值死区（绝对或百分比变化阈值）进行过滤。
 - **流程** — 逻辑本身：起始节点扇出到输入节点（读取测量点或加载配置参数），通过决策节点（条件分支），到达操作节点（写入操作点），最后到达结束节点。
 
-该流程存储两次 - `flow_json`（完整的可视化编辑器文档）和 `nodes_json`（引擎执行的紧凑拓扑） - 并且这两列始终通过一个函数从编辑器文档一起派生。 [规则引擎](/concepts/rule-engine) 解释了原因。
+该流程存储两次 - `flow_json`（完整的可视化编辑器文档）和 `nodes_json`（引擎执行的紧凑拓扑） - 并且这两列始终通过一个函数从编辑器文档一起派生。 [规则引擎](/zh/concepts/rule-engine) 解释了原因。
 
 ## 通过下游应用程序
 
-独立的 [AetherEMS](https://github.com/EvanL1/AetherEMS) 控制台是一个可选的能量域参考应用程序，带有 Vue Flow 规则编辑器。它编辑完整的视觉文档 - 具有画布位置、标签、边缘和视口的节点 - 并通过相同的经过身份验证的规则命令 API 提交该文档。 AetherEdge 不会捆绑控制台或授予其直接 SQLite/SHM 访问权限。服务器一起导出两个存储的表示，因此 `flow_json` 和执行拓扑不会漂移（有关不变量，请参阅[规则引擎](/concepts/rule-engine)）。
+独立的 [AetherEMS](https://github.com/EvanL1/AetherEMS) 控制台是一个可选的能量域参考应用程序，带有 Vue Flow 规则编辑器。它编辑完整的视觉文档 - 具有画布位置、标签、边缘和视口的节点 - 并通过相同的经过身份验证的规则命令 API 提交该文档。 AetherEdge 不会捆绑控制台或授予其直接 SQLite/SHM 访问权限。服务器一起导出两个存储的表示，因此 `flow_json` 和执行拓扑不会漂移（有关不变量，请参阅[规则引擎](/zh/concepts/rule-engine)）。
 
 ## 通过 HTTP API
 
@@ -94,7 +94,7 @@ curl -X POST http://localhost:6002/api/rules/3/enable \
 
 因此针对尚不存在的硬件进行测试。虚拟协议没有精确的功能门，因此它始终可用于此：
 
-1. 创建一个虚拟协议通道，其中的控制点和调整点与规则将写入的内容相匹配，并将临时实例的操作点路由到该通道（请参阅[连接设备](/guides/connect-devices)）。
+1. 创建一个虚拟协议通道，其中的控制点和调整点与规则将写入的内容相匹配，并将临时实例的操作点路由到该通道（请参阅[连接设备](/zh/guides/connect-devices)）。
 2. 将规则的操作指向临时实例并执行：
 
 ```bash
@@ -114,6 +114,6 @@ curl -X POST http://localhost:6002/api/rules/3/enable \
 
 ## 相关页面
 
-- [规则引擎](/concepts/rule-engine) — 双列存储、调度、执行、热重载
+- [规则引擎](/zh/concepts/rule-engine) — 双列存储、调度、执行、热重载
 - [控制策略作为规则](https://github.com/EvanL1/AetherEdge/blob/main/docs/domain/control-strategies.md) — 表达 SOC 管理和峰值按流剃须
-- [连接设备](/guides/connect-devices) — 通道、虚拟协议、点映射
+- [连接设备](/zh/guides/connect-devices) — 通道、虚拟协议、点映射

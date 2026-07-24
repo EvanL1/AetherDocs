@@ -79,7 +79,7 @@ MQTT PUBACK 仅是传输证据，绝不会授权从 AetherEdge 中删除线轴�
 pnpm test:cloudlink-dual
 ```
 
-该命令选择唯一的主题前缀，启动并重新启动本地 Mosquitto，运行边缘与云两端的传输，并将机器可读证据写入 `evidence/cloudlink-alpha3-dual-harness.json`。它覆盖 ACK 丢失、边缘恢复、云端游标恢复、入口进程重启、重复重放、摘要冲突、数据丢失、乱序、过期和部分应用结果。该证据不能证明生产环境中的进程崩溃耐久性。当前行为与生产限制见 [CloudLink 可靠传输与生命周期](/aethercloud/concepts/cloudlink-and-core-state-machines)，协议兼容性和版本固定规则见 [AetherContracts 兼容性](/aethercontracts/compatibility)。
+该命令选择唯一的主题前缀，启动并重新启动本地 Mosquitto，运行边缘与云两端的传输，并将机器可读证据写入 `evidence/cloudlink-alpha3-dual-harness.json`。它覆盖 ACK 丢失、边缘恢复、云端游标恢复、入口进程重启、重复重放、摘要冲突、数据丢失、乱序、过期和部分应用结果。该证据不能证明生产环境中的进程崩溃耐久性。当前行为与生产限制见 [CloudLink 可靠传输与生命周期](/zh/aethercloud/concepts/cloudlink-and-core-state-machines)，协议兼容性和版本固定规则见 [AetherContracts 兼容性](/zh/aethercontracts/compatibility)。
 
 ## 选择加入 AWS IoT Core mTLS 工具
 ```bash

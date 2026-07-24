@@ -41,9 +41,9 @@ AetherCloud 是 AetherEdge 的可选 AI 原生多云融合和控制平面。它�
 - 提供程序本机身份、配额、区域、故障域和功能
 - 一个部署的远程锁定基础架构状态stack
 
-AetherCloud 拥有所需的放置和编排状态，但不会假装标准化投影是提供程序的实际状态。在添加提供商或基础设施工作流程之前，请阅读[多云融合模型](/aethercloud/concepts/multi-cloud-fusion)。
+AetherCloud 拥有所需的放置和编排状态，但不会假装标准化投影是提供程序的实际状态。在添加提供商或基础设施工作流程之前，请阅读[多云融合模型](/zh/aethercloud/concepts/multi-cloud-fusion)。
 
-在添加跨网络的功能之前，请阅读[权限边界](/aethercloud/concepts/edge-cloud-boundary)。
+在添加跨网络的功能之前，请阅读[权限边界](/zh/aethercloud/concepts/edge-cloud-boundary)。
 
 ## 交付顺序
 
@@ -51,8 +51,8 @@ AetherCloud 拥有所需的放置和编排状态，但不会假装标准化投�
 
 IoT 产品序列包括网关身份、CloudLink 会话、运行时清单、遥测/警报摄取、工件注册表、所需/报告/应用的部署、受控作业、操作集成和 MCP。每个切片必须是有用的，而不需要后面的切片。设备控制不是仓库基础里程碑的一部分。
 
-阅读[功能图](/aethercloud/concepts/iot-cloud-capability-map)以了解完整的有界上下文，并阅读[垂直切片路线图](/aethercloud/guides/iot-cloud-roadmap)以了解阶段门和排除。
+阅读[功能图](/zh/aethercloud/concepts/iot-cloud-capability-map)以了解完整的有界上下文，并阅读[垂直切片路线图](/zh/aethercloud/guides/iot-cloud-roadmap)以了解阶段门和排除。
 
 ## 开始开发
 
-阅读[仓库布局](/aethercloud/reference/repository-layout)，然后按照[代理开发指南](/aethercloud/guides/build-with-an-agent)。当前的 API 表面记录在 [HTTP 参考](/aethercloud/reference/http-api) 中。
+阅读[仓库布局](/zh/aethercloud/reference/repository-layout)，然后按照[代理开发指南](/zh/aethercloud/guides/build-with-an-agent)。当前的 API 表面记录在 [HTTP 参考](/zh/aethercloud/reference/http-api) 中。

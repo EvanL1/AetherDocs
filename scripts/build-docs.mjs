@@ -57,7 +57,7 @@ export function findLocalizedUiViolations(pages) {
   };
 
   return pages.flatMap(({ path: pagePath, html }) => {
-    const locale = pagePath.startsWith('en/') ? 'en' : 'zh-CN';
+    const locale = pagePath.startsWith('zh/') ? 'zh-CN' : 'en';
     return unexpectedByLocale[locale]
       .filter((text) => html.includes(text))
       .map((text) => ({ path: pagePath, locale, text }));
@@ -121,14 +121,14 @@ export function renderDocument(source) {
 export function partitionDocumentsByLocale(documents) {
   const partitions = { 'zh-CN': [], en: [] };
   for (const document of documents) {
-    if (document.slug === 'en' || document.slug.startsWith('en/')) {
-      partitions.en.push({
+    if (document.slug === 'zh' || document.slug.startsWith('zh/')) {
+      partitions['zh-CN'].push({
         ...document,
         publicSlug: document.slug,
-        slug: document.slug === 'en' ? '' : document.slug.slice('en/'.length),
+        slug: document.slug === 'zh' ? '' : document.slug.slice('zh/'.length),
       });
     } else {
-      partitions['zh-CN'].push({ ...document, publicSlug: document.slug });
+      partitions.en.push({ ...document, publicSlug: document.slug });
     }
   }
   return partitions;
@@ -393,13 +393,13 @@ async function main() {
   }
   await fs.writeFile(
     path.join(DIST_DIR, 'llms.txt'),
-    chineseIndex,
+    englishIndex,
     'utf8'
   );
-  await fs.mkdir(path.join(DIST_DIR, 'en'), { recursive: true });
+  await fs.mkdir(path.join(DIST_DIR, 'zh'), { recursive: true });
   await fs.writeFile(
-    path.join(DIST_DIR, 'en', 'llms.txt'),
-    englishIndex,
+    path.join(DIST_DIR, 'zh', 'llms.txt'),
+    chineseIndex,
     'utf8'
   );
   console.log(`build-docs: added ${documents.length} Markdown twins and 2 localized text indexes`);

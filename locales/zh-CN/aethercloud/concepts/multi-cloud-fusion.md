@@ -31,7 +31,7 @@ AetherCloud拥有一个小型的、功能驱动的词汇表：
 
 应用程序现在实现受治理的、租户/项目范围的 `PlanDeploymentStack` 命令、动态 OpenTofu/Terraform `InfrastructureEngine` 注册表、运行时引擎输出验证、更改摘要、策略接收和幂等规划仓库端口。共享一致性套件、内存引擎和内存计划仓库使合约无需云帐户即可执行。真正的 OpenTofu CLI 适配器动态探测其版本，验证不可变的源工件，在有界临时工作区中运行仅 argv 保存的计划，解析版本化 JSON，通过加密工件端口存储计划，并证明注入的状态锁租约已释放。该端口没有Apply操作。
 
-真实提供商 SDK 适配器、凭证解析、连接和 DeploymentStack 持久性、清单 API、放置策略、生产远程状态和分布式锁定、加密对象存储、沙盒工作线程部署、Terraform CLI 适配器和 Apply 仍在计划中。 Discovery 和 Plan 都还没有 HTTP 路线。遵循[添加提供商适配器](/aethercloud/guides/add-provider-adapter)进行发现，并[安全地规划基础设施](/aethercloud/guides/plan-infrastructure)进行引擎工作，而不是发明新的边界。
+真实提供商 SDK 适配器、凭证解析、连接和 DeploymentStack 持久性、清单 API、放置策略、生产远程状态和分布式锁定、加密对象存储、沙盒工作线程部署、Terraform CLI 适配器和 Apply 仍在计划中。 Discovery 和 Plan 都还没有 HTTP 路线。遵循[添加提供商适配器](/zh/aethercloud/guides/add-provider-adapter)进行发现，并[安全地规划基础设施](/zh/aethercloud/guides/plan-infrastructure)进行引擎工作，而不是发明新的边界。
 
 ## 特定于提供商的层
 
@@ -94,7 +94,7 @@ approved exact Plan → Apply → refresh → NormalizedResourceProjection
 
 `managed-postgresql`是可移植的提供商功能，而不是固定的供应商产品。未来的提供商配置文件将保留本机引擎变体、支持的版本和扩展、HA、备份、加密、专用连接、复制、区域、主权、RPO/RTO、价格证据和命名空间扩展。核心持久性代码仍然是一个 PostgreSQL 适配器，并且绝不会在提供程序枚举上分支。
 
-每个 AetherCloud 控制平面单元都有一个权威的 PostgreSQL 写入拓扑。跨多个提供商管理资源不需要同步跨云数据库写入。租户主单元放置、副本提升、灾难恢复和迁移都是显式受治理的流程。用户可见的放置与隔离模型见 [PostgreSQL 持久化和多云单元](/aethercloud/concepts/persistence-and-multi-cloud-cells)。
+每个 AetherCloud 控制平面单元都有一个权威的 PostgreSQL 写入拓扑。跨多个提供商管理资源不需要同步跨云数据库写入。租户主单元放置、副本提升、灾难恢复和迁移都是显式受治理的流程。用户可见的放置与隔离模型见 [PostgreSQL 持久化和多云单元](/zh/aethercloud/concepts/persistence-and-multi-cloud-cells)。
 
 ## HPC-NOW 中保留的经验教训
 

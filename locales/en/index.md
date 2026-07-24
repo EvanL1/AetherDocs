@@ -7,10 +7,10 @@ hero:
   tagline: Describe the outcome. Let agents generate governed behavior.
   actions:
     - text: Explore the AI-native platform
-      link: /en/overview/ai-native-platform/
+      link: /overview/ai-native-platform/
       icon: right-arrow
     - text: Start with AetherEdge
-      link: /en/aetheredge/
+      link: /aetheredge/
       variant: minimal
       icon: open-book
 ---
@@ -28,19 +28,19 @@ platform rather than part of its industry-neutral core.
 
 Start with the product that owns your task:
 
-- [AetherEdge](/en/aetheredge/) runs acquisition, deterministic behavior, local
+- [AetherEdge](/aetheredge/) runs acquisition, deterministic behavior, local
   history, and final physical execution.
-- [AetherCloud](/en/aethercloud/) coordinates desired state, governed jobs, and
+- [AetherCloud](/aethercloud/) coordinates desired state, governed jobs, and
   provider-native cloud resources.
-- [AetherContracts](/en/aethercontracts/) defines the shared protocol, Schemas,
+- [AetherContracts](/aethercontracts/) defines the shared protocol, Schemas,
   fixtures, and TCK.
 
-- Start with the [AI-native platform](/en/overview/ai-native-platform/) and
-  continue to [Platform Overview](/en/overview/platform/).
-- Run the complete [Edge, Contracts, and Cloud integration task](/en/guides/edge-contracts-cloud/).
-- Select tested versions in [Compatibility](/en/compatibility/version-matrix/).
-- Distinguish shipped and planned work at [Status and Roadmap](/en/roadmap/status/).
-- Install the edge runtime at [Agent Quickstart](/en/agent-quickstart/).
+- Start with the [AI-native platform](/overview/ai-native-platform/) and
+  continue to [Platform Overview](/overview/platform/).
+- Run the complete [Edge, Contracts, and Cloud integration task](/guides/edge-contracts-cloud/).
+- Select tested versions in [Compatibility](/compatibility/version-matrix/).
+- Distinguish shipped and planned work at [Status and Roadmap](/roadmap/status/).
+- Install the edge runtime at [Agent Quickstart](/agent-quickstart/).
 
 Browsers receive the rendered documentation site. Agents can append `.md` to
 any document URL or send `Accept: text/markdown` to retrieve the Markdown

@@ -35,19 +35,19 @@ describe('assertUserFacingDocumentation', () => {
   it('rejects maintainer-only references from either locale', () => {
     expect(() =>
       assertUserFacingDocumentation([
-        { path: 'en/guide.md', content: 'See ADR-0012.\n' },
-        { path: 'guide.md', content: '用户指南。\n' },
+        { path: 'guide.md', content: 'See ADR-0012.\n' },
+        { path: 'zh/guide.md', content: '用户指南。\n' },
       ])
-    ).toThrow(/en\/guide\.md:1/);
+    ).toThrow(/guide\.md:1/);
   });
 
   it('rejects relative and site-root document links from published pages', () => {
     expect(() =>
       assertUserFacingDocumentation([
         {
-          path: 'en/guide.md',
+          path: 'guide.md',
           content:
-            'Read [relative](../reference/http-api.md) and [site-root](/en/reference/http-api).',
+            'Read [relative](../reference/http-api.md) and [site-root](/reference/http-api).',
         },
       ])
     ).toThrow(/absolute documentation URL/);
@@ -80,9 +80,9 @@ describe('assertUserFacingDocumentation', () => {
     expect(() =>
       assertUserFacingDocumentation([
         {
-          path: 'en/guide.md',
+          path: 'guide.md',
           content:
-            'Read [missing](https://docs.aetheriot.dev/en/reference/not-published).\n',
+            'Read [missing](https://docs.aetheriot.dev/reference/not-published).\n',
         },
       ])
     ).toThrow(/published documentation route/);
@@ -90,16 +90,16 @@ describe('assertUserFacingDocumentation', () => {
 
   it('rejects accidental cross-locale links but allows explicit language switches', () => {
     const chineseTarget = {
-      path: 'compatibility/version-matrix.md',
+      path: 'zh/compatibility/version-matrix.md',
       content: '中文兼容性说明。\n',
     };
 
     expect(() =>
       assertUserFacingDocumentation([
         {
-          path: 'en/guide.md',
+          path: 'guide.md',
           content:
-            'Read [Compatibility](https://docs.aetheriot.dev/compatibility/version-matrix).\n',
+            'Read [Compatibility](https://docs.aetheriot.dev/zh/compatibility/version-matrix).\n',
         },
         chineseTarget,
       ])
@@ -108,9 +108,9 @@ describe('assertUserFacingDocumentation', () => {
     expect(() =>
       assertUserFacingDocumentation([
         {
-          path: 'en/guide.md',
+          path: 'guide.md',
           content:
-            'Read the [Simplified Chinese version](https://docs.aetheriot.dev/compatibility/version-matrix).\n',
+            'Read the [Simplified Chinese version](https://docs.aetheriot.dev/zh/compatibility/version-matrix).\n',
         },
         chineseTarget,
       ])
@@ -121,21 +121,21 @@ describe('assertUserFacingDocumentation', () => {
     expect(() =>
       assertUserFacingDocumentation([
         {
-          path: 'en/guide.md',
-          content:
-            'Read the [compatibility guide](https://docs.aetheriot.dev/en/compatibility/version-matrix).\n',
-        },
-        {
           path: 'guide.md',
           content:
-            '请阅读[兼容性指南](https://docs.aetheriot.dev/compatibility/version-matrix)。\n',
+            'Read the [compatibility guide](https://docs.aetheriot.dev/compatibility/version-matrix).\n',
         },
         {
-          path: 'en/compatibility/version-matrix.md',
-          content: 'English compatibility guide.\n',
+          path: 'zh/guide.md',
+          content:
+            '请阅读[兼容性指南](https://docs.aetheriot.dev/zh/compatibility/version-matrix)。\n',
         },
         {
           path: 'compatibility/version-matrix.md',
+          content: 'English compatibility guide.\n',
+        },
+        {
+          path: 'zh/compatibility/version-matrix.md',
           content: '中文兼容性说明。\n',
         },
       ])

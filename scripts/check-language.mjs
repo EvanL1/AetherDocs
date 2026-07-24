@@ -224,9 +224,9 @@ export function findEnglishHeadingOccurrences(sourcePath, content) {
 }
 
 export function localeForPath(sourcePath) {
-  return sourcePath === 'en' || sourcePath === 'en.md' || sourcePath.startsWith('en/')
-    ? 'en'
-    : 'zh-CN';
+  return sourcePath === 'zh' || sourcePath === 'zh.md' || sourcePath.startsWith('zh/')
+    ? 'zh-CN'
+    : 'en';
 }
 
 export function assertLocaleIsolation(documents) {

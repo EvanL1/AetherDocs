@@ -40,7 +40,7 @@ Device ──frame──► aether-io protocol adapter (decode)
 5. 相同的命令适配器通过 Unix 域套接字发送固定大小的 56 字节帧。该通知携带通道/点坐标、值位、发出/到期时间戳以及用于重复数据删除的生产者 ID + 序列号。如果 aether-io 关闭，通知程序会以指数退避（1-5 秒）重新连接。本机部署默认为 `/tmp/aether-m2c.sock`； Docker 将 `AETHER_M2C_SOCKET` 设置为 `/shm/rtdb/aether-m2c.sock`，以便两个隔离容器都能看到套接字。
 6. aether-io 的 `ShmCommandListener` (`services/io/src/core/channels/shm_listener.rs`) 接收通知、拒绝过期帧、按顺序进行重复数据删除，并将命令转发到所属通道的队列。在协议调度之前，`CommandGuard` 验证可写点是否存在以及该值是否满足其最小/最大/步长策略；只有这样，协议适配器才能将其写入现场总线。
 
-实时命令数据永远不会传输数据库：传输方式是 SHM 加上 UDS 通知。本地 SQLite 围绕外部命令存储安全审核事件，但不是命令传递的一部分，并且从不镜像实时点值。中途失败的调度（共享内存已写入，但通知丢失，或没有可用的写入器）对调用者来说是一个错误；请参阅[数据模型](/concepts/data-model)，了解这些故障如何映射到 HTTP 状态。
+实时命令数据永远不会传输数据库：传输方式是 SHM 加上 UDS 通知。本地 SQLite 围绕外部命令存储安全审核事件，但不是命令传递的一部分，并且从不镜像实时点值。中途失败的调度（共享内存已写入，但通知丢失，或没有可用的写入器）对调用者来说是一个错误；请参阅[数据模型](/zh/concepts/data-model)，了解这些故障如何映射到 HTTP 状态。
 
 ## 数据处理路径（源数据 → 派生数据）
 
@@ -63,7 +63,7 @@ DataProcessingApplication
 
 该应用程序解析语义绑定，对齐和聚合时间戳，要求委托的单元/符号元数据精确匹配，检查丢失和过时的输入，并发送处理器请求中的值。版本 1 不执行运行时单位/符号转换。处理器永远不会接收 SHM、SQLite 或内部服务 API 的凭据，也永远不会通过返回 Aether 来解析站点标识符。
 
-结果记录其输入水印、输入摘要、处理器出处、质量、状态和到期时间。它是导出的证据而不是测量：它不会写入 IO 拥有的 T/S 段。如果自动化使用结果，则在现有审核的命令路径可以起作用之前，单独的规划/控制用例会验证新鲜度和安全性。因此，处理器丢失会删除可选的建议输入，而不会中断采集或本地安全规则。请参阅[数据处理流程](/concepts/data-processing-flow) 了解完整的合约。
+结果记录其输入水印、输入摘要、处理器出处、质量、状态和到期时间。它是导出的证据而不是测量：它不会写入 IO 拥有的 T/S 段。如果自动化使用结果，则在现有审核的命令路径可以起作用之前，单独的规划/控制用例会验证新鲜度和安全性。因此，处理器丢失会删除可选的建议输入，而不会中断采集或本地安全规则。请参阅[数据处理流程](/zh/concepts/data-processing-flow) 了解完整的合约。
 
 事件时间 `as_of` 本身并不是历史知识切割。当前历史记录没有摄取/源纪元，并且工件出处没有训练/可用性削减，因此时间点评估使用冻结的历史记录和工件输入，而不是查询当今的可变源以获取旧帧。
 
@@ -89,10 +89,10 @@ CHANGELOG还记录P99.9 的事件路径为 1.4–2.2 毫秒，并指出 PointWat
 
 ## 相关页面
 
-- [架构](/concepts/architecture) — 这些路径连接的服务
-- [共享内存](/concepts/shared-memory) — 槽布局、seqlock、写入所有权
-- [数据模型](/concepts/data-model) — 点、实例和 NaN/缺席语义
-- [数据处理](/concepts/data-processing) — 可选的行业中立处理边界
-- [数据处理流程](/concepts/data-processing-flow) — 处理器请求数据流和故障语义
-- [CloudLink MQTT v1](/reference/cloudlink-mqtt-v1) — 实验性应用程序-ACK/重播边缘路径
-- [规则Engine](/concepts/rule-engine) — PointWatch 事件到达后会发生什么
+- [架构](/zh/concepts/architecture) — 这些路径连接的服务
+- [共享内存](/zh/concepts/shared-memory) — 槽布局、seqlock、写入所有权
+- [数据模型](/zh/concepts/data-model) — 点、实例和 NaN/缺席语义
+- [数据处理](/zh/concepts/data-processing) — 可选的行业中立处理边界
+- [数据处理流程](/zh/concepts/data-processing-flow) — 处理器请求数据流和故障语义
+- [CloudLink MQTT v1](/zh/reference/cloudlink-mqtt-v1) — 实验性应用程序-ACK/重播边缘路径
+- [规则Engine](/zh/concepts/rule-engine) — PointWatch 事件到达后会发生什么

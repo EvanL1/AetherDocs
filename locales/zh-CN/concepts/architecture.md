@@ -67,7 +67,7 @@ authenticated HTTP
 
 默认的 SQLite 读取是一个调用时快照，而不是双时态历史剪切。 `as_of` 过滤事件时间，而后期摄取、物理源历元和模型训练/可用性削减则需要冻结评估输入或更强大的适配器/合约。
 
-数据处理从不写入 IO 拥有的 T/S 平面，也从不调度设备命令。自动化可以使用新鲜的、经过验证的派生数据作为单独的规划或控制用例的输入，其授权、安全性和审计规则保持不变。请参阅[数据处理](/concepts/data-processing)和[数据处理流程](/concepts/data-processing-flow)。
+数据处理从不写入 IO 拥有的 T/S 平面，也从不调度设备命令。自动化可以使用新鲜的、经过验证的派生数据作为单独的规划或控制用例的输入，其授权、安全性和审计规则保持不变。请参阅[数据处理](/zh/concepts/data-processing)和[数据处理流程](/zh/concepts/data-processing-flow)。
 
 ## 通信路径
 
@@ -88,7 +88,7 @@ authenticated HTTP
 
 两个属性可确保热路径安全：
 
-- **写入所有权。** aether-io 是唯一的写入者共享内存中的遥测/信号槽； aether-automation 是控制/动作槽的唯一编写者。请参阅[共享内存](/concepts/shared-memory)。
+- **写入所有权。** aether-io 是唯一的写入者共享内存中的遥测/信号槽； aether-automation 是控制/动作槽的唯一编写者。请参阅[共享内存](/zh/concepts/shared-memory)。
 - **事件是提示，SHM 是真理。** 事件消费者总是会重新读取槽位； aether-history 和 aether-uplink 保留基于间隔的采样语义。
 - **外部存储仅扩展。** 所有六个默认服务均无需 Redis 或 PostgreSQL 即可启动和运行。镜像或历史适配器可以独立启用，而不会成为控制路径的一部分。
 
@@ -110,17 +110,17 @@ config/*.yaml ──► aether sync ──► SQLite (aether.db) ──► servi
 
 ## 状态所在位置
 
-- **实时点值** - 共享内存段（Linux 上的`AETHER_SHM_PATH`、`/dev/shm`）。这是热路径的真相来源；请参阅[共享内存](/concepts/shared-memory)。
+- **实时点值** - 共享内存段（Linux 上的`AETHER_SHM_PATH`、`/dev/shm`）。这是热路径的真相来源；请参阅[共享内存](/zh/concepts/shared-memory)。
 - **可选镜像** - `aether-redis-bridge` 等扩展可以观察 SHM 并发布最终一致的外部视图。它们从来都不是事实来源，也不是核心服务的启动依赖项。
 - **SQLite (`aether.db`)** — 所有配置：渠道、产品、实例、规则、服务设置。仅由 `aether sync` 和服务自己的配置 API 编写。
 - **历史数据库** - 默认情况下嵌入 `aether-history.db`。 PostgreSQL / TimescaleDB 仍然是大型部署的可选适配器。
 
 ## 相关页面
 
-- [共享内存](/concepts/shared-memory) — 段布局、seqlock、写入所有权
-- [数据流](/concepts/data-flow) — 端到端的上游和下游路径
-- [数据处理](/concepts/data-processing) — 可选的跨行业处理编排
-- [数据处理流程](/concepts/data-processing-flow) — 数据组装和派生结果流程
-- [规则引擎](/concepts/rule-engine) — aether-automation 如何评估和执行规则
-- [数据模型](/concepts/data-model) — 产品、实例、点
-- [部署指南](/guides/deployment) — Docker Compose 和安装程序
+- [共享内存](/zh/concepts/shared-memory) — 段布局、seqlock、写入所有权
+- [数据流](/zh/concepts/data-flow) — 端到端的上游和下游路径
+- [数据处理](/zh/concepts/data-processing) — 可选的跨行业处理编排
+- [数据处理流程](/zh/concepts/data-processing-flow) — 数据组装和派生结果流程
+- [规则引擎](/zh/concepts/rule-engine) — aether-automation 如何评估和执行规则
+- [数据模型](/zh/concepts/data-model) — 产品、实例、点
+- [部署指南](/zh/guides/deployment) — Docker Compose 和安装程序

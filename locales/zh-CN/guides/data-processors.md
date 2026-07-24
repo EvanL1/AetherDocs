@@ -189,7 +189,7 @@ pub trait DataProcessor: Send + Sync {
 }
 ```
 
-请求和结果是[数据处理契约](/reference/data-processing-contracts) 中记录的类型化契约。处理器描述符声明支持的合约版本、任务类型、本地/远程数据边界以及有限帧/请求限制。它不得公开通用供应商命令集或未经验证的`run(json)`逃生舱口。
+请求和结果是[数据处理契约](/zh/reference/data-processing-contracts) 中记录的类型化契约。处理器描述符声明支持的合约版本、任务类型、本地/远程数据边界以及有限帧/请求限制。它不得公开通用供应商命令集或未经验证的`run(json)`逃生舱口。
 
 处理器负责：
 
@@ -310,11 +310,11 @@ curl --fail-with-body \
 
 ## 相关页面
 
-- [数据处理契约](/reference/data-processing-contracts) — v1 传输契约和验证规则
-- [HTTP数据处理器](/extensions/http-data-processor) — 有界本地/远程适配器和组合 API
+- [数据处理契约](/zh/reference/data-processing-contracts) — v1 传输契约和验证规则
+- [HTTP数据处理器](/zh/extensions/http-data-processor) — 有界本地/远程适配器和组合 API
 - [AetherEMS 功耗预测](https://github.com/EvanL1/AetherEMS/blob/main/packs/energy/knowledge/power-forecasting.md) — 第一个下游任务和处理器
 - [负载预测处理器](https://github.com/EvanL1/AetherEdge/blob/main/integrations/load-forecasting/README.md) — 针对现有边缘平台经过测试的 `/v1/process` 适配器
 - [JSON Schemas](https://github.com/EvanL1/AetherEdge/blob/main/contracts/data-processing/README.md) — 严格的 v1 传输验证
-- [数据流](/concepts/data-flow) — 权威的实时和历史路径
-- [系统架构](/concepts/architecture) — 核心层和服务边界
-- [应用程序和代理的安全操作](/guides/safe-operations) — 派生数据为何如此不绕过控制策略
+- [数据流](/zh/concepts/data-flow) — 权威的实时和历史路径
+- [系统架构](/zh/concepts/architecture) — 核心层和服务边界
+- [应用程序和代理的安全操作](/zh/guides/safe-operations) — 派生数据为何如此不绕过控制策略

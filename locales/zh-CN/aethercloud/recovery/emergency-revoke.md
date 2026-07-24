@@ -35,4 +35,4 @@ AetherCloud 目前没有生产身份服务、权限撤销命令、网关紧急�
 
 紧急撤销始终需要一个不依赖智能体的人工入口，并指定事件负责人。重新启用受影响的命令能力之前必须由人员确认。凭据泄露、无法解释的物理效果或无法联系边缘端时，必须转交安全人员和现场安全负责人。
 
-继续阅读[受治理的 Home Assistant 电源控制](/aethercloud/concepts/home-assistant-governed-control)、[边缘端、云端与提供商的权威边界](/aethercloud/concepts/edge-cloud-boundary)和[物联网云能力地图](/aethercloud/concepts/iot-cloud-capability-map)。
+继续阅读[受治理的 Home Assistant 电源控制](/zh/aethercloud/concepts/home-assistant-governed-control)、[边缘端、云端与提供商的权威边界](/zh/aethercloud/concepts/edge-cloud-boundary)和[物联网云能力地图](/zh/aethercloud/concepts/iot-cloud-capability-map)。

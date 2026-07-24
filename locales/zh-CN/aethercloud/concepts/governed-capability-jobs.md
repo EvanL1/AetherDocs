@@ -57,4 +57,4 @@ offered/running/unknown -> cancel-requested -> edge terminal Receipt
 
 生产工作添加了 PostgreSQL 分类账和收据收件箱、事务耦合的发件箱/审计链、运行时清单声明来源、应用程序拥有的 CloudLink 交付、证据对象、调度和到期工作进程、公共接口以及经过审核的 AetherEdge 契约。仅在持久接收接受后才会向边缘进行确认。
 
-阅读 [CloudLink 可靠传输与生命周期](/aethercloud/concepts/cloudlink-and-core-state-machines)，了解交付、超时、重试和结果未知时的处理方式。
+阅读 [CloudLink 可靠传输与生命周期](/zh/aethercloud/concepts/cloudlink-and-core-state-machines)，了解交付、超时、重试和结果未知时的处理方式。

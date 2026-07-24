@@ -6,7 +6,7 @@ updated: 2026-07-10
 
 # 连接设备
 
-设备作为通信服务中的**通道**连接到 Aether（io，端口 6001）。通道是一个设备连接：协议、协议所需的传输参数以及描述设备公开内容的点表。然后，通道点映射到设备**实例** — 规则和仪表板所针对的逻辑事物模型（请参阅[数据模型](/concepts/data-model)）。
+设备作为通信服务中的**通道**连接到 Aether（io，端口 6001）。通道是一个设备连接：协议、协议所需的传输参数以及描述设备公开内容的点表。然后，通道点映射到设备**实例** — 规则和仪表板所针对的逻辑事物模型（请参阅[数据模型](/zh/concepts/data-model)）。
 
 ## 通道
 
@@ -126,10 +126,10 @@ aether shm
 
 如果通道点更新但实例点没有更新，则路由条目丢失或错误。 SHM 是权威的实时视图，因此不需要运行外部数据库来进行此检查。
 
-离线情况如下：`aether channels status` 报告 `connected: false`，通道运行状况 SHM 条目变为离线状态，并且点值停止更新 — 它们的时间戳变得过时。 “从未”获取过的点是共享内存中的 NaN 标记，而不是零；请参阅[数据模型](/concepts/data-model) 了解为什么不可用性是一流的值。对于整个系统通行证 — 服务启动、SQLite 可读、连接共享内存 — 运行 `aether doctor`。
+离线情况如下：`aether channels status` 报告 `connected: false`，通道运行状况 SHM 条目变为离线状态，并且点值停止更新 — 它们的时间戳变得过时。 “从未”获取过的点是共享内存中的 NaN 标记，而不是零；请参阅[数据模型](/zh/concepts/data-model) 了解为什么不可用性是一流的值。对于整个系统通行证 — 服务启动、SQLite 可读、连接共享内存 — 运行 `aether doctor`。
 
 ## 相关页面
 
-- [数据模型](/concepts/data-model) — 产品、实例和四种点类型
-- [系统架构](/concepts/architecture) — io 和自动化所处的位置以及数据如何在之间流动它们
-- [编写规则](/guides/writing-rules) — 将映射点应用于控制逻辑
+- [数据模型](/zh/concepts/data-model) — 产品、实例和四种点类型
+- [系统架构](/zh/concepts/architecture) — io 和自动化所处的位置以及数据如何在之间流动它们
+- [编写规则](/zh/guides/writing-rules) — 将映射点应用于控制逻辑

@@ -69,7 +69,7 @@ CloudLink 或边缘运行时。
 不得夹带任意提供方字段。数据导出只返回受治理的资源状态和不可变对象元数据；文件下载
 仍是独立且尚未实现的授权边界。
 
-继续阅读[应用契约目录](/aethercloud/reference/application-contracts/)、
-[审计与外部集成](/aethercloud/concepts/audit-and-integrations/)和
-[受治理能力任务](/aethercloud/concepts/governed-capability-jobs/)，再决定是否增加新的
+继续阅读[应用契约目录](/zh/aethercloud/reference/application-contracts/)、
+[审计与外部集成](/zh/aethercloud/concepts/audit-and-integrations/)和
+[受治理能力任务](/zh/aethercloud/concepts/governed-capability-jobs/)，再决定是否增加新的
 资源或工具。

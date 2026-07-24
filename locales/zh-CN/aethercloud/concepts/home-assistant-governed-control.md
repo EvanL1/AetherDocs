@@ -107,4 +107,4 @@ Home Assistant 地址、访问令牌、刷新令牌、服务名和任意服务�
 在这些门槛完成前，此能力必须保持默认关闭，也不能被描述成已经可用的家庭控制产品。
 
 独立的拓扑与观测链路见
-[Home Assistant 集成](/aethercloud/concepts/home-assistant-integration/)。
+[Home Assistant 集成](/zh/aethercloud/concepts/home-assistant-integration/)。

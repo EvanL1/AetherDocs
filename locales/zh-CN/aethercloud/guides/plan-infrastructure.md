@@ -77,4 +77,4 @@ pnpm test:opentofu-integration
 
 应用、刷新突变、导入和销毁仍然完全未实现，未来的命令具有自己的许可、确认、批准、审计和恢复合约。请勿将它们添加为 `PlanDeploymentStack` 上的模式或标志。
 
-在扩展此工作流程之前，请阅读[多云融合](/aethercloud/concepts/multi-cloud-fusion)以了解提供商和州边界以及[AI 不变量](https://github.com/EvanL1/AetherCloud/blob/main/ai/invariants.md)。
+在扩展此工作流程之前，请阅读[多云融合](/zh/aethercloud/concepts/multi-cloud-fusion)以了解提供商和州边界以及[AI 不变量](https://github.com/EvanL1/AetherCloud/blob/main/ai/invariants.md)。

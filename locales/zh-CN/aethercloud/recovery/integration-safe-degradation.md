@@ -36,4 +36,4 @@ status: partial
 
 反复拓扑冲突、无法收敛的序列缺口、凭据泄露、控制结果未知或任何物理安全风险都必须转交人工处理。死信重投和控制重新启用需要明确的人员复核，智能体不得为了消除告警而自行执行。
 
-继续阅读[Home Assistant 集成](/aethercloud/concepts/home-assistant-integration)、[受治理的 Home Assistant 电源控制](/aethercloud/concepts/home-assistant-governed-control)和[审计、订阅、网络回调与数据导出](/aethercloud/concepts/audit-and-integrations)。
+继续阅读[Home Assistant 集成](/zh/aethercloud/concepts/home-assistant-integration)、[受治理的 Home Assistant 电源控制](/zh/aethercloud/concepts/home-assistant-governed-control)和[审计、订阅、网络回调与数据导出](/zh/aethercloud/concepts/audit-and-integrations)。
