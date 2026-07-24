@@ -4,7 +4,7 @@ import starlight from '@astrojs/starlight';
 import starlightLinksValidator from 'starlight-links-validator';
 
 export default defineConfig({
-  site: 'https://docs.aetheriot.workers.dev',
+  site: 'https://docs.aetheriot.dev',
   redirects: {
     '/tutorials/edge-contracts-cloud': '/guides/edge-contracts-cloud',
     '/en/tutorials/edge-contracts-cloud': '/en/guides/edge-contracts-cloud',

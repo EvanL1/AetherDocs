@@ -10,7 +10,7 @@ const DOCS_SITE_ROOT = path.resolve(__dirname, '..');
 const CONTENT_DIR = path.join(DOCS_SITE_ROOT, 'src', 'content', 'docs');
 const SOURCE_CONFIG_PATH = path.join(DOCS_SITE_ROOT, 'content.sources.json');
 const DESCRIPTION_MAX_LEN = 155;
-const DEFAULT_PUBLIC_BASE_URL = 'https://docs.aetheriot.workers.dev';
+const DEFAULT_PUBLIC_BASE_URL = 'https://docs.aetheriot.dev';
 
 export function computeDestPath(sourcePath, options = {}) {
   const stripPrefix = options.stripPrefix ?? 'docs/';

@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOCS_SITE_ROOT = path.resolve(__dirname, '..');
 const CONTENT_DIR = path.join(DOCS_SITE_ROOT, 'src', 'content', 'docs');
 const DIST_DIR = path.join(DOCS_SITE_ROOT, 'dist');
-const DEFAULT_PUBLIC_BASE_URL = 'https://docs.aetheriot.workers.dev';
+const DEFAULT_PUBLIC_BASE_URL = 'https://docs.aetheriot.dev';
 const FORBIDDEN_CONCATENATED_CORPUS = ['llms', 'full.txt'].join('-');
 
 export function slugToOutputRelPath(slug) {

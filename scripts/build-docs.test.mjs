@@ -112,7 +112,7 @@ describe('renderLlmsIndex', () => {
       },
     ];
 
-    const output = renderLlmsIndex(documents, 'https://docs.aetheriot.workers.dev');
+    const output = renderLlmsIndex(documents, 'https://docs.aetheriot.dev');
     expect(output).toMatch(/^# AetherIoT\n/);
     expect(output).toContain('## Agent Task Manual');
     expect(output).toContain('## Deployment and Operations');
@@ -124,12 +124,12 @@ describe('renderLlmsIndex', () => {
     expect(output).not.toContain('## Tutorials');
     expect(output).not.toContain('llms-full.txt');
     expect(output).toContain(
-      '- [Edge to Cloud](https://docs.aetheriot.workers.dev/guides/edge-contracts-cloud.md): Complete a governed integration task.'
+      '- [Edge to Cloud](https://docs.aetheriot.dev/guides/edge-contracts-cloud.md): Complete a governed integration task.'
     );
     expect(output).toContain(
-      '- [Agent Quickstart](https://docs.aetheriot.workers.dev/agent-quickstart.md): Install Aether.'
+      '- [Agent Quickstart](https://docs.aetheriot.dev/agent-quickstart.md): Install Aether.'
     );
-    expect(output).not.toContain('[Aether](https://docs.aetheriot.workers.dev/)');
+    expect(output).not.toContain('[Aether](https://docs.aetheriot.dev/)');
     expect(findLlmsCoverageViolations(documents, output)).toEqual([]);
   });
 
@@ -161,7 +161,7 @@ describe('renderLlmsIndex', () => {
 
     const output = renderLlmsIndex(
       documents,
-      'https://docs.aetheriot.workers.dev',
+      'https://docs.aetheriot.dev',
       'zh-CN'
     );
     expect(output).toContain('## 智能体任务手册');
@@ -202,14 +202,14 @@ describe('findLlmsLinkViolations', () => {
       findLlmsLinkViolations(
         [
           '# AetherIoT',
-          '- [Good](https://docs.aetheriot.workers.dev/reference/cli.md)',
-          '- [HTML route](https://docs.aetheriot.workers.dev/reference/http-api)',
-          '- [Forbidden corpus](https://docs.aetheriot.workers.dev/llms-full.txt)',
+          '- [Good](https://docs.aetheriot.dev/reference/cli.md)',
+          '- [HTML route](https://docs.aetheriot.dev/reference/http-api)',
+          '- [Forbidden corpus](https://docs.aetheriot.dev/llms-full.txt)',
         ].join('\n')
       )
     ).toEqual([
-      'https://docs.aetheriot.workers.dev/reference/http-api',
-      'https://docs.aetheriot.workers.dev/llms-full.txt',
+      'https://docs.aetheriot.dev/reference/http-api',
+      'https://docs.aetheriot.dev/llms-full.txt',
     ]);
   });
 });
@@ -221,8 +221,8 @@ describe('findLlmsCoverageViolations', () => {
       { slug: 'aethercloud/concepts/architecture' },
     ];
     const index = [
-      '- [Edge](https://docs.aetheriot.workers.dev/concepts/architecture.md)',
-      '- [Cloud](https://docs.aetheriot.workers.dev/aethercloud/concepts/architecture.md)',
+      '- [Edge](https://docs.aetheriot.dev/concepts/architecture.md)',
+      '- [Cloud](https://docs.aetheriot.dev/aethercloud/concepts/architecture.md)',
     ].join('\n');
 
     expect(findLlmsCoverageViolations(documents, index)).toEqual([]);

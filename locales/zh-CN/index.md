@@ -27,8 +27,8 @@ AetherIoT 是 AetherEdge、AetherCloud 和 AetherContracts 的共同项目。Aet
 - [AetherCloud](/aethercloud/) 承载逐步演进的智能体上下文、期望状态、受治理作业和多云协调能力。
 - [AetherContracts](/aethercontracts/) 定义类型化能力、共享协议、结构定义、测试夹具和 TCK。
 
-- 先阅读 [AI 原生平台](https://docs.aetheriot.workers.dev/overview/ai-native-platform/)，再通过[平台概览](https://docs.aetheriot.workers.dev/overview/platform/)了解产品边界。
-- 运行完整的[边缘端、公共协议与云端联动任务](https://docs.aetheriot.workers.dev/guides/edge-contracts-cloud/)。
+- 先阅读 [AI 原生平台](https://docs.aetheriot.dev/overview/ai-native-platform/)，再通过[平台概览](https://docs.aetheriot.dev/overview/platform/)了解产品边界。
+- 运行完整的[边缘端、公共协议与云端联动任务](https://docs.aetheriot.dev/guides/edge-contracts-cloud/)。
 - 在[兼容性矩阵](/compatibility/version-matrix/)中选择经过验证的版本组合。
 - 在[状态与路线图](/roadmap/status/)中区分已实现、实验性和规划中的能力。
 - 按照[智能体快速入门](/agent-quickstart/)安装边缘运行时并连接只读能力。

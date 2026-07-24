@@ -368,7 +368,7 @@ describe('rewriteRelativeLinks', () => {
       edgeLinkOptions
     );
     expect(out).toBe(
-      'See [Rule Engine](https://docs.aetheriot.workers.dev/concepts/rule-engine) for details.'
+      'See [Rule Engine](https://docs.aetheriot.dev/concepts/rule-engine) for details.'
     );
   });
 
@@ -382,7 +382,7 @@ describe('rewriteRelativeLinks', () => {
       edgeLinkOptions
     );
     expect(out).toBe(
-      '[Rule Engine](https://docs.aetheriot.workers.dev/concepts/rule-engine#some-heading)'
+      '[Rule Engine](https://docs.aetheriot.dev/concepts/rule-engine#some-heading)'
     );
   });
 
@@ -399,7 +399,7 @@ describe('rewriteRelativeLinks', () => {
       edgeLinkOptions
     );
     expect(out).toBe(
-      'See [aether-ports](https://docs.aetheriot.workers.dev/crates/aether-ports) for details.'
+      'See [aether-ports](https://docs.aetheriot.dev/crates/aether-ports) for details.'
     );
   });
 
@@ -420,7 +420,7 @@ describe('rewriteRelativeLinks', () => {
     );
 
     expect(out).toBe(
-      'See [Telemetry](https://docs.aetheriot.workers.dev/aethercloud/concepts/iot-telemetry).'
+      'See [Telemetry](https://docs.aetheriot.dev/aethercloud/concepts/iot-telemetry).'
     );
   });
 
@@ -438,7 +438,7 @@ describe('rewriteRelativeLinks', () => {
     );
 
     expect(out).toBe(
-      'Read [Platform Overview](https://docs.aetheriot.workers.dev/en/overview/platform/).'
+      'Read [Platform Overview](https://docs.aetheriot.dev/en/overview/platform/).'
     );
   });
 
