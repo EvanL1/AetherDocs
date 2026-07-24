@@ -141,6 +141,40 @@ describe('dual-mode documentation service', () => {
     expect(twin.headers.get('Vary')).toBe('Accept');
   });
 
+  it('does not override an explicit in-site navigation to the root', async () => {
+    // A Chinese-preferring visitor already on the site (e.g. clicking the
+    // Starlight language switcher from a /zh/ page back to the English
+    // root) must reach English, not bounce back to /zh/ on every click.
+    const response = await run('/', {
+      headers: {
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        Referer: 'https://example.com/zh/guides/getting-started/',
+      },
+    });
+
+    expect(response.status).toBe(200);
+    expect(await response.text()).toContain('<h1>Aether Documentation</h1>');
+  });
+
+  it('still negotiates a cold visit to the root with a cross-origin or absent referrer', async () => {
+    const noReferrer = await run('/', {
+      headers: { 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8' },
+      redirect: 'manual',
+    });
+    const crossOrigin = await run('/', {
+      headers: {
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        Referer: 'https://other-site.example/',
+      },
+      redirect: 'manual',
+    });
+
+    expect(noReferrer.status).toBe(302);
+    expect(noReferrer.headers.get('Location')).toBe('https://example.com/zh/');
+    expect(crossOrigin.status).toBe(302);
+    expect(crossOrigin.headers.get('Location')).toBe('https://example.com/zh/');
+  });
+
   it('leaves non-root paths untouched by language negotiation', async () => {
     const response = await run('/agent-quickstart/', {
       headers: { 'Accept-Language': 'zh-CN,zh;q=0.9' },

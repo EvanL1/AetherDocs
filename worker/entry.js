@@ -56,6 +56,22 @@ function legacyEnglishPrefixRedirect(url) {
   return Response.redirect(redirectUrl, 301);
 }
 
+// True when the request's Referer is same-origin with the current request.
+// An in-site navigation — most importantly, clicking the language switcher
+// from a Chinese page back to the English root — must not be overridden by
+// Accept-Language negotiation, or a Chinese-preferring browser could never
+// reach the English root through the site's own UI. A cold visit (typed
+// URL, bookmark, external link, or no referrer) still gets negotiated.
+function isSameOriginNavigation(request, url) {
+  const referer = request.headers.get('Referer');
+  if (!referer) return false;
+  try {
+    return new URL(referer).origin === url.origin;
+  } catch {
+    return false;
+  }
+}
+
 // True when the Accept-Language header ranks some Chinese variant strictly
 // above every English variant. Absent languages count as q=0; ties keep the
 // English root experience.
@@ -102,9 +118,11 @@ export default {
     const wantsMarkdown = url.pathname.endsWith('.md') || accept.includes('text/markdown');
 
     // Language negotiation applies to HTML requests for exactly the root
-    // path. Requests for /index.md, any Markdown representation, or any
-    // other path are never negotiated.
-    const negotiatesLanguage = url.pathname === '/' && !wantsMarkdown;
+    // path, and only on a cold visit — not when the visitor just clicked
+    // there from elsewhere on this site. Requests for /index.md, any
+    // Markdown representation, or any other path are never negotiated.
+    const negotiatesLanguage =
+      url.pathname === '/' && !wantsMarkdown && !isSameOriginNavigation(request, url);
     if (negotiatesLanguage && prefersChinese(request.headers.get('Accept-Language'))) {
       const redirectUrl = new URL(url);
       redirectUrl.pathname = '/zh/';
