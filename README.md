@@ -4,8 +4,8 @@ The independent, dual-mode unified documentation service for AetherIoT,
 covering
 [AetherEdge](https://github.com/EvanL1/AetherEdge),
 [AetherCloud](https://github.com/EvanL1/AetherCloud), and
-[AetherContracts](https://github.com/EvanL1/AetherContracts). It is deployed at
-[`docs.aetheriot.workers.dev`](https://docs.aetheriot.workers.dev).
+[AetherContracts](https://github.com/EvanL1/AetherContracts). It is deployed at the canonical production domain
+[`docs.aetheriot.dev`](https://docs.aetheriot.dev/).
 
 - Browsers receive a searchable Astro + Starlight site.
 - Agents can append `.md` or request `Accept: text/markdown`.

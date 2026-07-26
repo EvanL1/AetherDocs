@@ -1,30 +1,43 @@
 ---
 title: "aether-edge-sdk"
-description: "用于嵌入 Aether AI 原生物联网边缘内核的版本测试版外观。"
-updated: 2026-07-16
+description: "用于嵌入 Aether AI 原生 IoT 边缘内核的版本化测试版 Facade。"
+updated: 2026-07-26
 ---
 
 # aether-edge-sdk
 
-版本化 beta 外观，用于嵌入 Aether AI 原生物联网边缘内核。
+这是用于嵌入 Aether AI 原生 IoT 边缘内核的版本化测试版 Facade。
 
-API 已针对打包和 SemVer 兼容性进行了版本控制，但第一个独立注册表版本尚未完成。在此之前，请从固定仓库修订版本中使用它，而不是假设 crates.io 可用性。
+它是 AetherEdge 唯一受支持的公共 Rust API，也是唯一提供 SemVer 兼容承诺的 Package。Cargo 因传递依赖要求而拉取的其他 `aether-*` Package 都属于实现细节，不支持下游直接依赖。
 
-Rust 库目标导入为 `aether_sdk`。 `AetherBuilder` 没有具体的基础架构默认值。主机显式提供权威的实时状态、设备命令调度程序和强制审核接收器。这使得 Redis、PostgreSQL、SQLx、Web 框架和协议驱动程序远离 SDK 的默认依赖关系图。
+Rust Library Target 以 `aether_sdk` 导入。`AetherBuilder` 不提供具体基础设施默认值；Host 必须显式提供权威 Live State、Device Command Dispatcher 和强制 Audit Sink。这样可以让 Redis、PostgreSQL、SQLx、Web Framework 和协议 Driver 保持在 SDK 默认依赖图之外。
 
-`aether_sdk::pack` 外观公开版本化、故障关闭的域包清单加载器。加载包会验证兼容性和受限资源目录；它从不安装或调试该包。
+`aether_sdk::pack` Facade 公开版本化、Fail-closed 的 Domain Pack Manifest Loader。加载 Pack 会验证兼容性和受限资产目录，但绝不会安装或投运该 Pack。
 
-可选的 `local-runtime` 功能在 `aether_sdk::local` 下公开零外部服务适配器。下游应用程序仅依赖于这个外观；工作区的域、端口、应用程序和适配器包是源模块，不定义独立的注册表产品。
-```toml
-[dependencies]
-aether-sdk = { package = "aether-edge-sdk", git = "https://github.com/EvanL1/AetherEdge.git", tag = "v0.5.0", features = ["local-runtime"] }
+可选 `local-runtime` Feature 在 `aether_sdk::local` 下公开零外部服务 Adapter。下游应用只依赖这一 Facade；工作区的 Domain、Port、Application 和 Adapter Crate 通过它访问，而不是被直接命名。
+
+```bash
+cargo add aether-edge-sdk --features local-runtime
 ```
 
-有关可运行的零外部服务组合，请参阅仓库的 [`examples/minimal-gateway`](https://github.com/EvanL1/AetherEdge/tree/main/examples/minimal-gateway)。
+```toml
+[dependencies]
+aether-sdk = { package = "aether-edge-sdk", version = "0.0.1", features = ["local-runtime"] }
+```
+
+如果需要固定到精确签名 Release Commit，而不是使用 Registry，请使用匹配的 Release Tag：
+
+```toml
+[dependencies]
+aether-sdk = { package = "aether-edge-sdk", git = "https://github.com/EvanL1/AetherEdge.git", tag = "v0.0.1", features = ["local-runtime"] }
+```
+
+可运行的零外部服务组合见仓库中的 [`examples/minimal-gateway`](https://github.com/EvanL1/AetherEdge/tree/main/examples/minimal-gateway)。
+
 ```bash
 cargo test -p aether-edge-sdk
 cargo test -p aether-edge-sdk --features local-runtime
 cargo run -p aether-example-minimal-gateway
 ```
 
-您可以选择根据 MIT 或 Apache-2.0 获得许可。
+本项目采用 MIT OR Apache-2.0 双许可证。

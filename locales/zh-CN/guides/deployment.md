@@ -1,7 +1,7 @@
 ---
 title: "部署"
 description: "使用 Docker Compose 运行或为边缘设备构建独立的安装程序"
-updated: 2026-07-17
+updated: 2026-07-26
 ---
 
 # 部署
@@ -16,38 +16,22 @@ docker compose up -d
 docker compose ps
 ```
 
-默认 Compose 应用程序仅启动六个 Rust 服务，全部带有 `network_mode: host`。Redis 和 TimescaleDB 仅在显式选择 `redis` 和 `postgres-storage` 配置文件时启动。基本文件只通过可变的 `data-processing-dev` 配置文件公开预测伴生服务；生产环境需要显式覆盖，如下所示。
+默认 Compose 应用只启动六项 Rust 服务，并全部使用 `network_mode: host`。Redis 和 TimescaleDB 只有在显式选择 `redis` 和 `postgres-storage` Profile 时才启动。基础文件不会定义或启动任何领域专用 Data Processor。
 
-AetherEdge 是无头内核发行版。它不构建或安装浏览器客户端。 EMS 操作员控制台属于独立的 [AetherEMS](https://github.com/EvanL1/AetherEMS) 发行版，并通过经过身份验证的应用程序 API 连接。
+AetherEdge 是无头 Kernel 发行版，不构建或安装浏览器客户端。EMS 操作员 Console、Energy Pack 和 Load-Forecasting Processor 都属于独立的 [AetherEMS](https://github.com/EvanL1/AetherEMS) 发行版。
 
 | 容器 | 镜像 | 职责 |
-|-----------|-------|------|
-| aether-redis | redis:8-alpine | 可选非权威状态镜像基础设施（`redis` 配置文件） |
-| aether-timescaledb | timescale/timescaledb:2.25.2-pg17 | 可选 PostgreSQL 历史记录后端 (`postgres-storage`配置文件） |
-| aether-load-forecasting-processor | 操作员提供的、摘要固定的图像 | 可选的请求驱动处理器（`data-processing` 配置文件） |
-| aether-io | aetherems:latest | 通信服务（特权、挂载） `/dev` 用于现场总线） |
-| aether-automation | aetherems:latest | 模型服务和规则引擎 |
-| aether-history | aetherems:latest | 具有嵌入式 SQLite 历史记录的 SHM 采样器默认 |
-| aether-api | aetherems:latest | REST API、WebSocket、JWT 身份验证 |
-| aether-uplink | aetherems:latest | MQTT 云上行链路、TLS证书 |
-| aether-alarm | aetherems:latest | 警报规则和通知 |
+|---|---|---|
+| aether-redis | redis:8-alpine | 可选的非权威状态镜像基础设施（`redis` Profile） |
+| aether-timescaledb | timescale/timescaledb:2.25.2-pg17 | 可选 PostgreSQL 历史记录后端（`postgres-storage` Profile） |
+| aether-io | aetherems:latest | 通信服务（以特权模式挂载 `/dev` 以访问现场总线） |
+| aether-automation | aetherems:latest | Model 服务和规则引擎 |
+| aether-history | aetherems:latest | 默认使用嵌入式 SQLite 历史记录的 SHM Sampler |
+| aether-api | aetherems:latest | REST API、WebSocket 和 JWT 认证 |
+| aether-uplink | aetherems:latest | MQTT 云上行链路和 TLS 证书 |
+| aether-alarm | aetherems:latest | 告警规则和通知 |
 
-生产预测配置文件需要从现有负载预测服务构建的不可变映像以及 Aether 的适配器、委托工件包、匹配的承载令牌以及 `${AETHER_BASE_PATH}/config/data-processing/runtime.yaml` 下经过验证的运行时 YAML：
-
-复制将仓库的合成 [`runtime.example.yaml`](https://github.com/EvanL1/AetherEdge/blob/main/packs/energy/data-processing/runtime.example.yaml) 和 [`covariates.example.json`](https://github.com/EvanL1/AetherEdge/blob/main/packs/energy/data-processing/covariates.example.json) 复制到该部署拥有的目录中，替换每个逻辑/物理映射、工件摘要和协变量行，并根据站点数据库验证它们。这些示例不是生产值。
-```bash
-export AETHER_LOAD_FORECASTING_IMAGE=registry.example/load-forecasting@sha256:<digest>
-export AETHER_LOAD_FORECASTING_BEARER_TOKEN='<unique secret>'
-export AETHER_LOAD_FORECASTING_ARTIFACT_BUNDLES='<commissioned JSON array>'
-integrations/load-forecasting/deploy/validate-production-env.sh
-docker compose \
-  -f docker-compose.yml \
-  -f integrations/load-forecasting/deploy/docker-compose.data-processing.yaml \
-  --profile data-processing \
-  up -d aether-load-forecasting-processor aether-api
-```
-
-对于此记录的生产路径，预检是强制性的。在 Compose 评估覆盖之前，它会拒绝非`@sha256`图像引用、弱或格式错误的令牌、超出范围的并发性以及非严格的工件捆绑 JSON。
+通用 Data Processing 应用默认禁用。下游组合负责提供 Processor 镜像或进程、已经投运的 Runtime YAML、凭据、资源限制和网络策略。能源领域组合见 [AetherEMS Load-Forecasting Processor](https://github.com/EvanL1/AetherEMS/tree/main/processors/load-forecasting)。
 
 历史记录权限需要单独的操作检查。存储`PUT /hisApi/storage`保存设置但不重新连接活动写入器。在存储更改期间保持数据处理处于禁用状态，重新连接或重新启动 `aether-history`，验证其活动 SQLite 后端和委托的哨兵系列，然后使用与所应用的后端匹配的运行时 `history.path` 重新启动 `aether-api`。仅保留的 `history_config.storage_*` 行并不能证明实时写入目标。
 
@@ -55,9 +39,7 @@ docker compose \
 
 `/api/v1/data-processing/process` 调用是非幂等的，即使工作被拒绝，也会写入强制审核记录。当前的 API 不提供参与者/IP 请求速率限制器或审核保留配额。因此，生产入口必须强制执行经过身份验证的参与者和源 IP 速率以及运行中的上限，而运营则监控 `command_audit_events` 增长并应用保留所需证据的保留/导出策略。如果没有这些控制，生产支持就会受到阻碍；每个路由处理器信号量本身不会绑定拒绝调用审核写入。
 
-它绑定到环回并且不接收 Aether 数据目录、配置、设备、历史数据库或 SHM 安装。应用程序通过处理器端口发送完整的、有界的 `ProcessingFrame`。请参阅 [`../../integrations/load-forecasting/deploy/README.md`](https://github.com/EvanL1/AetherEdge/blob/main/integrations/load-forecasting/deploy/README.md) 了解独立 systemd 单元和调试要求。
-
-Compose 伴生服务仅加入专用的 `data-processing-local` 网络，该网络声明为 `internal: true`；配合主机环回端口发布，可以阻止容器访问外部网络并限制入站访问。本机或 systemd 部署仍然需要主机防火墙或等效的出口策略。这些示例还保留了部署专用的 CPU、内存和 PID 配额；应根据实际工件基准设置 cgroup/systemd 限制，避免处理器负载耗尽确定性服务所需的资源。
+下游 Processor 应绑定到回环地址，并且不能挂载 Aether 数据、配置、设备、历史数据库或 SHM。应用通过 Processor 端口发送完整且有界的 `ProcessingFrame`。下游组合还必须实施出口策略，并根据实测结果限制 CPU、内存和 PID，避免 Processor 负载耗尽确定性服务所需资源。
 
 六个 Rust 服务共享一个 `aetherems:latest` 兼容性映像，每个服务都以自己的命令启动。当下游发布消费者迁移时，镜像名称被保留；它并不意味着此仓库拥有 EMS 产品或控制台。
 

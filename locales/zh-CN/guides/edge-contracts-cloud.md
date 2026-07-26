@@ -10,7 +10,7 @@ updated: 2026-07-16
 
 ## 1. 选择兼容基线
 
-使用 AetherEdge `v0.5.0`、AetherContracts `v0.1.0-alpha.3`，并选择读取同一份完整契约锁定文件的 AetherCloud 版本。请先在[版本兼容矩阵](https://docs.aetheriot.dev/zh/compatibility/version-matrix/)中确认准确组合。
+使用 AetherEdge `v0.0.1`、AetherContracts `v0.1.0-alpha.3`，并选择读取同一份完整契约锁定文件的 AetherCloud 版本。请先在[版本兼容矩阵](https://docs.aetheriot.dev/zh/compatibility/version-matrix/)中确认准确组合。
 
 不要使用 `main`、`latest`、版本范围或相邻目录中的源码来推断契约行为。
 

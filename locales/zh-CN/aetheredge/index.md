@@ -1,7 +1,7 @@
 ---
 title: "AetherEdge 产品概览"
 description: "AetherEdge 是 AetherIoT 的确定性边缘运行时、内核、CLI 和 Rust SDK，负责实时状态与最终物理执行。"
-updated: 2026-07-16
+updated: 2026-07-26
 ---
 
 # AetherEdge 产品概览
@@ -16,7 +16,7 @@ AetherEdge 是 AetherIoT 的确定性边缘运行时。它连接现场设备，�
 - 以共享内存作为实时点与健康状态权威。
 - 使用嵌入式 SQLite 保存期望状态、历史、审计和持久本地发件箱。
 - `aether` CLI、受治理 HTTP 与 MCP 应用边界、领域 Pack 和 `aether-edge-sdk`。
-- 已签名的 `v0.5.0` 源码、运行时、安装包和 CLI 发行制品。
+- 已签名的 `v0.0.1` 源码、运行时、安装包、CLI 和 SDK 发行制品。
 
 ## 实验性能力
 
@@ -31,4 +31,4 @@ AetherEdge 是 AetherIoT 的确定性边缘运行时。它连接现场设备，�
 
 仓库显示名称已经改为 AetherEdge。现有 crate、二进制、`aether` CLI、`aether-edge-sdk`、配置键、服务标识、安装包和协议标识在本次迁移中保持稳定。
 
-从 [AI 原生平台](/zh/overview/ai-native-platform/)、[智能体快速入门](/zh/agent-quickstart/)或[快速开始](/zh/guides/getting-started/)继续。
+请先选择匹配的[用户旅程](https://docs.aetheriot.dev/zh/overview/user-journeys/)，再按[入门指南](https://docs.aetheriot.dev/zh/guides/getting-started/)启动安全空运行时，或按[智能体快速入门](https://docs.aetheriot.dev/zh/agent-quickstart/)连接只读助手。已有部署可使用[迁移指南](https://docs.aetheriot.dev/zh/migration/aetheriot-to-aetheredge/)。

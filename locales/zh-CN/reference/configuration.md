@@ -1,7 +1,7 @@
 ---
 title: "配置参考"
 description: "YAML 配置架构、同步管道和环境变量"
-updated: 2026-07-17
+updated: 2026-07-26
 ---
 
 # 配置参考
@@ -94,16 +94,16 @@ Docker Compose 和服务使用的关键变量（大多数可选值在 `.env.exam
 | `HOST_UID` | `1000` | 用户 ID；必须与主机用户匹配以避免文件权限问题 |
 | `HOST_GID` | `1000` | 容器进程的组 ID；与 `HOST_UID` |
 | `DIALOUT_GID` | `20` | 串行端口访问的拨出组 ID 配对（仅限 Linux） |
-| `INFLUXDB_URL`、`INFLUXDB_ORG`、`INFLUXDB_BUCKET`、`INFLUXDB_TOKEN`、 `INFLUXDB_PASSWORD` | 取消设置 | 仅限可选的 InfluxDB 历史记录适配器；未由默认运行时 |
-| `AETHER_IO_URL` | `http://127.0.0.1:6001` | API 网关和 `aether` 的 io 基本 URL 未使用CLI |
-| `AETHER_AUTOMATION_URL` | `http://127.0.0.1:6002` | API 网关和 `aether` 的自动化基本 URL CLI |
+| `INFLUXDB_URL`、`INFLUXDB_ORG`、`INFLUXDB_BUCKET`、`INFLUXDB_TOKEN`、`INFLUXDB_PASSWORD` | 未设置 | 仅供可选 InfluxDB 历史记录 Adapter 使用；默认运行时不读取 |
+| `AETHER_API_URL` | `http://localhost:6005` | `aether` CLI 数据平面和 MCP 使用的 API Gateway Base URL；这是唯一远程应用边界 |
+| `AETHER_IO_URL` | `http://127.0.0.1:6001` | automation 服务调用 IO 时使用的回环 Base URL；CLI 不读取 |
 | `AETHER_SHM_PATH` | 平台选择的 tmpfs 路径 | io 和只读消费者共享的规范权威点状态段 |
 | `AETHER_CHANNEL_HEALTH_SHM_PATH` | 同级 `*-health` 路径 | 单独的权威通道连接段；通常源自 `AETHER_SHM_PATH` |
 | `SHM_WRITER_STALE_AFTER_MS` | `30000` | 读取端 SHM 适配器接受的最大写入心跳期限 |
 | `SHM_IDENTITY_CHECK_INTERVAL_MS` | `250` | 用于检查规范 SHM inode 是否已替换的回退间隔；生成防护立即处理正常交换 |
 | `SHM_TOPOLOGY_REFRESH_INTERVAL_MS` | `1000`（最小 `100`） | API、警报和自动化用于重新加载一个 SQLite 拓扑快照并以原子方式发布经过验证的点/运行状况/路由的时间间隔生成 |
 | `JWT_SECRET_KEY` | 取消设置（必需） | 用于 aether-api 以及受控 io、自动化和警报操作的共享 32 字节或更长的访问 JWT 签名/验证密钥；安装程序生成它并将其保留在配置资产之外 |
-| `AETHER_ACCESS_TOKEN` | 未设置 | 受治理的 CLI 通道调试/生命周期、设备命令、操作路由更改和自动化/警报策略操作（包括 MCP 的 22 个受治理写入工具）所需的签名管理员/工程师访问 JWT；查询命令在本地接口上不需要它 |
+| `AETHER_ACCESS_TOKEN` | 未设置 | `aether` CLI 数据平面和 MCP 附加到每项 Gateway Request 的签名 Access JWT。Viewer Token 可执行查询；Channel 投运与生命周期、设备命令、Action Routing、automation/alarm Policy 和 MCP 的 22 个写工具等受治理写入需要 Admin 或 Engineer Token |
 | `AETHER_UPLINK_CONTROL_TOKEN` | 未设置 | 单独的 32 字节或更长的服务凭据，仅用于上行链路到自动化设备命令；安装程序生成它并且从不打印它 |
 | `AETHER_ALLOW_SIMULATION_WRITES` | `false` | 仅开发选择将 io T/S 模拟写入权威 SHM；在生产环境中保持禁用状态 |
 | `AETHER_CONFIG_PATH` | 未设置 | 自动化和 `aether mcp` 使用的共享配置目录；CLI 路径解析可以通过部署上下文或 `--config-path` 覆盖它 |
@@ -112,13 +112,7 @@ Docker Compose 和服务使用的关键变量（大多数可选值在 `.env.exam
 | `AETHER_BOOTSTRAP_ADMIN_PASSWORD` | 取消设置 | 仅当 `users` 为空时才需要；安装程序会在其 mode-0600 环境文件中生成一个强值，并且应在第一次更改密码后将其删除 |
 | `AETHER_ALLOW_PUBLIC_REGISTRATION` | `false` | 显式选择加入匿名查看者注册；管理员创建永远无法通过公共注册 |
 | `AETHER_DATA_PROCESSING_ENABLED` | `false` | 显式启用选择加入的数据处理应用程序和 HTTP 路由；如果启用的配置无效，则启动失败关闭 |
-| `AETHER_DATA_PROCESSING_CONFIG` | `/app/data/config/data-processing/runtime.yaml` | 包含委托任务、绑定、历史记录、协变量、处理器和审核组合的严格运行时 YAML |
-| `AETHER_LOAD_FORECASTING_BEARER_TOKEN` | 未设置 | 供 `aether-api` 验证负载预测伴生服务身份的共享部署密钥；生产部署必须覆盖开发值 |
-| `AETHER_LOAD_FORECASTING_REQUIRE_AUTH` | `false`所需 | 处理器端启动门；生产覆盖将其修复为 `true` |
-| `AETHER_LOAD_FORECASTING_MAX_CONCURRENCY` | `1` | 限制占用的模型执行槽；在后台工作实际完成之前，取消不会释放插槽 |
-| `AETHER_LOAD_FORECASTING_ARTIFACT_BUNDLES` | 取消设置 | 严格的 JSON 数组固定每个实际委托的模型/缩放器/配置工件；生产准备就绪所需 |
-| `AETHER_LOAD_FORECASTING_IMAGE` | 可变本地开发映像 | 生产必须通过显式 Compose 覆盖和预检验证器使用不可变 `@sha256` 映像引用 |
-| `AETHER_LOAD_FORECASTING_PORT` | `8989` | Compose 发布到主机环回地址的处理器伴生服务端口 |
+| `AETHER_DATA_PROCESSING_CONFIG` | `/app/data/config/data-processing/runtime.yaml` | 严格 Runtime YAML，包含已投运的 Task、Binding、History、Covariate、Processor 和 Audit 组合；下游组合提供由该文件命名的 Processor 专用凭据变量 |
 | `RUST_LOG` | `info` | Rust 服务的日志级别；支持过滤器语法，例如 `info,io=debug,automation=trace` |
 
 ### 实验性 Home Assistant 桥接设置

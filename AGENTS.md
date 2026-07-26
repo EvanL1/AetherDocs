@@ -4,7 +4,7 @@ This repository publishes unified English and Simplified Chinese documentation
 for AetherEdge, AetherCloud, and AetherContracts through a dual-mode Cloudflare
 Worker. English is the root locale and Chinese is served from `/zh/`.
 
-Production URL: `https://docs.aetheriot.workers.dev`.
+Canonical production URL: `https://docs.aetheriot.dev`.
 
 ## Representations
 
@@ -42,7 +42,7 @@ content in its authoritative repository, English site pages under
 `locales/en/`, and Chinese pages under `locales/zh-CN/`.
 
 Every published cross-document link must be a complete absolute URL. Public
-pages use `https://docs.aetheriot.workers.dev`, with the root path for English
+pages use `https://docs.aetheriot.dev`, with the root path for English
 and `/zh/` for Simplified Chinese. Excluded repository documents and source
 artifacts use an absolute GitHub URL. Same-page fragment links may remain
 relative.

@@ -31,7 +31,7 @@ describe('AetherIoT product-family documentation', () => {
   it('pins a tested compatibility baseline without claiming production CloudLink', () => {
     const matrix = readEdge('docs/compatibility/version-matrix.md');
 
-    expect(matrix).toContain('`v0.5.0`');
+    expect(matrix).toContain('`v0.0.1`');
     expect(matrix).toContain('`v0.1.0-alpha.3`');
     expect(matrix).toContain('Experimental integration baseline');
     expect(matrix).toContain('It is not production');

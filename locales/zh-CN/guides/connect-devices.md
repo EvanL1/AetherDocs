@@ -6,17 +6,18 @@ updated: 2026-07-10
 
 # 连接设备
 
-设备作为通信服务中的**通道**连接到 Aether（io，端口 6001）。通道是一个设备连接：协议、协议所需的传输参数以及描述设备公开内容的点表。然后，通道点映射到设备**实例** — 规则和仪表板所针对的逻辑事物模型（请参阅[数据模型](/zh/concepts/data-model)）。
+设备以通信服务拥有的 **Channel** 接入 Aether。一个 Channel 代表一条设备连接：协议、该协议所需的传输参数，以及描述设备暴露内容的点表。远程客户端仍然只能通过经过认证的 `aether-api:6005` 进入，不能直接连接 IO 进程端口。Channel 点随后映射到设备 **Instance**，也就是规则和应用使用的逻辑 Thing Model（参见[数据模型](https://docs.aetheriot.dev/zh/concepts/data-model/)）。
 
 ## 通道
 
-通道在 `config/io/io.yaml` 中编写，并由 `aether sync` 加载到 SQLite 中；服务从不直接读取 YAML。附带模板 (`config.template/io/io.yaml`) 的精简示例，显示一个 TCP 和一个串行连接：
+Channel 可以在 `config/io/io.yaml` 中编写，再由 `aether sync` 加载到 SQLite；服务从不直接读取 YAML。随附模板刻意使用 `channels: []`。以下 TCP 和串行连接仅用于说明，并会保持禁用，直到操作员显式投运：
+
 ```yaml
 channels:
   - id: 1
-    name: "PCS#1"
+    name: "PLC#1"
     protocol: "modbus_tcp"
-    enabled: true
+    enabled: false
     parameters:
       host: "192.168.1.10"
       port: 502
@@ -24,9 +25,9 @@ channels:
       read_timeout_ms: 3000
 
   - id: 3
-    name: "GENSET#1"
+    name: "SENSOR#1"
     protocol: "modbus_rtu"
-    enabled: true
+    enabled: false
     parameters:
       device: "/dev/ttyS4"
       baud_rate: 9600
@@ -37,13 +38,16 @@ channels:
 
 `parameters` 块是特定于协议的：Modbus TCP 需要主机和端口，Modbus RTU 需要串行设备和线路设置，MQTT 需要代理 URL 和订阅主题，等等。协议名称在匹配之前进行规范化（`services/io/src/utils.rs` 中的 `normalize_protocol_name`），因此 `modbus-tcp`、`ModbusTCP` 和 `modbus_tcp` 全部解析为同一协议。
 
-也可以在运行时创建通道，而无需接触 YAML：
+也可以在运行时创建 Channel，而无需修改 YAML：
+
 ```bash
-aether channels create --name "PCS#2" --protocol modbus_tcp \
-  --params '{"host": "192.168.1.11", "port": 502}'
+AETHER_ACCESS_TOKEN='<signed access JWT>' aether channels create \
+  --name "PLC#2" --protocol modbus_tcp \
+  --params '{"host": "192.168.1.11", "port": 502}' \
+  --confirmed
 ```
 
-它在 io 上调用 `POST /api/channels`。 `aether channels list`、`update`、`delete`、`enable` 和 `disable` 涵盖了生命周期的其余部分。
+这项受治理命令通过应用网关执行、记录审计证据，并默认创建禁用的 Channel。`aether channels list`、`update`、`delete`、`enable` 和 `disable` 覆盖其余生命周期；改变状态的命令在适用时需要确认和 revision fencing。
 
 每个通道都带有一个按四种点类型划分的点表：遥测（T，模拟测量）、信号（S，数字状态）、控制（C，数字命令）和调整（A，模拟设定点）。点通过 `aether channels points list|add|update|delete` 进行管理，或在通道 YAML 旁边编写为 CSV 表，并由 `aether sync` 获取。
 
@@ -76,19 +80,7 @@ io 支持 14 种协议，但大多数都支持编译时 Cargo 功能 (`services/
 
 通道点是协议风格的（通道2上的寄存器62001）；规则和仪表板需要模型风格的值（电池组充电状态）。桥接器是一个实例加路由：
 
-1. **定义实例**。实例将设备绑定到 `config/automation/instances.yaml` 中的产品模板。默认分布有意从空开始；可选示例位于 `packs/energy/examples/config/automation/instances.yaml` 下：
-
-```yaml
-   instances:
-     pcs_01:
-       product_name: PCS
-       name: "PCS #1"
-       properties:
-         rated_power: 500.0
-         rated_voltage: 380.0
-   ```
-
-产品定义了实例有哪些测量点和动作点；属性填充模板的静态值。
+1. **定义 Instance。** Instance 在 `config/automation/instances.yaml` 中把设备绑定到活动 Domain Pack 提供的 Product Template。默认发行版刻意保持为空，也不拥有任何行业专用 Product。Product 定义 Instance 具有哪些测量点和动作点，Instance Property 则填充经过验证的静态值。需要现成能源领域模型时，应使用 AetherEMS 等下游解决方案。
 
 2. **将通道点映射到实例点。** 路由将通道点连接到实例点：遥测和信号点馈送实例测量点（M，`route:c2m` 表），实例操作点 (A) 驱动通道控制和调整点 (`route:m2c`)。可以通过 CLI 创建条目：
 
@@ -97,7 +89,7 @@ io 支持 14 种协议，但大多数都支持编译时 Cargo 功能 (`services/
      --channel-id 1 --four-remote T --channel-point-id 101
    ```
 
-它会自动调用 `POST /api/instances/{id}/routing`，或使用 `aether routing batch` 批量调用。
+该命令通过 `aether-api` 提交受治理的路由变更，也可以使用 `aether routing batch` 批量提交。
 
 3. **如果实例或路由是在 YAML 中编写的，则运行 `aether sync`**。同步操作会验证配置并将其写入 SQLite，服务随后从中加载配置；`--dry-run` 可以在不写入的情况下完成验证。
 

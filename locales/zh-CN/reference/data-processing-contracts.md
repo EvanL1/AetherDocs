@@ -1,7 +1,7 @@
 ---
 title: "数据处理契约"
 description: "用于处理帧、请求、派生结果、验证和失败语义的版本 1 契约"
-updated: 2026-07-11
+updated: 2026-07-26
 ---
 
 # 数据处理契约
@@ -861,7 +861,7 @@ Aether 必须拒绝违反这些不变量的语法上成功的处理器响应。
 - [连接数据处理器](/zh/guides/data-processors) — 声明任务并路由处理器
 - [AetherEMS 功率预测](https://github.com/EvanL1/AetherEMS/blob/main/packs/energy/knowledge/power-forecasting.md) — 第一个下游预测合约
 - [JSON Schemas](https://github.com/EvanL1/AetherEdge/blob/main/contracts/data-processing/README.md) — 严格的机器可读 v1 线路Guards
-- [负载预测处理器](https://github.com/EvanL1/AetherEdge/blob/main/integrations/load-forecasting/README.md) — 请求驱动的边缘平台实现
+- [Load-Forecasting Processor](https://github.com/EvanL1/AetherEMS/tree/main/processors/load-forecasting) — 下游能源领域实现
 - [数据流](/zh/concepts/data-flow) — SHM 和历史权威
 - [HTTP 数据处理器](/zh/extensions/http-data-processor) — v1 处理器的有界可选实现Transport
 - [HTTP API](/zh/reference/http-api) — Aether 面向应用程序的 API 的服务信封约定

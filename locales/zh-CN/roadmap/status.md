@@ -18,7 +18,7 @@ updated: 2026-07-17
 
 ## AetherEdge
 
-**已经实现：** 六服务运行时、SHM 实时状态权威、嵌入式本地运行、受治理命令、`aether` CLI、`aether-edge-sdk`、Pack v1、MCP 与 OpenAPI 基础，以及已签名的 `v0.5.0` 源码、运行时和 CLI 制品。
+**已经实现：** 六服务运行时、SHM 实时状态权威、嵌入式本地运行、受治理命令、`aether` CLI、`aether-edge-sdk`、Pack v1、MCP 与 OpenAPI 基础，以及已签名的 `v0.0.1` 源码、运行时、CLI 和 SDK 制品。
 
 **实验性：** CloudLink MQTT v1 边端基础、由应用确认驱动的持久队列、AetherContracts
 alpha.3 消费、真实消息代理开发证据，以及具备有界注册表/状态同步、可选 `aether-io`

@@ -1,7 +1,7 @@
 ---
 title: "连接数据处理器"
 description: "在域包中声明数据处理任务并连接请求驱动的本地或远程处理器"
-updated: 2026-07-11
+updated: 2026-07-26
 ---
 
 # 连接数据处理器
@@ -217,7 +217,7 @@ pub trait DataProcessor: Send + Sync {
 ```yaml
 processor:
   endpoint: http://127.0.0.1:8989/
-  id: load-forecasting-edge
+  id: example-forecast-processor
   version: 0.1.0
   contract: aether.data-processing.forecast.v1
   requires_artifact: true
@@ -227,7 +227,7 @@ processor:
   connect_timeout_ms: 500
   request_timeout_ms: 4500
   max_response_bytes: 4194304
-  bearer_token_env: AETHER_LOAD_FORECASTING_BEARER_TOKEN
+  bearer_token_env: AETHER_PROCESSOR_BEARER_TOKEN
 ```
 
 通用域/处理器合约支持静态功能，自定义进程内组合可以通过 `DataProcessingBinding` 绑定它们。当前的 `aether-api` 运行时 YAML 加载器没有静态值绑定字段，因此运行时配置的 v1 路由不得声明静态功能。在调试之前添加装载机支持和测试；不要假设仅线路模式就可以使用它。
@@ -275,7 +275,7 @@ processor:
 
 ## 在开发期间直接请求处理器
 
-可选的 HTTP 适配器将 `DataProcessor::process` 映射到版本化的面向处理器的 `POST /v1/process` 端点。仓库的负载预测集成实现了该端点；它是处理器边界，而不是默认 Aether 服务上面向应用程序的端点。
+可选 HTTP Adapter 将 `DataProcessor::process` 映射到版本化、面向 Processor 的 `POST /v1/process` 端点。下游 AetherEMS Load-Forecasting Processor 实现了该端点；这是 Processor 边界，不是默认 Aether 服务面向应用的端点。
 ```bash
 curl --fail-with-body \
   --request POST http://127.0.0.1:8989/v1/process \
@@ -313,7 +313,7 @@ curl --fail-with-body \
 - [数据处理契约](/zh/reference/data-processing-contracts) — v1 传输契约和验证规则
 - [HTTP数据处理器](/zh/extensions/http-data-processor) — 有界本地/远程适配器和组合 API
 - [AetherEMS 功耗预测](https://github.com/EvanL1/AetherEMS/blob/main/packs/energy/knowledge/power-forecasting.md) — 第一个下游任务和处理器
-- [负载预测处理器](https://github.com/EvanL1/AetherEdge/blob/main/integrations/load-forecasting/README.md) — 针对现有边缘平台经过测试的 `/v1/process` 适配器
+- [Load-Forecasting Processor](https://github.com/EvanL1/AetherEMS/tree/main/processors/load-forecasting) — 下游能源领域 `/v1/process` 实现
 - [JSON Schemas](https://github.com/EvanL1/AetherEdge/blob/main/contracts/data-processing/README.md) — 严格的 v1 传输验证
 - [数据流](/zh/concepts/data-flow) — 权威的实时和历史路径
 - [系统架构](/zh/concepts/architecture) — 核心层和服务边界

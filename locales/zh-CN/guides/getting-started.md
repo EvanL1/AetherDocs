@@ -1,44 +1,72 @@
 ---
 title: "入门"
-description: "构建工作区、初始化配置、启动服务并验证运行状况"
-updated: 2026-07-10
+description: "安装安全空运行时、建立操作员访问、验证健康状态，并选择下一项投运步骤。"
+updated: 2026-07-26
 ---
 
 # 入门
 
-本指南将带您从全新克隆到正在运行、未调试的 Aether 系统：构建 `aether` CLI、应用经过审核的安全清空设置计划、启动服务并确认运行时正常。
+本指南让边缘操作员和源码开发者到达同一个首要里程碑：AetherEdge 运行时健康且尚未投运，没有任何设备、规则或领域解决方案被静默启用。
 
-## 先决条件
+如果你需要现成的能源管理产品，而不是行业中立运行时，请从 [AetherEMS](https://github.com/EvanL1/AetherEMS) 开始。AetherEdge 黄金路径是：
 
-- **Rust** — 工具链通过以下方式固定到 `1.90.0` `rust-toolchain.toml`； rustup 会在第一次构建时自动安装它。该 pin 还声明用于边缘构建的 `aarch64-unknown-linux-musl` 交叉编译目标。
-- **Docker Engine 和 Docker Compose** — 容器组合所需。 `aether services start` 在底层驱动 Docker Compose。 Redis 和 PostgreSQL 不是先决条件。
+```text
+安全空安装 -> 操作员身份 -> 默认禁用的设备 Channel
+  -> 点位映射 -> 只读验证 -> 审核行为
+  -> 显式投运 -> 审计与运维
+```
 
-## 构建和配置
+各类操作员、解决方案开发者、应用和 AI 路径见 [AetherEdge 用户旅程](https://docs.aetheriot.dev/zh/overview/user-journeys/)。
+
+## 从 Release 安装
+
+这是 Linux 边缘操作员的正常路径。从 [GitHub 发行页面](https://github.com/EvanL1/AetherEdge/releases) 下载匹配的 `.run` 安装包和校验和，然后验证并运行全新安装包：
+
+```bash
+sha256sum -c AetherEdge-<arch>-<version>.run.sha256
+chmod +x AetherEdge-<arch>-<version>.run
+sudo ./AetherEdge-<arch>-<version>.run
+```
+
+安装器会创建六项服务、`aether` CLI、私有引导凭据、嵌入式数据库和安全空配置，但不会投运现场。安装后直接继续执行[启动并验证](#启动并验证)，不要重复下面的源码检出配置。
+
+## 源码检出的先决条件
+
+- **Rust**：工具链由 `rust-toolchain.toml` 固定为 `1.90.0`；rustup 会在第一次构建时自动安装。该 Pin 还声明边缘构建使用的 `aarch64-unknown-linux-musl` 交叉编译目标。
+- **Docker Engine 和 Docker Compose**：容器组合需要它们。`aether services start` 在底层驱动 Docker Compose。Redis 和 PostgreSQL 不是先决条件。
+
+## 准备源码检出
+
+这条路径用于 AetherEdge 开发、SDK 评估或手工 Compose 安装，不是普通操作员的安装入口。
 
 构建 `aether` CLI：
+
 ```bash
 cargo build --release -p aether
 ```
 
-将二进制文件安装到您的 PATH 中 — `cp target/release/aether /usr/local/bin/` 或 `cargo install --path tools/aether` — 因此本指南和其他所有指南都可以将其作为裸 `aether` 进行调用。
+把二进制文件安装到 `PATH`，例如执行 `cp target/release/aether /usr/local/bin/` 或 `cargo install --path tools/aether`，这样本指南和其他指南就可以直接使用 `aether`。
 
-仓库在 `config.template/` 中提供了一个故障安全空配置。在源代码检出目录中，CLI 和 `docker-compose.yml` 默认均使用 `./data/config` 和 `./data`。规划操作始终只读，不会创建任何一个目录：
+仓库在 `config.template/` 中提供故障安全空配置。在源码检出目录中，CLI 和 `docker-compose.yml` 默认使用 `./data/config` 和 `./data`。规划操作始终只读，也不会创建这两个目录：
+
 ```bash
 aether --json setup
 ```
 
-从 JSON 输出中读取 `data.plan_id`，查看列出的操作，然后显式应用完全相同的未更改计划：
+从 JSON 输出读取 `data.plan_id`，检查列出的操作，然后显式应用完全相同、未经修改的 Plan：
+
 ```bash
 aether setup apply --plan-id <PLAN_ID>
 ```
 
-仅对新站点或四个分发文件的确切安全子集接受“应用”。在进行任何持久写入之前，Aether 会暂存完整的配置，针对临时 SQLite 数据库运行正常验证和完整原子同步，然后仅创建丢失的文件而不覆盖。它会初始化 `aether.db` 并同步空运行时，但不会启动服务、启用设备或规则或安装域包。如果站点在规划后发生更改，则规划 ID 会过时，并且应用会停止而不进行写入。在生成的 `safe_ready` 站点上重新运行安装程序是无操作的。
+只有新站点或恰好包含四个发行文件安全子集的站点才允许应用。持久化写入前，Aether 会暂存完整配置，针对临时 SQLite 数据库执行常规验证和完整原子同步，然后只创建缺失文件，绝不覆盖已有文件。它会初始化 `aether.db` 并同步空运行时，但不会启动服务、启用设备或规则，也不会安装 Domain Pack。如果站点在规划后发生变化，Plan ID 会过期，应用会在写入前停止。对生成的 `safe_ready` 站点再次执行 setup 是 No-op。
 
-会报告现有/自定义站点，但不会由安装程序重写。操作员仍然可以使用 `aether init` 进行显式架构迁移，使用 `aether sync` 进行显式配置应用； `aether sync --dry-run` 验证相同的嵌套文件，而不更改已安装的数据库。
+setup 会报告已有或自定义站点，但不会改写它们。操作员仍可使用 `aether init` 显式迁移数据库结构，使用 `aether sync` 显式应用配置；`aether sync --dry-run` 会验证同一组嵌套文件，但不修改已安装数据库。
 
-CLI 按以下顺序独立解析每个路径：命令行标志、`AETHER_CONFIG_PATH`/`AETHER_DATA_PATH`、`/etc/aether/install.yaml`，然后是当前签出的 `data/config/` 和 `data/`。安装的包会自动写入上下文文件。如果没有该上下文，Aether 绝不会仅仅因为旧安装目录的存在而采用它。
+CLI 按以下顺序分别解析每个路径：命令行参数、`AETHER_CONFIG_PATH`/`AETHER_DATA_PATH`、`/etc/aether/install.yaml`，最后是当前源码检出中的 `data/config/` 和 `data/`。安装包会自动写入上下文文件。如果没有该上下文，Aether 不会仅因为旧安装目录存在就采用它。
 
-对于全新的手动 Compose 部署，请创建一个私有环境文件并在验证组合之前填写两个首次启动密钥。打包安装程序会自动执行此操作；仓库设置故意将秘密保留在配置模板之外。
+全新的手工 Compose 部署必须创建私有环境文件，并在验证组合前填入两个首次启动 Secret。打包安装器会自动完成这一步；仓库配置刻意不把 Secret 放进配置模板。
+
 ```bash
 cp .env.example .env
 chmod 600 .env
@@ -72,28 +100,29 @@ JWT_SECRET_KEY="$JWT_SECRET_KEY" \
 unset JWT_SECRET_KEY AETHER_BOOTSTRAP_ADMIN_PASSWORD
 ```
 
-保持`JWT_SECRET_KEY`稳定。使用生成的引导值以 `admin` 身份登录，立即更改密码，然后从 `.env` 中删除 `AETHER_BOOTSTRAP_ADMIN_PASSWORD`。公共注册保持关闭状态，因为示例设置了 `AETHER_ALLOW_PUBLIC_REGISTRATION=false`。
+保持 `JWT_SECRET_KEY` 稳定。使用生成的引导值以 `admin` 身份登录，立即修改密码，然后从 `.env` 删除 `AETHER_BOOTSTRAP_ADMIN_PASSWORD`。示例设置 `AETHER_ALLOW_PUBLIC_REGISTRATION=false`，因此公共注册保持关闭。
 
 ## 启动并验证
+
 ```bash
 aether services start
 aether doctor
 ```
 
-`aether services start` 调出 Docker Compose 堆栈。撰写文件引用预先构建的图像；在尚未安装 `aetherems:latest` 的计算机上，通过运行 `./scripts/build-installer.sh`（从交叉编译的二进制文件构建映像）来生成它，或使用 `docker load` 加载预构建的映像存档 — 请参阅[部署](/zh/guides/deployment)。
+`aether services start` 会启动 Docker Compose Stack。Compose 文件引用预构建镜像；如果目标主机尚无 `aetherems:latest`，可以运行 `./scripts/build-installer.sh` 从交叉编译的二进制文件构建镜像，或通过 `docker load` 加载预构建镜像归档。详情见[部署](https://docs.aetheriot.dev/zh/guides/deployment/)。
 
-`aether doctor` 检查所需的本地运行时，如果有任何必需的组件，则以非零值退出失败：
+`aether doctor` 检查必需的本地运行时；任何必需组件失败时都会以非零状态退出：
 
-1. **Docker 引擎** — 守护进程已安装并运行。
-2. **六项核心服务** — IO、自动化、历史记录、API、上行链路和警报回答其特定于服务的运行状况路由。可选的云或存储依赖项可能会报告降级，但不会成为核心故障。
-3. **SQLite 数据库** — `aether.db` 存在，已初始化，并显示其上次同步时间。
-4. **配置文件** — `global.yaml`、`io/io.yaml`、`automation/automation.yaml` 和 `automation/instances.yaml` 存在。
-5. **共享内存** — 存在段文件 `/dev/shm/aether-rtdb.shm` 存在，并且具有可读、有效的数据平面标头和新的 IO 写入器心跳。丢失、陈旧、截断、符号链接或无效的 SHM 都是错误，因为它是权威的活动状态平面。当安装故意使用其他位置时，`AETHER_SHM_PATH` 会覆盖平台默认值。
+1. **Docker Engine**：Daemon 已安装并正在运行。
+2. **六项核心服务**：IO、automation、history、API、uplink 和 alarm 的专用健康路由均正常。可选云端或存储依赖项可以报告降级，但不会因此成为核心故障。
+3. **SQLite 数据库**：`aether.db` 存在、已初始化，并显示最后同步时间。
+4. **配置文件**：`global.yaml`、`io/io.yaml`、`automation/automation.yaml` 和 `automation/instances.yaml` 均存在。
+5. **共享内存**：Segment 文件 `/dev/shm/aether-rtdb.shm` 存在，并具有可读、有效的数据平面 Header 和新鲜的 IO Writer Heartbeat。SHM 是权威实时状态平面，因此缺失、陈旧、截断、符号链接或无效 SHM 都属于错误。安装刻意使用其他位置时，可以通过 `AETHER_SHM_PATH` 覆盖平台默认值。
 
-一切正常时，这些端口正在侦听（有关每个服务的作用，请参阅[系统架构](/zh/concepts/architecture)）。打包组合仅远程公开经过身份验证的 API 网关；其他五个进程API监听`127.0.0.1`：
+所有组件健康后，以下端口会开始监听。各服务职责见[系统架构](https://docs.aetheriot.dev/zh/concepts/architecture/)。打包组合只对远程公开经过认证的 API Gateway；另外五项进程 API 只监听 `127.0.0.1`：
 
 | 服务 | 端口 |
-|---------|------|
+|---|---|
 | aether-io | 6001 |
 | aether-automation | 6002 |
 | aether-history | 6004 |
@@ -101,27 +130,47 @@ aether doctor
 | aether-uplink | 6006 |
 | aether-alarm | 6007 |
 
-AetherEdge 有意不提供内置网页界面。AetherEMS 等产品控制台需要独立部署，并通过 `aether-api` 接入。
+AetherEdge 刻意不提供内置网页界面。AetherEMS 等产品 Console 独立部署，并通过 `aether-api` 接入。
 
-## 先看看
+## 获取操作员 Token
 
-默认模板故意不包含设备通道或实例，因此这些命令最初应返回空集合：
+CLI 数据平面和 MCP 只能访问 `6005` 上经过认证的 API Gateway，因此每条 `aether` 数据命令都需要 Access Token。以引导管理员登录，并为当前 Shell Session 导出 Token。登录 API 要求密码的十六进制 MD5 Digest，而不是明文密码：
+
 ```bash
-# 1. The communication channels aether-io is polling
+# 上面已从 Shell 清除引导值；从 .env 重新读取
+bootstrap_password="$(grep '^AETHER_BOOTSTRAP_ADMIN_PASSWORD=' .env | cut -d= -f2-)"
+digest="$(printf '%s' "$bootstrap_password" | md5sum | cut -d' ' -f1)"
+export AETHER_ACCESS_TOKEN="$(curl -s http://localhost:6005/api/v1/auth/login \
+  -H 'content-type: application/json' \
+  -d "{\"username\":\"admin\",\"password\":\"$digest\"}" | jq -r '.data.access_token')"
+unset bootstrap_password digest
+```
+
+Token 默认 30 分钟后过期；命令报告 `401` 时应重新登录。日常操作应使用专用账户，而不是引导管理员。认证端点见 [HTTP API 参考](https://docs.aetheriot.dev/zh/reference/http-api/)。
+
+## 确认安全空状态
+
+默认模板刻意不包含设备 Channel 或 Instance，因此以下命令最初应返回空集合：
+
+```bash
+# 1. aether-io 正在轮询的通信 Channel
 aether channels list
 
-# 2. The device instances aether-automation is serving
+# 2. aether-automation 正在提供的设备 Instance
 aether models instances list
 
-# 3. Confirm that no control rule was activated implicitly
+# 3. 确认没有控制规则被隐式启用
 aether rules list
 ```
 
-每个命令都接受 `--json` 进行结构化输出，这是 AI 代理和脚本应使用的模式。仅在显式调试步骤添加并启用通道后，数据才开始流动；继续连接设备。
+每条命令都接受 `--json` 以返回结构化输出，AI 智能体和脚本应使用这一模式。只有显式投运步骤添加并启用 Channel 后，数据才会开始流动；下一步请连接设备。
 
 ## 后续步骤
 
-- [连接设备](/zh/guides/connect-devices) — 添加真实通道并将其点映射到实例
-- [写入规则](/zh/guides/writing-rules) — 使用规则引擎自动控制
-- [AI 助手](/zh/guides/ai-assistants) — 通过 AI 驱动 Aether agent
-- [部署](/zh/guides/deployment) — Docker Compose 详细信息和边缘安装程序
+第一个生产里程碑应是只读采集链路。连接一个默认禁用的 Channel，完成映射并验证质量和新鲜度，然后才审核规则或控制。
+
+- [AetherEdge 用户旅程](https://docs.aetheriot.dev/zh/overview/user-journeys/)：完整安全生命周期和角色路径
+- [连接设备](https://docs.aetheriot.dev/zh/guides/connect-devices/)：添加真实 Channel，并把点映射到 Instance
+- [编写规则](https://docs.aetheriot.dev/zh/guides/writing-rules/)：使用规则引擎实现自动化控制
+- [AI 助手](https://docs.aetheriot.dev/zh/guides/ai-assistants/)：通过 AI 使用 Aether
+- [部署](https://docs.aetheriot.dev/zh/guides/deployment/)：Docker Compose 详情和边缘安装器
