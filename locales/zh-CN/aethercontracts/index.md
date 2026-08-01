@@ -80,4 +80,4 @@ GitHub 标签、发布包和公开 SHA-256 校验值共同构成源码分发路�
 
 历史 alpha.2 联合核心导入来自有本地改动、尚未提交的 AetherCloud 与 AetherEdge 工作区；当时边缘仓库仍名为 AetherIot。导入器拒绝任何不一致的源文件，最终字节也已锁定，但仅凭当时两个产品仓库的提交无法复现导入。该限制记录在 `compatibility/cloudlink-joint-core-provenance.json`。现在 AetherContracts 是唯一线协议权威；两个产品只消费带标签的字节，并在各自仓库保留实现、就绪状态和证据叠加层。
 
-继续阅读 [AI 原生平台](https://docs.aetheriot.dev/zh/overview/ai-native-platform/)、[AetherContracts 快速开始](https://docs.aetheriot.dev/zh/aethercontracts/getting-started/)、[兼容性矩阵](https://docs.aetheriot.dev/zh/compatibility/version-matrix/)和[边缘端、公共协议与云端联动任务](https://docs.aetheriot.dev/zh/guides/edge-contracts-cloud/)。
+继续阅读 [AI 原生平台](https://docs.aetheriot.ai/zh/overview/ai-native-platform/)、[AetherContracts 快速开始](https://docs.aetheriot.ai/zh/aethercontracts/getting-started/)、[兼容性矩阵](https://docs.aetheriot.ai/zh/compatibility/version-matrix/)和[边缘端、公共协议与云端联动任务](https://docs.aetheriot.ai/zh/guides/edge-contracts-cloud/)。

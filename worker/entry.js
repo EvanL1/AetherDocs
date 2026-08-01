@@ -1,5 +1,7 @@
 const MARKDOWN_CONTENT_TYPE = 'text/markdown; charset=utf-8';
 const TEXT_CONTENT_TYPE = 'text/plain; charset=utf-8';
+const DOCUMENTATION_HOST = 'docs.aetheriot.ai';
+const LEGACY_DOCUMENTATION_HOST = 'docs.aetheriot.dev';
 const LEGACY_GUIDE_PATHS = new Map([
   ['/tutorials/edge-contracts-cloud', '/guides/edge-contracts-cloud/'],
   ['/tutorials/edge-contracts-cloud/', '/guides/edge-contracts-cloud/'],
@@ -39,6 +41,18 @@ function legacyGuideRedirect(url) {
   const redirectUrl = new URL(url);
   redirectUrl.pathname = pathname;
   return Response.redirect(redirectUrl, 308);
+}
+
+// The site moved from the developer domain to the product domain. Permanently
+// redirect the legacy host to the same path on docs.aetheriot.ai. This runs
+// before the path redirects so a legacy path on the legacy host lands on the
+// product domain first and is rewritten there.
+function legacyDomainRedirect(url) {
+  if (url.hostname !== LEGACY_DOCUMENTATION_HOST) return null;
+
+  const redirectUrl = new URL(url);
+  redirectUrl.hostname = DOCUMENTATION_HOST;
+  return Response.redirect(redirectUrl, 301);
 }
 
 // English moved from /en/ to the site root. Permanently redirect every legacy
@@ -109,6 +123,8 @@ export default {
     }
 
     const url = new URL(request.url);
+    const domainRedirect = legacyDomainRedirect(url);
+    if (domainRedirect) return domainRedirect;
     const englishRedirect = legacyEnglishPrefixRedirect(url);
     if (englishRedirect) return englishRedirect;
     const redirect = legacyGuideRedirect(url);

@@ -10,7 +10,7 @@ updated: 2026-07-16
 
 ## 1. 选择兼容基线
 
-使用 AetherEdge `v0.0.1`、AetherContracts `v0.1.0-alpha.3`，并选择读取同一份完整契约锁定文件的 AetherCloud 版本。请先在[版本兼容矩阵](https://docs.aetheriot.dev/zh/compatibility/version-matrix/)中确认准确组合。
+使用 AetherEdge `v0.0.1`、AetherContracts `v0.1.0-alpha.3`，并选择读取同一份完整契约锁定文件的 AetherCloud 版本。请先在[版本兼容矩阵](https://docs.aetheriot.ai/zh/compatibility/version-matrix/)中确认准确组合。
 
 不要使用 `main`、`latest`、版本范围或相邻目录中的源码来推断契约行为。
 
@@ -22,7 +22,7 @@ updated: 2026-07-16
 cargo run -p aether-example-minimal-gateway
 ```
 
-该示例不会配对或控制任何设备，也不需要消息代理或云服务。如需安装受治理的运行时，请参阅[入门任务](https://docs.aetheriot.dev/zh/guides/getting-started/)。
+该示例不会配对或控制任何设备，也不需要消息代理或云服务。如需安装受治理的运行时，请参阅[入门任务](https://docs.aetheriot.ai/zh/guides/getting-started/)。
 
 ## 3. 验证公共协议版本
 

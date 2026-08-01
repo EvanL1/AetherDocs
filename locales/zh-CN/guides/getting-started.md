@@ -16,7 +16,7 @@ updated: 2026-07-26
   -> 显式投运 -> 审计与运维
 ```
 
-各类操作员、解决方案开发者、应用和 AI 路径见 [AetherEdge 用户旅程](https://docs.aetheriot.dev/zh/overview/user-journeys/)。
+各类操作员、解决方案开发者、应用和 AI 路径见 [AetherEdge 用户旅程](https://docs.aetheriot.ai/zh/overview/user-journeys/)。
 
 ## 从 Release 安装
 
@@ -109,7 +109,7 @@ aether services start
 aether doctor
 ```
 
-`aether services start` 会启动 Docker Compose Stack。Compose 文件引用预构建镜像；如果目标主机尚无 `aetherems:latest`，可以运行 `./scripts/build-installer.sh` 从交叉编译的二进制文件构建镜像，或通过 `docker load` 加载预构建镜像归档。详情见[部署](https://docs.aetheriot.dev/zh/guides/deployment/)。
+`aether services start` 会启动 Docker Compose Stack。Compose 文件引用预构建镜像；如果目标主机尚无 `aetherems:latest`，可以运行 `./scripts/build-installer.sh` 从交叉编译的二进制文件构建镜像，或通过 `docker load` 加载预构建镜像归档。详情见[部署](https://docs.aetheriot.ai/zh/guides/deployment/)。
 
 `aether doctor` 检查必需的本地运行时；任何必需组件失败时都会以非零状态退出：
 
@@ -119,7 +119,7 @@ aether doctor
 4. **配置文件**：`global.yaml`、`io/io.yaml`、`automation/automation.yaml` 和 `automation/instances.yaml` 均存在。
 5. **共享内存**：Segment 文件 `/dev/shm/aether-rtdb.shm` 存在，并具有可读、有效的数据平面 Header 和新鲜的 IO Writer Heartbeat。SHM 是权威实时状态平面，因此缺失、陈旧、截断、符号链接或无效 SHM 都属于错误。安装刻意使用其他位置时，可以通过 `AETHER_SHM_PATH` 覆盖平台默认值。
 
-所有组件健康后，以下端口会开始监听。各服务职责见[系统架构](https://docs.aetheriot.dev/zh/concepts/architecture/)。打包组合只对远程公开经过认证的 API Gateway；另外五项进程 API 只监听 `127.0.0.1`：
+所有组件健康后，以下端口会开始监听。各服务职责见[系统架构](https://docs.aetheriot.ai/zh/concepts/architecture/)。打包组合只对远程公开经过认证的 API Gateway；另外五项进程 API 只监听 `127.0.0.1`：
 
 | 服务 | 端口 |
 |---|---|
@@ -146,7 +146,7 @@ export AETHER_ACCESS_TOKEN="$(curl -s http://localhost:6005/api/v1/auth/login \
 unset bootstrap_password digest
 ```
 
-Token 默认 30 分钟后过期；命令报告 `401` 时应重新登录。日常操作应使用专用账户，而不是引导管理员。认证端点见 [HTTP API 参考](https://docs.aetheriot.dev/zh/reference/http-api/)。
+Token 默认 30 分钟后过期；命令报告 `401` 时应重新登录。日常操作应使用专用账户，而不是引导管理员。认证端点见 [HTTP API 参考](https://docs.aetheriot.ai/zh/reference/http-api/)。
 
 ## 确认安全空状态
 
@@ -169,8 +169,8 @@ aether rules list
 
 第一个生产里程碑应是只读采集链路。连接一个默认禁用的 Channel，完成映射并验证质量和新鲜度，然后才审核规则或控制。
 
-- [AetherEdge 用户旅程](https://docs.aetheriot.dev/zh/overview/user-journeys/)：完整安全生命周期和角色路径
-- [连接设备](https://docs.aetheriot.dev/zh/guides/connect-devices/)：添加真实 Channel，并把点映射到 Instance
-- [编写规则](https://docs.aetheriot.dev/zh/guides/writing-rules/)：使用规则引擎实现自动化控制
-- [AI 助手](https://docs.aetheriot.dev/zh/guides/ai-assistants/)：通过 AI 使用 Aether
-- [部署](https://docs.aetheriot.dev/zh/guides/deployment/)：Docker Compose 详情和边缘安装器
+- [AetherEdge 用户旅程](https://docs.aetheriot.ai/zh/overview/user-journeys/)：完整安全生命周期和角色路径
+- [连接设备](https://docs.aetheriot.ai/zh/guides/connect-devices/)：添加真实 Channel，并把点映射到 Instance
+- [编写规则](https://docs.aetheriot.ai/zh/guides/writing-rules/)：使用规则引擎实现自动化控制
+- [AI 助手](https://docs.aetheriot.ai/zh/guides/ai-assistants/)：通过 AI 使用 Aether
+- [部署](https://docs.aetheriot.ai/zh/guides/deployment/)：Docker Compose 详情和边缘安装器

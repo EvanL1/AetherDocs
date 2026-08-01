@@ -31,4 +31,4 @@ AetherEdge 是 AetherIoT 的确定性边缘运行时。它连接现场设备，�
 
 仓库显示名称已经改为 AetherEdge。现有 crate、二进制、`aether` CLI、`aether-edge-sdk`、配置键、服务标识、安装包和协议标识在本次迁移中保持稳定。
 
-请先选择匹配的[用户旅程](https://docs.aetheriot.dev/zh/overview/user-journeys/)，再按[入门指南](https://docs.aetheriot.dev/zh/guides/getting-started/)启动安全空运行时，或按[智能体快速入门](https://docs.aetheriot.dev/zh/agent-quickstart/)连接只读助手。已有部署可使用[迁移指南](https://docs.aetheriot.dev/zh/migration/aetheriot-to-aetheredge/)。
+请先选择匹配的[用户旅程](https://docs.aetheriot.ai/zh/overview/user-journeys/)，再按[入门指南](https://docs.aetheriot.ai/zh/guides/getting-started/)启动安全空运行时，或按[智能体快速入门](https://docs.aetheriot.ai/zh/agent-quickstart/)连接只读助手。已有部署可使用[迁移指南](https://docs.aetheriot.ai/zh/migration/aetheriot-to-aetheredge/)。

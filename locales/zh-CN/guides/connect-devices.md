@@ -6,7 +6,7 @@ updated: 2026-07-10
 
 # 连接设备
 
-设备以通信服务拥有的 **Channel** 接入 Aether。一个 Channel 代表一条设备连接：协议、该协议所需的传输参数，以及描述设备暴露内容的点表。远程客户端仍然只能通过经过认证的 `aether-api:6005` 进入，不能直接连接 IO 进程端口。Channel 点随后映射到设备 **Instance**，也就是规则和应用使用的逻辑 Thing Model（参见[数据模型](https://docs.aetheriot.dev/zh/concepts/data-model/)）。
+设备以通信服务拥有的 **Channel** 接入 Aether。一个 Channel 代表一条设备连接：协议、该协议所需的传输参数，以及描述设备暴露内容的点表。远程客户端仍然只能通过经过认证的 `aether-api:6005` 进入，不能直接连接 IO 进程端口。Channel 点随后映射到设备 **Instance**，也就是规则和应用使用的逻辑 Thing Model（参见[数据模型](https://docs.aetheriot.ai/zh/concepts/data-model/)）。
 
 ## 通道
 

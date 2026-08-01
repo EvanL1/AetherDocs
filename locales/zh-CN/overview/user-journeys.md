@@ -59,7 +59,7 @@ sudo ./AetherEdge-<arch>-<version>.run
 aether doctor
 ```
 
-成功意味着六项服务、SQLite、配置和权威 SHM 平面均健康，同时现场仍未投运。安装和引导身份的详细步骤见[入门指南](https://docs.aetheriot.dev/zh/guides/getting-started/)。
+成功意味着六项服务、SQLite、配置和权威 SHM 平面均健康，同时现场仍未投运。安装和引导身份的详细步骤见[入门指南](https://docs.aetheriot.ai/zh/guides/getting-started/)。
 
 ## 2. 建立操作员身份
 
@@ -82,7 +82,7 @@ IO、automation、history、uplink 和 alarm API 始终只监听回环地址。�
 5. 检查生成的拓扑和尚未解析的映射；
 6. 显式启用 Channel。
 
-尚无硬件时，应先使用虚拟 Channel 或协议模拟器。Channel 和路由流程见[连接设备](https://docs.aetheriot.dev/zh/guides/connect-devices/)。
+尚无硬件时，应先使用虚拟 Channel 或协议模拟器。Channel 和路由流程见[连接设备](https://docs.aetheriot.ai/zh/guides/connect-devices/)。
 
 ## 4. 验证只读数据链路
 
@@ -131,7 +131,7 @@ AetherEdge 刻意不提供通用浏览器 Console。下游 UI 是可替换 API �
 6. 保留确认、request ID、receipt 和审计证据；
 7. 检查实际结果，并让助手恢复只读模式。
 
-完整的对话式意图编译器、历史仿真、临时行为到期和持续效果评估仍是产品方向，不是当前测试版已经交付的功能。参见[连接 AI 助手](https://docs.aetheriot.dev/zh/guides/ai-assistants/)和[平台状态](https://docs.aetheriot.dev/zh/roadmap/status/)。
+完整的对话式意图编译器、历史仿真、临时行为到期和持续效果评估仍是产品方向，不是当前测试版已经交付的功能。参见[连接 AI 助手](https://docs.aetheriot.ai/zh/guides/ai-assistants/)和[平台状态](https://docs.aetheriot.ai/zh/roadmap/status/)。
 
 ## 8. 运维与扩展
 

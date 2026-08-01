@@ -369,7 +369,7 @@ describe('rewriteRelativeLinks', () => {
       edgeLinkOptions
     );
     expect(out).toBe(
-      'See [Rule Engine](https://docs.aetheriot.dev/concepts/rule-engine) for details.'
+      'See [Rule Engine](https://docs.aetheriot.ai/concepts/rule-engine) for details.'
     );
   });
 
@@ -383,7 +383,7 @@ describe('rewriteRelativeLinks', () => {
       edgeLinkOptions
     );
     expect(out).toBe(
-      '[Rule Engine](https://docs.aetheriot.dev/concepts/rule-engine#some-heading)'
+      '[Rule Engine](https://docs.aetheriot.ai/concepts/rule-engine#some-heading)'
     );
   });
 
@@ -400,7 +400,7 @@ describe('rewriteRelativeLinks', () => {
       edgeLinkOptions
     );
     expect(out).toBe(
-      'See [aether-ports](https://docs.aetheriot.dev/crates/aether-ports) for details.'
+      'See [aether-ports](https://docs.aetheriot.ai/crates/aether-ports) for details.'
     );
   });
 
@@ -421,7 +421,7 @@ describe('rewriteRelativeLinks', () => {
     );
 
     expect(out).toBe(
-      'See [Telemetry](https://docs.aetheriot.dev/aethercloud/concepts/iot-telemetry).'
+      'See [Telemetry](https://docs.aetheriot.ai/aethercloud/concepts/iot-telemetry).'
     );
   });
 
@@ -439,7 +439,7 @@ describe('rewriteRelativeLinks', () => {
     );
 
     expect(out).toBe(
-      'Read [Platform Overview](https://docs.aetheriot.dev/overview/platform/).'
+      'Read [Platform Overview](https://docs.aetheriot.ai/overview/platform/).'
     );
   });
 
@@ -464,24 +464,24 @@ describe('rewriteRelativeLinks', () => {
 describe('stripLegacyEnglishPrefix', () => {
   it('strips the retired /en prefix from published document URLs', () => {
     const content =
-      'Start with the [Agent Quickstart](https://docs.aetheriot.dev/en/agent-quickstart/), ' +
-      'then read [Compatibility](https://docs.aetheriot.dev/en/aethercontracts/compatibility/).';
+      'Start with the [Agent Quickstart](https://docs.aetheriot.ai/en/agent-quickstart/), ' +
+      'then read [Compatibility](https://docs.aetheriot.ai/en/aethercontracts/compatibility/).';
 
     expect(stripLegacyEnglishPrefix(content)).toBe(
-      'Start with the [Agent Quickstart](https://docs.aetheriot.dev/agent-quickstart/), ' +
-        'then read [Compatibility](https://docs.aetheriot.dev/aethercontracts/compatibility/).'
+      'Start with the [Agent Quickstart](https://docs.aetheriot.ai/agent-quickstart/), ' +
+        'then read [Compatibility](https://docs.aetheriot.ai/aethercontracts/compatibility/).'
     );
   });
 
   it('maps the bare legacy English root to the site root', () => {
     expect(
-      stripLegacyEnglishPrefix('See [docs.aetheriot.dev](https://docs.aetheriot.dev/en/). Or (https://docs.aetheriot.dev/en).')
-    ).toBe('See [docs.aetheriot.dev](https://docs.aetheriot.dev/). Or (https://docs.aetheriot.dev).');
+      stripLegacyEnglishPrefix('See [docs.aetheriot.ai](https://docs.aetheriot.ai/en/). Or (https://docs.aetheriot.ai/en).')
+    ).toBe('See [docs.aetheriot.ai](https://docs.aetheriot.ai/). Or (https://docs.aetheriot.ai).');
   });
 
   it('leaves non-locale path segments and other hosts unchanged', () => {
     const content =
-      '[Energy](https://docs.aetheriot.dev/energy-pack/) and ' +
+      '[Energy](https://docs.aetheriot.ai/energy-pack/) and ' +
       '[elsewhere](https://example.com/en/agent-quickstart/).';
 
     expect(stripLegacyEnglishPrefix(content)).toBe(content);

@@ -82,7 +82,7 @@ describe('assertUserFacingDocumentation', () => {
         {
           path: 'guide.md',
           content:
-            'Read [missing](https://docs.aetheriot.dev/reference/not-published).\n',
+            'Read [missing](https://docs.aetheriot.ai/reference/not-published).\n',
         },
       ])
     ).toThrow(/published documentation route/);
@@ -99,7 +99,7 @@ describe('assertUserFacingDocumentation', () => {
         {
           path: 'guide.md',
           content:
-            'Read [Compatibility](https://docs.aetheriot.dev/zh/compatibility/version-matrix).\n',
+            'Read [Compatibility](https://docs.aetheriot.ai/zh/compatibility/version-matrix).\n',
         },
         chineseTarget,
       ])
@@ -110,7 +110,7 @@ describe('assertUserFacingDocumentation', () => {
         {
           path: 'guide.md',
           content:
-            'Read the [Simplified Chinese version](https://docs.aetheriot.dev/zh/compatibility/version-matrix).\n',
+            'Read the [Simplified Chinese version](https://docs.aetheriot.ai/zh/compatibility/version-matrix).\n',
         },
         chineseTarget,
       ])
@@ -123,12 +123,12 @@ describe('assertUserFacingDocumentation', () => {
         {
           path: 'guide.md',
           content:
-            'Read the [compatibility guide](https://docs.aetheriot.dev/compatibility/version-matrix).\n',
+            'Read the [compatibility guide](https://docs.aetheriot.ai/compatibility/version-matrix).\n',
         },
         {
           path: 'zh/guide.md',
           content:
-            '请阅读[兼容性指南](https://docs.aetheriot.dev/zh/compatibility/version-matrix)。\n',
+            '请阅读[兼容性指南](https://docs.aetheriot.ai/zh/compatibility/version-matrix)。\n',
         },
         {
           path: 'compatibility/version-matrix.md',

@@ -5,7 +5,7 @@ covering
 [AetherEdge](https://github.com/EvanL1/AetherEdge),
 [AetherCloud](https://github.com/EvanL1/AetherCloud), and
 [AetherContracts](https://github.com/EvanL1/AetherContracts). It is deployed at the canonical production domain
-[`docs.aetheriot.dev`](https://docs.aetheriot.dev/).
+[`docs.aetheriot.ai`](https://docs.aetheriot.ai/).
 
 - Browsers receive a searchable Astro + Starlight site.
 - Agents can append `.md` or request `Accept: text/markdown`.

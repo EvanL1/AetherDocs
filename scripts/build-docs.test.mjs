@@ -112,7 +112,7 @@ describe('renderLlmsIndex', () => {
       },
     ];
 
-    const output = renderLlmsIndex(documents, 'https://docs.aetheriot.dev');
+    const output = renderLlmsIndex(documents, 'https://docs.aetheriot.ai');
     expect(output).toMatch(/^# AetherIoT\n/);
     expect(output).toContain('## Agent Task Manual');
     expect(output).toContain('## Deployment and Operations');
@@ -124,12 +124,12 @@ describe('renderLlmsIndex', () => {
     expect(output).not.toContain('## Tutorials');
     expect(output).not.toContain('llms-full.txt');
     expect(output).toContain(
-      '- [Edge to Cloud](https://docs.aetheriot.dev/guides/edge-contracts-cloud.md): Complete a governed integration task.'
+      '- [Edge to Cloud](https://docs.aetheriot.ai/guides/edge-contracts-cloud.md): Complete a governed integration task.'
     );
     expect(output).toContain(
-      '- [Agent Quickstart](https://docs.aetheriot.dev/agent-quickstart.md): Install Aether.'
+      '- [Agent Quickstart](https://docs.aetheriot.ai/agent-quickstart.md): Install Aether.'
     );
-    expect(output).not.toContain('[Aether](https://docs.aetheriot.dev/)');
+    expect(output).not.toContain('[Aether](https://docs.aetheriot.ai/)');
     expect(output).not.toContain('/zh/');
     expect(findLlmsCoverageViolations(documents, output)).toEqual([]);
   });
@@ -176,7 +176,7 @@ describe('renderLlmsIndex', () => {
 
     const output = renderLlmsIndex(
       documents,
-      'https://docs.aetheriot.dev',
+      'https://docs.aetheriot.ai',
       'zh-CN'
     );
     expect(output).toContain('## 智能体任务手册');
@@ -187,7 +187,7 @@ describe('renderLlmsIndex', () => {
     expect(output).toContain('## 兼容性与状态');
     expect(output).toContain('文档页面支持 Markdown');
     expect(output).toContain(
-      '- [部署边缘运行时](https://docs.aetheriot.dev/zh/guides/deployment.md): 部署并验证边缘运行时。'
+      '- [部署边缘运行时](https://docs.aetheriot.ai/zh/guides/deployment.md): 部署并验证边缘运行时。'
     );
     expect(output).not.toContain('## Agent Task Manual');
     expect(output).not.toContain('## Tutorials');
@@ -220,14 +220,14 @@ describe('findLlmsLinkViolations', () => {
       findLlmsLinkViolations(
         [
           '# AetherIoT',
-          '- [Good](https://docs.aetheriot.dev/reference/cli.md)',
-          '- [HTML route](https://docs.aetheriot.dev/reference/http-api)',
-          '- [Forbidden corpus](https://docs.aetheriot.dev/llms-full.txt)',
+          '- [Good](https://docs.aetheriot.ai/reference/cli.md)',
+          '- [HTML route](https://docs.aetheriot.ai/reference/http-api)',
+          '- [Forbidden corpus](https://docs.aetheriot.ai/llms-full.txt)',
         ].join('\n')
       )
     ).toEqual([
-      'https://docs.aetheriot.dev/reference/http-api',
-      'https://docs.aetheriot.dev/llms-full.txt',
+      'https://docs.aetheriot.ai/reference/http-api',
+      'https://docs.aetheriot.ai/llms-full.txt',
     ]);
   });
 });
@@ -239,8 +239,8 @@ describe('findLlmsCoverageViolations', () => {
       { slug: 'aethercloud/concepts/architecture' },
     ];
     const index = [
-      '- [Edge](https://docs.aetheriot.dev/concepts/architecture.md)',
-      '- [Cloud](https://docs.aetheriot.dev/aethercloud/concepts/architecture.md)',
+      '- [Edge](https://docs.aetheriot.ai/concepts/architecture.md)',
+      '- [Cloud](https://docs.aetheriot.ai/aethercloud/concepts/architecture.md)',
     ].join('\n');
 
     expect(findLlmsCoverageViolations(documents, index)).toEqual([]);

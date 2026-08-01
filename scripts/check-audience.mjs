@@ -7,7 +7,7 @@ import { computeSlug } from './slug.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CONTENT_DIR = path.resolve(__dirname, '..', 'src', 'content', 'docs');
-const DOCUMENTATION_ORIGIN = 'https://docs.aetheriot.dev';
+const DOCUMENTATION_ORIGIN = 'https://docs.aetheriot.ai';
 const INTERNAL_REFERENCE_PATTERN = /\bADR-\d{4}\b|(?:^|[/])docs\/adr\//i;
 const MARKDOWN_LINK_PATTERN = /!?\[([^\]]*)\]\(([^)\s]+)(?:\s+[^)]*)?\)/g;
 const ABSOLUTE_LINK_PATTERN = /^(?:https?:\/\/|mailto:|tel:|#)/i;

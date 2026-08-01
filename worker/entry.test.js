@@ -3,12 +3,16 @@ import { env } from 'cloudflare:workers';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import worker from './entry.js';
 
-async function run(path, init) {
-  const request = new Request(`https://example.com${path}`, init);
+async function runUrl(url, init) {
+  const request = new Request(url, init);
   const ctx = createExecutionContext();
   const response = await worker.fetch(request, env, ctx);
   await waitOnExecutionContext(ctx);
   return response;
+}
+
+async function run(path, init) {
+  return runUrl(`https://example.com${path}`, init);
 }
 
 afterEach(() => {
@@ -55,6 +59,46 @@ describe('dual-mode documentation service', () => {
 
     expect(response.status).toBe(301);
     expect(response.headers.get('Location')).toBe(location);
+  });
+
+  it.each([
+    ['https://docs.aetheriot.dev/', 'https://docs.aetheriot.ai/'],
+    [
+      'https://docs.aetheriot.dev/guides/getting-started/',
+      'https://docs.aetheriot.ai/guides/getting-started/',
+    ],
+    [
+      'https://docs.aetheriot.dev/llms.txt?ref=agent',
+      'https://docs.aetheriot.ai/llms.txt?ref=agent',
+    ],
+    [
+      'https://docs.aetheriot.dev/zh/guides/connect-devices.md',
+      'https://docs.aetheriot.ai/zh/guides/connect-devices.md',
+    ],
+  ])('permanently redirects the retired documentation host %s', async (url, location) => {
+    const response = await runUrl(url, { redirect: 'manual' });
+
+    expect(response.status).toBe(301);
+    expect(response.headers.get('Location')).toBe(location);
+  });
+
+  it('redirects a legacy path on the legacy host to the product domain first', async () => {
+    const response = await runUrl('https://docs.aetheriot.dev/en/agent-quickstart/', {
+      redirect: 'manual',
+    });
+
+    expect(response.status).toBe(301);
+    expect(response.headers.get('Location')).toBe(
+      'https://docs.aetheriot.ai/en/agent-quickstart/',
+    );
+  });
+
+  it('serves a request that already arrives on the product domain', async () => {
+    const response = await runUrl('https://docs.aetheriot.ai/agent-quickstart/', {
+      redirect: 'manual',
+    });
+
+    expect(response.status).toBe(200);
   });
 
   it('serves HTML to a normal browser request', async () => {
