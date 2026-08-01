@@ -1,5 +1,8 @@
 # AetherDocs
 
+**Product site:** [aetheriot.ai](https://aetheriot.ai/) ·
+**Developer site:** [aetheriot.dev](https://aetheriot.dev/)
+
 The independent, dual-mode unified documentation service for AetherIoT,
 covering
 [AetherEdge](https://github.com/EvanL1/AetherEdge),
