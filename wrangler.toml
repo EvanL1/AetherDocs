@@ -2,11 +2,11 @@ name = "docs"
 main = "worker/entry.js"
 compatibility_date = "2026-07-11"
 
-[assets]
-directory = "./dist"
-binding = "ASSETS"
-run_worker_first = true
-
+# routes must precede the [assets] table. TOML assigns every key after a table
+# header to that table, so a routes list placed below [assets] is read as
+# assets.routes, which wrangler ignores with only a warning — the worker then
+# deploys with no custom domain at all.
+#
 # docs.aetheriot.dev stays bound so the worker can answer its requests with a
 # permanent redirect to the product domain. Removing it would break every
 # published link and every agent that fetched llms.txt from the old origin.
@@ -14,3 +14,13 @@ routes = [
   { pattern = "docs.aetheriot.ai", custom_domain = true },
   { pattern = "docs.aetheriot.dev", custom_domain = true }
 ]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+run_worker_first = true
+
+# POSTHOG_KEY is a secret, set with `wrangler secret put POSTHOG_KEY`, not a
+# var: keeping it out of this file keeps it out of the repository. When it is
+# unset the Worker records nothing, which is what local development and the
+# test suite rely on.
