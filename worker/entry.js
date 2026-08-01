@@ -1,3 +1,5 @@
+import { recordRequest } from './analytics.js';
+
 const MARKDOWN_CONTENT_TYPE = 'text/markdown; charset=utf-8';
 const TEXT_CONTENT_TYPE = 'text/plain; charset=utf-8';
 const DOCUMENTATION_HOST = 'docs.aetheriot.ai';
@@ -115,7 +117,7 @@ async function fetchAsset(request, env, assetPath) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       return plainResponse('Method not allowed.\n', 405, request.method, {
         Allow: 'GET, HEAD',
@@ -123,6 +125,9 @@ export default {
     }
 
     const url = new URL(request.url);
+    // Recorded before the redirect branches, so a request that only ever
+    // reaches the legacy host is still counted under that host.
+    recordRequest(request, url, env, ctx);
     const domainRedirect = legacyDomainRedirect(url);
     if (domainRedirect) return domainRedirect;
     const englishRedirect = legacyEnglishPrefixRedirect(url);

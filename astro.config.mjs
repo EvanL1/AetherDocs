@@ -17,6 +17,7 @@ export default defineConfig({
       customCss: ['./src/styles/custom.css'],
       components: {
         ThemeProvider: './src/components/ThemeProvider.astro',
+        Head: './src/components/Head.astro',
       },
       expressiveCode: {
         getBlockLocale({ file }) {
