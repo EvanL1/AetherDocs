@@ -116,7 +116,37 @@ async function fetchAsset(request, env, assetPath) {
   return env.ASSETS.fetch(new Request(assetUrl, request));
 }
 
-export default {
+// Sent on every response. successHeaders() already set nosniff, but it only
+// covers the success paths — this handler returns from more than a dozen
+// places, including three redirects and two error paths, and each one would
+// have to remember. Attaching at the boundary is what makes that impossible to
+// forget.
+//
+// X-Frame-Options is DENY because nothing embeds these pages. Relax it if that
+// changes; framing blocked this way is hard to diagnose from the embedding
+// side. Content-Security-Policy is deliberately absent: Starlight ships inline
+// styles and Pagefind loads its index at runtime, so a policy guessed from
+// reading the source would break search rather than secure it.
+const securityHeaders = Object.freeze({
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+});
+
+function withSecurityHeaders(response) {
+  const headers = new Headers(response.headers);
+  for (const [name, value] of Object.entries(securityHeaders)) {
+    headers.set(name, value);
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
+const handler = {
   async fetch(request, env, ctx) {
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       return plainResponse('Method not allowed.\n', 405, request.method, {
@@ -191,5 +221,11 @@ export default {
       statusText: response.statusText,
       headers: successHeaders(response.headers, contentType, vary),
     });
+  },
+};
+
+export default {
+  async fetch(request, env, ctx) {
+    return withSecurityHeaders(await handler.fetch(request, env, ctx));
   },
 };

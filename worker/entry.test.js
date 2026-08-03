@@ -101,6 +101,26 @@ describe('dual-mode documentation service', () => {
     expect(response.status).toBe(200);
   });
 
+  // A served page, a redirect, and a rejected method leave this worker by three
+  // different paths. Checking all three is what proves the headers are attached
+  // at the boundary rather than on the success path alone.
+  it.each([
+    ['served page', () => run('/agent-quickstart/')],
+    ['redirect', () => run('/en/', { redirect: 'manual' })],
+    ['rejected method', () => run('/', { method: 'POST' })],
+  ])('sends the security headers on a %s', async (_label, request) => {
+    const response = await request();
+
+    expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff');
+    expect(response.headers.get('X-Frame-Options')).toBe('DENY');
+    expect(response.headers.get('Referrer-Policy')).toBe(
+      'strict-origin-when-cross-origin',
+    );
+    expect(response.headers.get('Permissions-Policy')).toBe(
+      'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+    );
+  });
+
   it('serves HTML to a normal browser request', async () => {
     const response = await run('/agent-quickstart/');
 
