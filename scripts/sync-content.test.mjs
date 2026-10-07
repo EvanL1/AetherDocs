@@ -9,7 +9,6 @@ import {
   findCollisions,
   findRouteCollisions,
   rewriteRelativeLinks,
-  stripLegacyEnglishPrefix,
   stripRedundantTitleHeading,
   synthesizeFrontmatter,
 } from './sync-content.mjs';
@@ -458,39 +457,6 @@ describe('rewriteRelativeLinks', () => {
     expect(out).toBe(
       'Read [the invariants](https://github.com/EvanL1/AetherCloud/blob/main/ai/invariants.md).'
     );
-  });
-});
-
-describe('stripLegacyEnglishPrefix', () => {
-  it('strips the retired /en prefix from published document URLs', () => {
-    const content =
-      'Start with the [Agent Quickstart](https://docs.aetheriot.ai/en/agent-quickstart/), ' +
-      'then read [Compatibility](https://docs.aetheriot.ai/en/aethercontracts/compatibility/).';
-
-    expect(stripLegacyEnglishPrefix(content)).toBe(
-      'Start with the [Agent Quickstart](https://docs.aetheriot.ai/agent-quickstart/), ' +
-        'then read [Compatibility](https://docs.aetheriot.ai/aethercontracts/compatibility/).'
-    );
-  });
-
-  it('maps the bare legacy English root to the site root', () => {
-    expect(
-      stripLegacyEnglishPrefix('See [docs.aetheriot.ai](https://docs.aetheriot.ai/en/). Or (https://docs.aetheriot.ai/en).')
-    ).toBe('See [docs.aetheriot.ai](https://docs.aetheriot.ai/). Or (https://docs.aetheriot.ai).');
-  });
-
-  it('leaves non-locale path segments and other hosts unchanged', () => {
-    const content =
-      '[Energy](https://docs.aetheriot.ai/energy-pack/) and ' +
-      '[elsewhere](https://example.com/en/agent-quickstart/).';
-
-    expect(stripLegacyEnglishPrefix(content)).toBe(content);
-  });
-
-  it('respects a configured public base URL', () => {
-    expect(
-      stripLegacyEnglishPrefix('[Guide](https://staging.example.dev/en/guides/x/)', 'https://staging.example.dev')
-    ).toBe('[Guide](https://staging.example.dev/guides/x/)');
   });
 });
 
