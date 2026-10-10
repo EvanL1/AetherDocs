@@ -22,7 +22,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/starlight": "^0.41.3",
-    "@cloudflare/vitest-pool-workers": "^0.18.4",
+    "@cloudflare/vitest-pool-workers": "^0.23.0",
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/geist-mono": "^5.2.8",
     "@vitest/coverage-v8": "^4.1.10",
@@ -30,10 +30,10 @@
     "fast-glob": "^3.3.3",
     "github-slugger": "^2.0.0",
     "mdast-util-from-markdown": "^2.0.3",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.5",
     "starlight-links-validator": "^0.25.2",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10",
-    "wrangler": "^4.110.0"
+    "wrangler": "^4.149.0"
   }
 }
