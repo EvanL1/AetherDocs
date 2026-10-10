@@ -37,15 +37,6 @@ describe('AetherIoT product-family documentation', () => {
     expect(matrix).toContain('It is not production');
   });
 
-  it('renames repository-facing identity while preserving software and protocol names', () => {
-    const migration = readEdge('docs/migration/aetheriot-to-aetheredge.md');
-
-    expect(migration).toContain('https://github.com/EvanL1/AetherEdge');
-    expect(migration).toContain('The `aether` CLI and `aether-*` binaries');
-    expect(migration).toContain('CloudLink, Thing Model, Schema, TCK');
-    expect(migration).toContain('Never rewrite published artifacts');
-  });
-
   it('publishes detailed Cloud and Contracts source collections', () => {
     const sources = JSON.parse(readDocs('content.sources.json'));
     expect(sources.sources.map(({ id }) => id)).toEqual([

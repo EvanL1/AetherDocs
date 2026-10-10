@@ -37,8 +37,6 @@ AetherEMS            构建在平台上的能源管理解决方案
 - 现有 `aether-*` crate、`aether` CLI、`aether-edge-sdk`、安装包名称和协议标识保持稳定。
 - 历史发行制品和通过摘要锁定的 AetherContracts 包必须逐字节保留；显示名称变化不能改写既有证据。
 
-仓库迁移细节见 [AetherIot 到 AetherEdge 迁移说明](/zh/migration/aetheriot-to-aetheredge/)。
-
 ## 文档权威
 
 本站是共同入口。每个产品仓库仍是自身实现细节的权威来源，AetherContracts 仍是共享协议行为的唯一权威来源。统一文档只负责组织和链接这些来源，不复制出第二套规范权威。
