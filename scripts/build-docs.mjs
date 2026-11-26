@@ -292,6 +292,22 @@ export function renderLlmsIndex(documents, publicBaseUrl, language = 'en') {
   ].join('\n');
 }
 
+const SECURITY_TXT_LIFETIME_DAYS = 180;
+
+// Generated per build: RFC 9116 requires Expires, and a static file would go stale.
+export function renderSecurityTxt(publicBaseUrl, now) {
+  const baseUrl = publicBaseUrl.replace(/\/$/, '');
+  const expires = new Date(now.getTime() + SECURITY_TXT_LIFETIME_DAYS * 86_400_000);
+  return [
+    'Contact: https://github.com/EvanL1/AetherEdge/security/advisories/new',
+    `Expires: ${expires.toISOString()}`,
+    'Preferred-Languages: en, zh',
+    `Canonical: ${baseUrl}/.well-known/security.txt`,
+    'Policy: https://github.com/EvanL1/AetherEdge/blob/main/SECURITY.md',
+    '',
+  ].join('\n');
+}
+
 /* v8 ignore start -- CLI filesystem orchestration is exercised by npm run build. */
 async function main() {
   let htmlBuildPresent = true;
@@ -400,6 +416,12 @@ async function main() {
   await fs.writeFile(
     path.join(DIST_DIR, 'zh', 'llms.txt'),
     chineseIndex,
+    'utf8'
+  );
+  await fs.mkdir(path.join(DIST_DIR, '.well-known'), { recursive: true });
+  await fs.writeFile(
+    path.join(DIST_DIR, '.well-known', 'security.txt'),
+    renderSecurityTxt(publicBaseUrl, new Date()),
     'utf8'
   );
   console.log(`build-docs: added ${documents.length} Markdown twins and 2 localized text indexes`);
