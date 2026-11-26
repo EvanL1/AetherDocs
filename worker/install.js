@@ -6,6 +6,11 @@ const GUIDE_URL = 'https://docs.aetheriot.ai/guides/getting-started/';
 const SCRIPT_PATHS = new Set(['/', '/install.sh']);
 const TEXT_CONTENT_TYPE = 'text/plain; charset=utf-8';
 const CACHE_SECONDS = 300;
+const UPSTREAM_TIMEOUT_MS = 10_000;
+
+export function isInstallHost(hostname) {
+  return hostname.replace(/\.$/, '') === INSTALL_HOST;
+}
 
 // Error bodies are valid shell: `curl … | bash` without -f pipes them into bash.
 function failure(status, message, bodiless) {
@@ -18,7 +23,12 @@ function failure(status, message, bodiless) {
 async function fetchScript() {
   try {
     const response = await fetch(SCRIPT_SOURCE, {
-      cf: { cacheTtl: CACHE_SECONDS, cacheEverything: true },
+      // Only a good answer is cached; an upstream error must not be pinned at the edge.
+      cf: {
+        cacheEverything: true,
+        cacheTtlByStatus: { '200-299': CACHE_SECONDS, '300-599': -1 },
+      },
+      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     });
     return response.ok ? await response.text() : '';
   } catch {

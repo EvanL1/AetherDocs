@@ -88,7 +88,7 @@ text responses and must never fall back to HTML.
 The same Worker answers `get.aetheriot.ai` (`worker/install.js`). It serves the
 AetherEdge CLI installer from `tools/aether/install.sh` on the AetherEdge `main`
 branch, redirects browsers at the root to the getting-started guide, and never
-serves documentation assets on that host. Its error bodies are valid shell.
+serves documentation assets on that host. Its 404 and 502 bodies are valid shell.
 
 `public/robots.txt` and the generated `/.well-known/security.txt` are
 site-owned files. `scripts/build-docs.mjs` writes `security.txt` on every build

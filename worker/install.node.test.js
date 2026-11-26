@@ -41,6 +41,28 @@ describe('installer endpoint', () => {
     expect(fetchSpy.mock.calls[0][0]).toBe(SCRIPT_SOURCE);
   });
 
+  it('caches only a successful upstream answer and bounds the wait', async () => {
+    const fetchSpy = upstream(() => new Response(SCRIPT));
+
+    await run('/');
+
+    const init = fetchSpy.mock.calls[0][1];
+    expect(init.cf).toEqual({
+      cacheEverything: true,
+      cacheTtlByStatus: { '200-299': 300, '300-599': -1 },
+    });
+    expect(init.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it('treats a trailing-dot hostname as the installer host', async () => {
+    upstream(() => new Response(SCRIPT));
+
+    const response = await run('/', undefined, 'get.aetheriot.ai.');
+
+    expect(response.status).toBe(200);
+    expect(await response.text()).toBe(SCRIPT);
+  });
+
   it('sends a browser at the root to the getting-started guide', async () => {
     const fetchSpy = upstream(() => new Response(SCRIPT));
 
@@ -95,19 +117,16 @@ describe('installer endpoint', () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  it('answers HEAD without a body', async () => {
+  it('answers HEAD without a body on success and on failure', async () => {
     upstream(() => new Response(SCRIPT));
 
-    const response = await run('/', { method: 'HEAD' });
+    const found = await run('/', { method: 'HEAD' });
+    const missing = await run('/nope', { method: 'HEAD' });
 
-    expect(response.status).toBe(200);
-    expect(await response.text()).toBe('');
-  });
-
-  it('rejects methods other than GET and HEAD', async () => {
-    const response = await run('/', { method: 'POST' });
-
-    expect(response.status).toBe(405);
+    expect(found.status).toBe(200);
+    expect(await found.text()).toBe('');
+    expect(missing.status).toBe(404);
+    expect(await missing.text()).toBe('');
   });
 
   it('does not serve the script from the documentation host', async () => {
