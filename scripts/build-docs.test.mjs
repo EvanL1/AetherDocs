@@ -11,6 +11,7 @@ import {
   partitionDocumentsByLocale,
   renderDocument,
   renderLlmsIndex,
+  renderSecurityTxt,
   slugToOutputRelPath,
 } from './build-docs.mjs';
 
@@ -366,5 +367,28 @@ describe('findOutputCollisions', () => {
         sources: ['concepts/Architecture.md', 'concepts/architecture.md'],
       },
     ]);
+  });
+});
+
+describe('renderSecurityTxt', () => {
+  const rendered = renderSecurityTxt('https://docs.aetheriot.ai/', new Date('2026-11-26T03:17:00.000Z'));
+
+  it('names a private reporting channel and the published policy', () => {
+    expect(rendered).toContain(
+      'Contact: https://github.com/EvanL1/AetherEdge/security/advisories/new\n'
+    );
+    expect(rendered).toContain(
+      'Policy: https://github.com/EvanL1/AetherEdge/blob/main/SECURITY.md\n'
+    );
+  });
+
+  it('expires 180 days after the build so a nightly rebuild keeps it current', () => {
+    expect(rendered).toContain('Expires: 2027-05-25T03:17:00.000Z\n');
+  });
+
+  it('declares its own canonical location without a doubled slash', () => {
+    expect(rendered).toContain(
+      'Canonical: https://docs.aetheriot.ai/.well-known/security.txt\n'
+    );
   });
 });
