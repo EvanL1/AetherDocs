@@ -336,7 +336,7 @@ aether doctor              # Docker, core services, SQLite, config files,
 AETHER_API_HOST=127.0.0.1
 ```
 
-创建隧道，并把你所控制的域上的一个主机名路由到它：
+创建隧道，并把你所控制的域上的一个主机名路由到它。请使用 `edge.example.test` 这样的一级子域名：Cloudflare 的默认证书不覆盖 `edge.home.example.test` 这类更深的名称，而 CLI 会拒绝证书校验不通过的主机名。
 
 ```bash
 cloudflared tunnel login
