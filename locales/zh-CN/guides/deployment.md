@@ -317,6 +317,66 @@ aether doctor              # Docker, core services, SQLite, config files,
 
 `aether services refresh` 从设备上已安装的合成和映像集重新创建容器。这是相同版本的恢复操作，不支持替换已安装版本的路径。请参阅[入门](/zh/guides/getting-started) 了解健康的 `aether doctor` 运行涵盖的内容。
 
+## 通过单一 HTTPS 入口远程访问
+
+远程客户端只能经由 `aether-api` 的 `6005` 端口访问 AetherEdge，而 CLI 与 MCP 桥接拒绝在非环回的明文 HTTP 上发送令牌。网关本身只说明文 HTTP，因此常驻的远程访问需要在它前面放一个终结证书校验 TLS 的入口。任何能做到这一点的反向代理都可以。本节给出一个面向常见边缘场景的具体配方：主机位于 NAT 之后，没有公网地址，也没有入站端口。
+
+[Cloudflare Tunnel](https://developers.cloudflare.com/tunnel/) 适合这种场景，因为 `cloudflared` 由主机主动向外拨号。它是由运维人员管理的主机进程，不属于 AetherEdge：运行时不会因此产生依赖，停掉它即可撤除远程访问，六个服务不受影响。
+
+入口改变了什么，没有改变什么：
+
+- **认证不变**。网关不读取任何转发头，也不给环回客户端任何特权，所以经隧道到达的请求与本地请求的授权方式完全相同：看访问令牌、角色和 scope。
+- **TLS 在 Cloudflare 终结**。Cloudflare 能读到经过隧道的每一个令牌和载荷。如果某个站点不能接受这一点，请改用[连接 AI 助手](/zh/guides/ai-assistants)中的 SSH 方式。
+- **限流要在边缘自己做**。网关没有按操作者或来源 IP 的限流器。暴露主机名之前，先为它添加一条[速率限制规则](https://developers.cloudflare.com/waf/rate-limiting-rules/)。
+- **边缘超时不是命令结果**。网关未在 Cloudflare 的[代理读取超时](https://developers.cloudflare.com/fundamentals/reference/connection-limits/)内响应时，Cloudflare 返回 `524`。命令可能已经被接受。按其他结果未知的情况处理：保留 `request_id`，不要自动重试。
+
+把网关绑定到环回地址，使隧道成为唯一的远程路径。各服务使用主机网络，所以同一主机上的 `cloudflared` 仍能访问它。在 Compose 部署中，于 `.env` 里设置下面这一项并重建 `aether-api`：
+
+```bash
+AETHER_API_HOST=127.0.0.1
+```
+
+创建隧道，并把你所控制的域上的一个主机名路由到它。请使用 `edge.example.test` 这样的一级子域名：Cloudflare 的默认证书不覆盖 `edge.home.example.test` 这类更深的名称，而 CLI 会拒绝证书校验不通过的主机名。
+
+```bash
+cloudflared tunnel login
+cloudflared tunnel create aether-edge
+cloudflared tunnel route dns aether-edge edge.example.test
+```
+
+`tunnel create` 会打印隧道 UUID 以及凭据文件的写入位置。在 `config.yml` 中把隧道指向网关。末尾的兜底规则是必需的：
+
+```yaml
+tunnel: <TUNNEL_UUID>
+credentials-file: /root/.cloudflared/<TUNNEL_UUID>.json
+
+ingress:
+  - hostname: edge.example.test
+    service: http://127.0.0.1:6005
+  - service: http_status:404
+```
+
+校验规则，然后按照 [Cloudflare 的服务指南](https://developers.cloudflare.com/tunnel/features/locally-managed-tunnels/as-a-service/)把隧道作为服务运行：
+
+```bash
+cloudflared tunnel ingress validate
+```
+
+从另一台机器检查边界的两侧。不带令牌的请求必须被网关拒绝，带令牌的 CLI 必须可用：
+
+```bash
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  https://edge.example.test/api/v1/io/api/channels
+# 401
+
+AETHER_API_URL=https://edge.example.test \
+AETHER_ACCESS_TOKEN=<SCOPED_ACCESS_TOKEN> aether --json channels list
+```
+
+签发该令牌时，使用远程客户端所需的最窄 `scope`。
+
+不要为了 CLI 或 MCP 的使用而在这个主机名上放置 Cloudflare Access 应用。`aether` 只发送 Aether 凭据和受治理命令的请求头，无法附带 Access 服务令牌的请求头，因此请求会在到达网关之前被 Access 拒绝。
+
 ## 相关页面
 
 - [入门](/zh/guides/getting-started) — 构建、初始化和验证新的签出
