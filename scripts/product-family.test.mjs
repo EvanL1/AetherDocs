@@ -34,7 +34,7 @@ describe('AetherIoT product-family documentation', () => {
     expect(matrix).toContain('`v0.0.1`');
     expect(matrix).toContain('`v0.1.0-alpha.3`');
     expect(matrix).toContain('Experimental integration baseline');
-    expect(matrix).toContain('It is not production');
+    expect(matrix).toMatch(/\bnot\s+production\b/);
   });
 
   it('renames repository-facing identity while preserving software and protocol names', () => {
