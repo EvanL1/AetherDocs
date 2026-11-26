@@ -12,17 +12,18 @@ updated: 2026-07-16
 
 | AetherEdge | AetherContracts | AetherCloud | 状态 | 证据 |
 | --- | --- | --- | --- | --- |
-| 带有 alpha.3 使用方的 `v0.0.1` | `v0.1.0-alpha.3` | 当前未发布的 alpha.3 使用方 | 实验性集成基线 | 相同的完整使用方锁定、53 个精确导入、无待处理导入和 25 个共享固定结果 |
+| 带有 alpha.3 使用方的 `v0.0.1` | `v0.1.0-alpha.3` | 当前未发布的 alpha.3 使用方 | 实验性集成基线 | 相同的完整使用方锁定、53 个精确导入、无待处理导入和 25 个共享测试夹具结果 |
+| `v0.0.1` 之后尚未发布的 AetherEdge（带有 alpha.4 使用方） | `v0.1.0-alpha.4` | 当前未发布的 alpha.4 使用方 | 实验性分发基线 | 相同的完整使用方锁定、101 个精确导入、无待处理导入；Edge 编解码器执行 27 个已固定的 CloudLink 核心测试夹具。尚无 alpha.4 的双产品证据 |
 | `v0.0.1` 旧版 MQTT 路径 | 旧版线协议不需要 | 现有旧版接入 | 兼容性默认值 | 现有产品行为；CloudLink 不会静默重新解释旧 Topic |
 | 未来 AetherEdge 版本 | 未来生产契约版本 | 未来生产 CloudLink 版本 | 计划 | 需要联合身份验证、签名确认、崩溃持久性、一致性、回滚和已过的支持窗口证据 |
 
-第一行是分布和固定证据。它不是生产传输、身份验证、状态机或持久性一致性。
+前两行是分发与测试夹具证据，并不代表生产传输、身份验证、状态机或持久性的一致性。
 
 ## 命名兼容性
 
 | 影响范围 | 迁移行为 |
 | --- | --- |
-| GitHub 仓库 | `EvanL1/AetherIot` 变为 `EvanL1/AetherEdge`；即使 GitHub 重定向旧 URL，消费者也应更新遥控器 |
+| GitHub 仓库 | `EvanL1/AetherIot` 变为 `EvanL1/AetherEdge`；即使 GitHub 重定向旧 URL，使用方也应更新远程仓库地址 |
 | Rust SDK 软件包 | `aether-edge-sdk` 保持不变 |
 | Rust 导入 | `aether_sdk` 保持不变 |
 | CLI 和服务二进制文件 | `aether` 和`aether-*` 保持不变 |
