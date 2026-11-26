@@ -382,6 +382,15 @@ describe('renderSecurityTxt', () => {
     );
   });
 
+  it('offers a mailbox as the second contact, after private reporting', () => {
+    const contacts = rendered.split('\n').filter((line) => line.startsWith('Contact: '));
+
+    expect(contacts).toEqual([
+      'Contact: https://github.com/EvanL1/AetherEdge/security/advisories/new',
+      'Contact: mailto:security@aetheriot.ai',
+    ]);
+  });
+
   it('expires 180 days after the build so a nightly rebuild keeps it current', () => {
     expect(rendered).toContain('Expires: 2027-05-25T03:17:00.000Z\n');
   });

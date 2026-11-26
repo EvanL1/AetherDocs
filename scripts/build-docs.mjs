@@ -300,6 +300,7 @@ export function renderSecurityTxt(publicBaseUrl, now) {
   const expires = new Date(now.getTime() + SECURITY_TXT_LIFETIME_DAYS * 86_400_000);
   return [
     'Contact: https://github.com/EvanL1/AetherEdge/security/advisories/new',
+    'Contact: mailto:security@aetheriot.ai',
     `Expires: ${expires.toISOString()}`,
     'Preferred-Languages: en, zh',
     `Canonical: ${baseUrl}/.well-known/security.txt`,
