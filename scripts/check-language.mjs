@@ -70,6 +70,7 @@ const ALLOWED_ASCII_HEADINGS = new Set([
   'AetherEdge',
   'AetherEMS',
   'AetherIoT',
+  'Claude Code',
   'Claude Desktop',
   'CloudLink',
   'CloudLink v1 alpha 1',
