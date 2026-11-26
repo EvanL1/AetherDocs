@@ -14,7 +14,7 @@ export default defineConfig({
     ],
     coverage: {
       provider: 'v8',
-      include: ['scripts/*.mjs', 'worker/entry.js'],
+      include: ['scripts/*.mjs', 'worker/entry.js', 'worker/install.js'],
       exclude: ['scripts/*.test.mjs'],
       thresholds: {
         statements: 80,

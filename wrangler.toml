@@ -12,7 +12,8 @@ compatibility_date = "2026-07-11"
 # published link and every agent that fetched llms.txt from the old origin.
 routes = [
   { pattern = "docs.aetheriot.ai", custom_domain = true },
-  { pattern = "docs.aetheriot.dev", custom_domain = true }
+  { pattern = "docs.aetheriot.dev", custom_domain = true },
+  { pattern = "get.aetheriot.ai", custom_domain = true }
 ]
 
 [assets]

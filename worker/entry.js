@@ -1,4 +1,5 @@
 import { recordRequest } from './analytics.js';
+import { INSTALL_HOST, installResponse } from './install.js';
 
 const MARKDOWN_CONTENT_TYPE = 'text/markdown; charset=utf-8';
 const TEXT_CONTENT_TYPE = 'text/plain; charset=utf-8';
@@ -158,6 +159,7 @@ const handler = {
     // Recorded before the redirect branches, so a request that only ever
     // reaches the legacy host is still counted under that host.
     recordRequest(request, url, env, ctx);
+    if (url.hostname === INSTALL_HOST) return installResponse(request, url);
     const domainRedirect = legacyDomainRedirect(url);
     if (domainRedirect) return domainRedirect;
     const englishRedirect = legacyEnglishPrefixRedirect(url);
