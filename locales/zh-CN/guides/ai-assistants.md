@@ -84,6 +84,8 @@ MCP 服务器不必运行在边缘设备上。每个工具都只与唯一的 API
 }
 ```
 
+如果入口还要求它自己的请求头，例如 Cloudflare Access 服务令牌，请把它们作为 `AETHER_API_HEADERS` 加到同一个 `env` 块中，这是一组以逗号分隔的 `Name=value` 键值对。服务器会在每个网关请求上发送它们；如果列表格式有误，或者其中出现了 CLI 自己设置的请求头，服务器会拒绝启动。见[网关前的 Cloudflare Access](/zh/guides/deployment#网关前的-cloudflare-access)。
+
 ## 只读与写入访问
 
 默认情况下，`aether mcp` 是只读的。这不是一个建议性的标注：不带 `--allow-write` 时，22 个写入工具根本不会注册，也完全不会出现在 `tools/list` 响应中。客户端无法调用、甚至看不到没有注册的东西。

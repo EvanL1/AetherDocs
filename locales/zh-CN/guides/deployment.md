@@ -375,7 +375,41 @@ AETHER_ACCESS_TOKEN=<SCOPED_ACCESS_TOKEN> aether --json channels list
 
 签发该令牌时，使用远程客户端所需的最窄 `scope`。
 
-不要为了 CLI 或 MCP 的使用而在这个主机名上放置 Cloudflare Access 应用。`aether` 只发送 Aether 凭据和受治理命令的请求头，无法附带 Access 服务令牌的请求头，因此请求会在到达网关之前被 Access 拒绝。
+### 网关前的 Cloudflare Access
+
+如果这个主机名上有 Cloudflare Access 应用，不带 Access 凭据的请求会在 Cloudflare 的边缘被拒绝。`aether` 无法完成浏览器登录，所以要给它一个 Access [服务令牌](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/)：创建令牌，添加一条动作为 **Service Auth** 且包含该令牌的策略，然后通过 `AETHER_API_HEADERS` 传入令牌的两个请求头：
+
+```bash
+export AETHER_API_URL=https://edge.example.test
+export AETHER_API_HEADERS='CF-Access-Client-Id=<CLIENT_ID>,CF-Access-Client-Secret=<CLIENT_SECRET>'
+AETHER_ACCESS_TOKEN=<SCOPED_ACCESS_TOKEN> aether --json channels list
+```
+
+`AETHER_API_HEADERS` 是一组以逗号分隔的 `Name=value` 键值对。CLI 会在发往网关的每个请求上带上它们，`aether mcp` 也一样。在 MCP 客户端配置中，它们与 URL 和令牌放在同一个 `env` 块里：
+
+```json
+{
+  "mcpServers": {
+    "aether-site-a": {
+      "command": "aether",
+      "args": ["mcp"],
+      "env": {
+        "AETHER_API_URL": "https://edge.example.test",
+        "AETHER_API_HEADERS": "CF-Access-Client-Id=<CLIENT_ID>,CF-Access-Client-Secret=<CLIENT_SECRET>",
+        "AETHER_ACCESS_TOKEN": "<SCOPED_ACCESS_TOKEN>"
+      }
+    }
+  }
+}
+```
+
+- **Access 是第二道检查，不是替代**。网关仍然要求 `AETHER_ACCESS_TOKEN`，并按其角色和 scope 授权。服务令牌只决定请求能否到达网关。
+- **这些值是机密**。没有对应的命令行标志，因为参数在进程列表中可见。CLI 不会在错误信息、`--json` 输出或 `--verbose` 日志中打印它们。
+- **格式**：每个键值对在第一个 `=` 处拆分，名称和值两侧的空白会被忽略。值必须是 ASCII，且不能包含逗号。
+- **输入无效时，命令在发出任何请求之前就会停止**。这包括缺少 `=` 的条目、无效的请求头名称或值、空值、重复的名称，以及保留名称。保留名称是 CLI 自己设置的请求头：`Authorization`、`X-Request-ID`、`Idempotency-Key`、`Content-Type`、`Content-Length`、`Host`、`Accept`、`If-Match`、`If-None-Match`，连接类请求头 `Connection`、`Transfer-Encoding`、`TE`、`Trailer` 和 `Upgrade`，以及所有以 `X-Aether-` 开头的名称。因此，确认只能来自 `--confirmed` 或 MCP 的 `confirmed: true` 参数，绝不会来自环境变量。
+- **每个网关请求都需要受保护的传输**。只要设置了该变量，CLI 就拒绝在非环回的明文 HTTP 上发送任何网关请求，包括不带令牌的只读查询。发往环回网关 URL 的请求永远不经过代理，无论 `HTTP_PROXY`、`HTTPS_PROXY` 或 `ALL_PROXY` 如何设置，也无论是否设置了该变量。
+- **重定向不离开网关的源**。只要设置了该变量，CLI 就不会跟随指向其他源的重定向，而是报告错误。
+- **Access 和网关都会返回 `401` 和 `403`**。如果 CLI 报告拒绝了一个指向 Access 登录主机的重定向，或者 `401`/`403` 响应体不是网关的 JSON 错误，那就是 Access 拒绝了服务令牌，网关根本没有见到这个请求。Access 用这两种方式中的哪一种回应，取决于组织的[严格服务令牌认证](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/#strict-service-token-authentication)设置。响应体是网关 JSON 错误（一个带有 `code` 和 `message` 的 `error` 对象）的 `401`/`403` 已经通过了 Access：`401` 表示 `AETHER_ACCESS_TOKEN` 缺失、无效或已过期，`403` 表示其角色或 scope 不允许该请求。
 
 ## 相关页面
 
