@@ -1,16 +1,15 @@
 ---
 title: "一致性与使用方验证"
 description: "了解 AetherContracts TCK 能证明什么、语言绑定如何报告证据，以及使用方如何验证精确发布制品全集。"
-updated: 2026-07-17
+updated: 2026-07-16
 status: implemented
-version: 0.1.0-alpha.4
 ---
 
 # 一致性与使用方验证
 
 > 本页是面向中文用户的说明。带标签版本中的英文规范、JSON Schema、测试夹具和 TCK 才是规范性依据。
 
-AetherContracts 将四类证据分开，避免把结构接纳、上下文行为、语言接口与产品集成混为一谈。最新发布版本是 `v0.1.0-alpha.3`；当前 `0.1.0-alpha.4` 源码只是尚未发布的开发目标，不构成生产一致性声明。
+AetherContracts 将四类证据分开，避免把结构接纳、上下文行为、语言接口与产品集成混为一谈。
 
 ## 证据层次
 
