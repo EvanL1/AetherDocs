@@ -96,6 +96,7 @@ Docker Compose 和服务使用的关键变量（大多数可选值在 `.env.exam
 | `DIALOUT_GID` | `20` | 串行端口访问的拨出组 ID 配对（仅限 Linux） |
 | `INFLUXDB_URL`、`INFLUXDB_ORG`、`INFLUXDB_BUCKET`、`INFLUXDB_TOKEN`、`INFLUXDB_PASSWORD` | 未设置 | 仅供可选 InfluxDB 历史记录 Adapter 使用；默认运行时不读取 |
 | `AETHER_API_URL` | `http://localhost:6005` | `aether` CLI 数据平面和 MCP 使用的 API Gateway Base URL；这是唯一远程应用边界 |
+| `AETHER_API_HEADERS` | 未设置 | `aether` CLI 数据平面和 MCP 在每个网关请求上附带的额外 HTTP 请求头，格式为逗号分隔的 `Name=value` 键值对，用于网关前面的访问代理，例如 Cloudflare Access 服务令牌。这些值是机密。CLI 自己设置的请求头会被拒绝，包括 `Authorization` 和所有 `X-Aether-*` 名称；见[网关前的 Cloudflare Access](/zh/guides/deployment#网关前的-cloudflare-access) |
 | `AETHER_IO_URL` | `http://127.0.0.1:6001` | automation 服务调用 IO 时使用的回环 Base URL；CLI 不读取 |
 | `AETHER_SHM_PATH` | 平台选择的 tmpfs 路径 | io 和只读消费者共享的规范权威点状态段 |
 | `AETHER_CHANNEL_HEALTH_SHM_PATH` | 同级 `*-health` 路径 | 单独的权威通道连接段；通常源自 `AETHER_SHM_PATH` |
