@@ -17,7 +17,7 @@ npx skills add EvanL1/AetherEdge -s aether-iot
 
 **成功标准**：代码助手把 `aether-iot` 列为可用技能。
 
-## 2. 安装 aether 命令行工具
+## 2. 安装 `aether` 命令行工具
 
 开发阶段最直接的方式是从源码构建：
 
@@ -32,14 +32,14 @@ sudo cp target/release/aether /usr/local/bin/aether
 
 | 系统 | 文件 |
 | --- | --- |
-| Linux arm64 | aether-linux-aarch64.tar.gz |
-| Linux x86_64 | aether-linux-x86_64.tar.gz |
-| macOS arm64 | aether-darwin-aarch64.tar.gz |
-| Windows x86_64 | aether-windows-x86_64.zip |
+| Linux arm64 | `aether-linux-aarch64.tar.gz` |
+| Linux x86_64 | `aether-linux-x86_64.tar.gz` |
+| macOS arm64 | `aether-darwin-aarch64.tar.gz` |
+| Windows x86_64 | `aether-windows-x86_64.zip` |
 
 ~~~bash
 REPO="EvanL1/AetherEdge"
-ASSET="aether-linux-x86_64.tar.gz"   # 改成与当前系统匹配的文件名
+ASSET="aether-linux-x86_64.tar.gz"   # substitute your platform's asset name
 
 TAG=$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" \
   | grep -m1 '"tag_name"' | cut -d '"' -f4)
@@ -57,19 +57,17 @@ sudo mv aether /usr/local/bin/aether
 
 ## 3. 生成并应用首次启动方案
 
-先生成方案：
-
 ~~~bash
 aether --json setup
 ~~~
 
-从返回数据中读取 `data.plan_id`，然后原样应用这份方案：
+从返回的 JSON 中读取 `data.plan_id`。然后，在此期间不要修改站点的任何内容，原样应用这份方案：
 
 ~~~bash
 aether setup apply --plan-id <PLAN_ID>
 ~~~
 
-**成功标准**：命令返回的 JSON 中 `success` 为 `true`，进程退出码为 0。这个步骤只创建默认安全的空配置和本地 SQLite 状态，不会启动服务或启用设备。
+**成功标准**：apply 命令返回的 JSON 信封中有 `"success": true`，进程退出码为 0。这个步骤只创建默认安全的空配置和本地 SQLite 状态，不会启动服务或启用设备。
 
 ## 4. 启动服务
 
@@ -92,7 +90,7 @@ aether services start
 
 **成功标准**：`aether --json services status` 显示所有请求启动的服务都在运行。
 
-如果本机还没有兼容的 `aetherems:latest` 运行时镜像，请先按照[部署指南](/zh/guides/deployment/)构建或载入镜像。保留这个历史镜像名称，不表示 AetherEMS 属于当前仓库。
+如果本机还没有兼容的 `aetherems:latest` 运行时镜像，请参阅[部署指南](/zh/guides/deployment/)：必须先构建或载入该镜像，`services start` 才能成功。保留这个历史镜像名称，不表示 AetherEMS 属于当前仓库。
 
 ## 5. 检查运行状态
 
@@ -100,13 +98,11 @@ aether services start
 aether --json doctor
 ~~~
 
-**成功标准**：返回数据中的 `success` 为 `true`，进程退出码为 0。
+**成功标准**：返回的信封为 `{"success": true, ...}`，进程退出码为 0。
 
 `doctor` 会检查 Docker 引擎、六个核心服务的健康接口、SQLite 数据库、四个必要配置文件和共享内存段。任何 `false` 或非零退出码都表示至少一项失败，应读取 `error` 字段定位原因。
 
 ## 6. 连接智能体客户端
-
-默认只开放读取能力：
 
 ~~~bash
 claude mcp add aether -- aether mcp
@@ -120,12 +116,12 @@ claude mcp add aether -- aether mcp --allow-write
 
 在连接真实硬件前，请先阅读[应用与智能体安全操作](/zh/guides/safe-operations/)。
 
-**成功标准**：客户端返回的工具列表中包含 `channels_list`。默认服务只提供读取工具。
+**成功标准**：客户端的 `tools/list` 响应中包含 `channels_list`。默认服务只提供读取工具。
 
-`allow-write` 只会注册当前允许的受治理写入命令，并不等于用户已经确认操作。每次写入仍需明确传入 `confirmed: true`。不要自动重试结果不完整的写入；通道变更应保存 `request_id`、`resulting_revision` 和 `reconciliation_required`。更多连接方式请查看[连接智能助手](/zh/guides/ai-assistants/)。
+`--allow-write` 只会注册当前的受治理写入允许列表，这个标志并不等于命令确认：每次调用仍需传入 `confirmed: true`，已签名的 `AETHER_ACCESS_TOKEN` 会作为 Bearer 凭据发送，桥接层还会添加请求 ID。绝不要自动重试结果不完整的写入响应。对于通道变更，应保存 `request_id`、`resulting_revision` 和 `reconciliation_required`；期望状态提交成功时，仍可能报告运行时投影处于降级状态。Claude Desktop 的配置以及如何指向远程安装，见[连接 AI 助手](/zh/guides/ai-assistants/)。
 
 最后，可以向智能体提出下面的要求：
 
 ~~~text
-开始使用 AetherEdge。请先以只读方式检查运行时，说明当前真实可用的应用能力；在我确认之前，不要提出或执行任何变更。
+开始使用 AetherEdge。请以只读方式检查运行时，并在提出任何变更之前，先说明有哪些应用能力可用。
 ~~~

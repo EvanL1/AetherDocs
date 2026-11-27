@@ -1,22 +1,23 @@
 ---
 title: "aether-ports"
-description: "用于Aether边缘扩展的小型、对象安全功能接口。"
-updated: 2026-07-16
+description: "面向内核适配器和下游适配器的小型、对象安全的能力接口。"
+updated: 2026-07-27
 ---
 
 # aether-ports
 
-用于 Aether 边缘扩展的小型对象安全功能接口。
+面向内核适配器和下游适配器的小型、对象安全的能力接口。
 
-该包将权威实时读取、采集拥有的写入、设备命令调度、审计、历史记录、镜像、持久发件箱、上行链路发布、I/O 通道调试和请求驱动的数据处理分开。 `ChannelMutator` 保持持久的所需配置权威性，并报告可重建的运行时投影、结果修订和协调状态，而无需选择有线编码。 `HistoryQuery` 和 `CovariateSource` 接受有界逻辑窗口并返回源出处； `DataProcessor` 接收完整的 `DataProcessingRequest` 并且没有回调到 Aether 数据源。它故意不公开通用数据库、缓存、模型或脚本运行程序API。主机在组合边界选择具体适配器。
+此 crate 把权威的实时读取、设备命令下发、审计、历史、镜像、持久发件箱、上行发布、I/O 通道投运以及请求驱动的数据处理分隔开来。仅供所有者使用的物理写入器被有意隔离在 `aether-acquisition-port` 中，因此应用接口无法通过这个通用端口 crate 获得它。`ChannelMutator` 让持久的期望配置保持权威地位，并报告可重建的运行时投影、产生的修订号和协调状态，而不指定线上编码。`HistoryQuery` 和 `CovariateSource` 接受有界的逻辑窗口并返回来源出处；`DataProcessor` 接收完整的 `DataProcessingRequest`，并且没有回调 Aether 数据源的途径。它有意不暴露通用的数据库、缓存、模型或脚本运行器 API。宿主在组合边界选择具体适配器。
 
-`CloudLinkSpool` 有意与 `DurableOutbox` 分开：它拥有流纪元/位置、稳定的批次身份/摘要、重放和显式丢失证据，并且仅在经过验证的云应用程序接收后才删除记录。 `CloudLinkTransport` 承载有界逻辑路由，而不会将 MQTT 主题字符串暴露给核心调用者。没有 CloudLink 命令或任意 RPC 路由。
+`CloudLinkSpool` 有意与 `DurableOutbox` 分开：它负责流纪元/位置、稳定的批次身份/摘要、重放以及显式的丢失证据，并且只在收到经过校验的云端应用回执后才删除记录。`CloudLinkTransport` 承载有界的逻辑路由，不向核心调用方暴露 MQTT 主题字符串。没有 CloudLink 命令路由，也没有任意 RPC 路由。
 
-`HistoryQuery` 限制事件时间，但不隐式承诺双时态或源纪元历史；实现必须显式声明更强的时间点语义。同样，工件时间顺序不是历史端口的责任。
+`HistoryQuery` 限定事件时间，但不隐含承诺双时态或按来源纪元的历史；实现必须显式声明更强的时间点语义。同样，工件的时间先后关系也不是历史端口的职责。
 
-错误携带恢复语义，因此调用者可以区分不可用、瞬态、拒绝、无效数据和永久故障。
+错误携带恢复语义，因此调用方可以区分不可用、瞬时、被拒绝、数据无效和永久性失败。
+
 ```bash
 cargo test -p aether-ports
 ```
 
-您可以选择根据 MIT 或 Apache-2.0 获得许可。
+采用 MIT 或 Apache-2.0 双许可证，可任选其一。

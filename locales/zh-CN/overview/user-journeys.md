@@ -1,7 +1,7 @@
 ---
 title: "AetherEdge 用户旅程"
 description: "选择负责目标的产品，并沿着从安全空边缘运行时到已投运应用的最短安全路径前进。"
-updated: 2026-07-26
+updated: 2026-08-02
 ---
 
 # AetherEdge 用户旅程
@@ -82,7 +82,7 @@ IO、automation、history、uplink 和 alarm API 始终只监听回环地址。�
 5. 检查生成的拓扑和尚未解析的映射；
 6. 显式启用 Channel。
 
-尚无硬件时，应先使用虚拟 Channel 或协议模拟器。Channel 和路由流程见[连接设备](https://docs.aetheriot.ai/zh/guides/connect-devices/)。
+尚无硬件时，应先使用协议模拟器。Channel 和路由流程见[连接设备](https://docs.aetheriot.ai/zh/guides/connect-devices/)；确切的特性、运行时 ID、参数、映射结构定义和已实现的协议范围见[协议适配器参考](https://docs.aetheriot.ai/zh/reference/protocol-adapters/)。
 
 ## 4. 验证只读数据链路
 
