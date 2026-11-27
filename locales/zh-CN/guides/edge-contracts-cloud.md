@@ -62,7 +62,7 @@ pnpm check
 pnpm test:cloudlink-alpha-harness
 ```
 
-MQTT PUBACK 只能证明消息代理在传输层接受了消息。只有在完全匹配的云端应用确认通过验证之后，AetherEdge 才可以删除 Spool 中的记录。当前的 alpha 确认仍未签名，完整的生产级崩溃持久性门禁尚未通过。
+MQTT PUBACK 只能证明消息代理在传输层接受了消息。只有在完全匹配的云端应用确认通过验证之后，AetherEdge 才可以删除待发送队列中的记录。当前的 alpha 确认仍未签名，完整的生产级崩溃持久性门禁尚未通过。
 
 ## 6. 保持权威边界
 

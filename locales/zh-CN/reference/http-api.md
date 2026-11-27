@@ -24,7 +24,7 @@ AetherEdge 运行六个 HTTP 服务，但远程应用只有一个网络边界：
 | `aether-uplink` | 环回 | `http://127.0.0.1:6006/openapi.json` | `http://<edge-host>:6005/openapi/uplink.json` |
 | `aether-alarm` | 环回 | `http://127.0.0.1:6007/openapi.json` | `http://<edge-host>:6005/openapi/alarm.json` |
 
-Swagger 只能通过 `aether-api` 的 `swagger-ui` Cargo 功能选择启用。要在安装包构建中包含这个唯一的网关界面，请使用：
+Swagger 只能通过 `aether-api` 的 `swagger-ui` Cargo 特性选择启用。要在安装包构建中包含这个唯一的网关界面，请使用：
 
 ```bash
 ./scripts/build-installer.sh <version> <arch> -s rust --enable-swagger

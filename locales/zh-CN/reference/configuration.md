@@ -108,8 +108,8 @@ Docker Compose 和各服务使用的关键变量（大多数可选值在 `.env.e
 | `AETHER_SHM_PATH` | 由平台选定的 tmpfs 路径 | io 与只读使用方共享的规范权威点位状态段 |
 | `AETHER_CHANNEL_HEALTH_SHM_PATH` | 同级的 `*-health` 路径 | 独立的权威通道连通性段；通常由 `AETHER_SHM_PATH` 派生 |
 | `SHM_WRITER_STALE_AFTER_MS` | `30000` | 读取侧 SHM 适配器可接受的写入方心跳最大时长 |
-| `SHM_IDENTITY_CHECK_INTERVAL_MS` | `250` | 检查规范 SHM inode 是否被替换的兜底间隔；正常的切换由代次围栏立即处理 |
-| `SHM_TOPOLOGY_REFRESH_INTERVAL_MS` | `1000`（最小 `100`） | API、alarm 和 automation 重新加载一份 SQLite 拓扑快照，并原子地发布一个经过校验的点位/健康/路由代次所用的间隔 |
+| `SHM_IDENTITY_CHECK_INTERVAL_MS` | `250` | 检查规范 SHM inode 是否被替换的兜底间隔；正常的切换由世代围栏立即处理 |
+| `SHM_TOPOLOGY_REFRESH_INTERVAL_MS` | `1000`（最小 `100`） | API、alarm 和 automation 重新加载一份 SQLite 拓扑快照，并原子地发布一个经过校验的点位/健康/路由世代所用的间隔 |
 | `JWT_SECRET_KEY` | 未设置（必需） | 长度不少于 32 字节的共享访问 JWT 签名/验证密钥，供 aether-api 以及受治理的 io、automation 和 alarm 操作使用；由安装器生成，并保存在配置资产之外 |
 | `AETHER_ACCESS_TOKEN` | 未设置 | `aether` CLI 数据平面和 MCP 附加到每个网关请求上的已签名访问 JWT。Viewer 令牌可用于查询；受治理写入（通道投运/生命周期、设备命令、动作路由变更、自动化/告警策略，以及 MCP 的 22 个写入工具）需要 Admin 或 Engineer 令牌 |
 | `AETHER_UPLINK_CONTROL_TOKEN` | 未设置 | 长度不少于 32 字节的独立服务凭据，仅用于上行链路到 automation 的设备命令；由安装器生成，且绝不打印 |
@@ -159,8 +159,8 @@ Docker Compose 和各服务使用的关键变量（大多数可选值在 `.env.e
 |----------|---------|---------|
 | `AETHER_DB_PATH` | `/app/data/aether.db` | 共享的 SQLite 配置数据库 |
 | `AETHER_HISTORY_DB_PATH` | 与 `AETHER_DB_PATH` 同目录的 `aether-history.db` | 嵌入式历史数据库 |
-| `AETHER_UPLINK_OUTBOX_PATH` | `/app/data/uplink.outbox` | CloudLink Spool 文件 |
-| `AETHER_UPLINK_OUTBOX_CAPACITY` | `10000` | Spool 中消息的上限，超过后丢弃最旧的消息 |
+| `AETHER_UPLINK_OUTBOX_PATH` | `/app/data/uplink.outbox` | CloudLink 待发送队列文件 |
+| `AETHER_UPLINK_OUTBOX_CAPACITY` | `10000` | 待发送队列中消息的上限，超过后丢弃最旧的消息 |
 | `AETHER_LOG_DIR` | `/app/logs` | 日志目录 |
 | `AETHER_M2C_SOCKET` | `/tmp/aether-m2c.sock` | automation 向 io 分发受治理命令所用的 Unix 套接字 |
 | `AETHER_AUTOMATION_POINT_WATCH_SOCKET` | 由 SHM 路径派生 | automation 的点位变化通知套接字 |

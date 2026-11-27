@@ -100,7 +100,7 @@ API 容器以 `HOST_UID:HOST_GID` 运行。它既没有挂载 Docker 套接字�
 
 ## 仅含 Pack 的工件
 
-领域 Pack 与全新安装的 `.run` 包分开发布。Pack 包只包含 `pack-artifact.json` 和声明式的 `pack/` 目录树，绝不包含 `aether` CLI、服务二进制文件或核心 crate。请根据为目标内核组合生成的那份确切的运行时清单来构建它：
+领域包 与全新安装的 `.run` 包分开发布。Pack 捆绑包只包含 `pack-artifact.json` 和声明式的 `pack/` 目录树，绝不包含 `aether` CLI、服务二进制文件或核心 crate。请根据为目标内核组合生成的那份确切的运行时清单来构建它：
 
 ```bash
 ./scripts/build-pack-artifact.sh \
