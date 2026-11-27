@@ -1,31 +1,32 @@
 ---
-title: "期望的、报告的和应用的部署"
-description: "推出不可变的工件意图，而不将调度、连接或超时视为边缘应用程序证据"
+title: "期望、报告与已应用部署"
+description: "推出不可变的制品意图，而不把下发、连接或超时当作边缘端已应用的证据"
 updated: 2026-07-16
 status: mixed
 ---
 
-# 期望的、报告的和应用的部署
+# 期望、报告与已应用部署
 
-> 权威来源：[AetherCloud](https://github.com/EvanL1/AetherCloud/blob/main/docs/concepts/desired-reported-applied-deployment.md)。此页面已镜像到统一的AetherIoT文档中。
+> 权威来源：[AetherCloud](https://github.com/EvanL1/AetherCloud/blob/main/docs/concepts/desired-reported-applied-deployment.md)。此页面镜像到统一的 AetherIoT 文档中。
 
-云端域/应用程序基础和原子内存适配器是针对一个网关目标实现的。它们提供已发布的工件查找、无损的期望生成、不同的报告和应用事实、暂停/恢复/取消请求/回滚意图、经过验证的边缘观察、未知结果、重播/冲突处理、租户范围的查询、审计证据和发件箱证据。
+面向单个网关目标的云端领域与应用基础以及原子内存适配器已经实现。它们提供已发布制品查找、无损的期望代次、相互独立的报告事实和已应用事实、暂停、恢复、取消请求和回滚意图、经过认证的边缘观测、未知结果、重放与冲突处理、租户范围内的查询、审计证据和发件箱证据。
 
-这不是端到端的部署。 PostgreSQL、生产审核/发件箱、CloudLink 外向交付和观察信封、目标快照、金丝雀/批次调度、公共 HTTP 和 AetherEdge 对应项仍在计划中。
+这不是端到端的推出。PostgreSQL、生产审计与发件箱、CloudLink 出站交付和观测信封、目标快照、金丝雀与分批调度、公开 HTTP 以及 AetherEdge 对应实现仍在规划中。
 
-## 权威和事实
+## 权威与事实
 
-- AetherCloud 拥有所需的修订和推出意图。
-- AetherEdge 拥有其报告的观察结果和最终兼容性/策略决策。
-- 仅当边缘证据表明已应用或失败时才存在已应用。调度、下载、验证、连接会话或 HTTP 成功都无法创建它。
-- 网络超时会创建单独的 `unknown` 协调状态。它不捏造应用事实。稍后经过验证的边缘观察可能会解决投影问题。
-- 工件发布使修订符合所需要求；它不会部署或应用它。
+- AetherCloud 拥有期望修订版和推出意图。
+- AetherEdge 拥有它报告的观测，以及最终的兼容性与策略决定。
+- 只有边缘证据表明已应用或失败时，已应用事实才存在。下发、下载、校验、已连接的会话或 HTTP 成功都不能创建它。
+- 网络超时会产生一个独立的 `unknown` 对账状态。它不会伪造已应用事实。之后到达的已认证边缘观测可以消除投影中的不确定性。
+- 制品发布使修订版有资格成为期望目标；它不会部署或应用该修订版。
 
-实现的视图返回 `reported: null` 和 `applied: null` 直到这些事实存在，而不是重载单个状态字段。
+在这些事实存在之前，已实现的视图返回 `reported: null` 和 `applied: null`，而不是让单个状态字段承载多重含义。
 
-## 状态和排序
+## 状态与顺序
 
-单目标推出状态基础是：
+单目标推出的状态基础是：
+
 ```text
 running <-> paused -> cancel-requested
    |                     |
@@ -33,25 +34,25 @@ running <-> paused -> cancel-requested
    +-- reject/fail -----> completed-with-failures
 ```
 
-回滚创建一个更新的 Desired 生成，指向另一个不可变的、已发布的 Artifact Revision。它附加所需的历史记录；它不会编辑前一代或暗示边缘恢复任何内容。
+回滚会创建一个更新的期望代次，指向另一个不可变的已发布制品修订版。它向期望历史追加记录；它不修改之前的代次，也不意味着边缘端已经恢复了任何内容。
 
-每个边缘观察都有一个稳定的身份和无损的期望生成。精确重播是安全的。重复使用具有不同内容冲突的观察身份。对于老一代人来说，一个事实被保留在观察历史中，而不会向后滚动当前的预测。比云已知的所需生成更新的事实失败关闭。
+每个边缘观测都有稳定的身份和无损的期望代次。精确重放是安全的。以不同内容复用观测身份会产生冲突。针对较旧代次的事实保留在观测历史中，不会让当前投影倒退。比云端已知期望代次更新的事实会以失败关闭方式被拒绝。
 
-取消是停止尚未跨越相关边缘边界的工作的请求。它无法擦除应用的证据或逆转物理效应。
+取消是请求停止尚未越过相关边缘边界的工作。它不能抹去已应用证据，也不能逆转物理效果。
 
-## 已实现的应用程序界面
+## 已实现的应用接口
 
-- `deployment.rollout.start`：高风险、显式确认、已发布的 Artifact 前提条件、过期、幂等性、许可和所需审核。
-- `deployment.rollout.pause`、`deployment.rollout.resume` 和 `deployment.rollout.cancel-request`：受控的推出意图
-- `deployment.rollout.rollback`：具有已发布工件前提条件的高风险新一代所需生成。
-- `deployment.rollout.mark-unknown`：记录不确定的交付/执行结果，而不推断失败或成功。
-- `deployment.observation.report`：活动网关凭证范围和目标绑定、精确解码、幂等性和边缘证据投影。
-- `deployment.rollout.get`：租户/项目范围的查询。
+- `deployment.rollout.start`：高风险，需要明确确认、已发布制品前置条件、有效期、幂等性、权限和审计。
+- `deployment.rollout.pause`、`deployment.rollout.resume` 和 `deployment.rollout.cancel-request`：受治理的推出意图变更。
+- `deployment.rollout.rollback`：高风险，创建新的期望代次，以已发布制品为前置条件。
+- `deployment.rollout.mark-unknown`：记录不确定的交付或执行结果，不推断失败或成功。
+- `deployment.observation.report`：活动网关凭据范围和目标绑定、精确解码、幂等性和边缘证据投影。
+- `deployment.rollout.get`：租户和项目范围内的查询。
 
-内存仓库以原子方式存储聚合、幂等性、审计和发件箱证据，并证明乐观版本冲突。它是一个一致性适配器，而不是生产持久性。
+内存存储库以原子方式保存聚合、幂等性、审计和发件箱证据，并证明乐观版本冲突。它是一致性适配器，不提供生产持久性。
 
-## 计划扩展
+## 规划中的扩展
 
-目标快照、队列、金丝雀/批次限制、暂停门、每个目标部分成功、运行状况策略、推出计划和大型证据存储都建立在这个单目标聚合的基础上。生产CloudLink仅通过应用程序拥有的发件箱记录发送版本化的所需报价或不可变参考；它不能写入边缘缓存、SHM、点或设备寄存器。
+目标快照、分组、金丝雀与分批限制、暂停关卡、按目标的部分成功、健康策略、推出调度和大体量证据存储都建立在这个单目标聚合之上。生产 CloudLink 只通过由应用拥有的发件箱记录发送版本化的期望下发或不可变引用；它不得写入边缘缓存、SHM、点位或设备寄存器。
 
-阅读[工件注册表](/zh/aethercloud/concepts/artifact-registry)，了解部署引用不可变修订版之前的发布流程。
+阅读[制品注册表](/zh/aethercloud/concepts/artifact-registry)，了解不可变修订版在被部署引用之前是如何发布的。
