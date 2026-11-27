@@ -105,8 +105,10 @@ locales/zh-CN/reference/cli.md
 locales/zh-CN/reference/cloudlink-mqtt-v1.md
 locales/zh-CN/reference/configuration.md
 locales/zh-CN/reference/data-processing-contracts.md
+locales/zh-CN/reference/gateway-enrollment.md
 locales/zh-CN/reference/http-api.md
 locales/zh-CN/reference/mcp-tools.md
+locales/zh-CN/reference/protocol-adapters.md
 locales/zh-CN/recovery/cloudlink-spool-recovery.md
 locales/zh-CN/recovery/configuration-rollback.md
 locales/zh-CN/recovery/gateway-identity-recovery.md
