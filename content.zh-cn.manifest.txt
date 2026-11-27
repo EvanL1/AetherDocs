@@ -66,6 +66,7 @@ locales/zh-CN/concepts/data-processing-flow.md
 locales/zh-CN/concepts/data-processing.md
 locales/zh-CN/concepts/rule-engine.md
 locales/zh-CN/concepts/shared-memory.md
+locales/zh-CN/crates/aether-acquisition-port.md
 locales/zh-CN/crates/aether-application.md
 locales/zh-CN/crates/aether-cloudlink.md
 locales/zh-CN/crates/aether-data-processing.md
@@ -97,7 +98,13 @@ locales/zh-CN/guides/home-assistant.md
 locales/zh-CN/guides/safe-operations.md
 locales/zh-CN/guides/writing-rules.md
 locales/zh-CN/index.md
+locales/zh-CN/libs/aether-auth-jwt.md
+locales/zh-CN/libs/aether-schema-macro.md
+locales/zh-CN/libs/aether-shm-bridge.md
+locales/zh-CN/libs/aether-sqlite-topology.md
+locales/zh-CN/libs/aether-store-local.md
 locales/zh-CN/migration/aetheriot-to-aetheredge.md
+locales/zh-CN/migration/home-assistant-extraction.md
 locales/zh-CN/overview/deployment-topologies.md
 locales/zh-CN/overview/ai-native-platform.md
 locales/zh-CN/overview/platform.md
@@ -114,3 +121,6 @@ locales/zh-CN/recovery/gateway-identity-recovery.md
 locales/zh-CN/recovery/safe-stop-and-control-revocation.md
 locales/zh-CN/roadmap/status.md
 locales/zh-CN/security/dependency-exceptions.md
+locales/zh-CN/services/api/adapters/http-data-processor.md
+locales/zh-CN/services/api/adapters/sqlite-history-query.md
+locales/zh-CN/services/uplink/adapters/cloudlink-mqtt.md
