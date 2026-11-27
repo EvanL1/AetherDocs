@@ -78,7 +78,6 @@ describe('bilingual documentation', () => {
       .map((line) => line.trim())
       .filter((line) => line && !line.startsWith('#'));
     const expected = [
-      'locales/zh-CN/guides/home-assistant.md',
       'locales/zh-CN/guides/edge-contracts-cloud.md',
       'locales/zh-CN/aethercloud/concepts/home-assistant-integration.md',
       'locales/zh-CN/aethercloud/concepts/home-assistant-governed-control.md',
