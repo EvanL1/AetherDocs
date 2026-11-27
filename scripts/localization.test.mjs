@@ -89,7 +89,6 @@ describe('bilingual documentation', () => {
       'locales/zh-CN/aethercontracts/SECURITY.md',
       'locales/zh-CN/aethercontracts/GOVERNANCE.md',
       'locales/zh-CN/crates/aether-integration-contract.md',
-      'locales/zh-CN/crates/aether-integration-control.md',
       'locales/zh-CN/recovery/configuration-rollback.md',
       'locales/zh-CN/recovery/gateway-identity-recovery.md',
       'locales/zh-CN/recovery/safe-stop-and-control-revocation.md',
