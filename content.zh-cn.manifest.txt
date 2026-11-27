@@ -25,6 +25,7 @@ locales/zh-CN/aethercloud/guides/iot-cloud-roadmap.md
 locales/zh-CN/aethercloud/guides/plan-infrastructure.md
 locales/zh-CN/aethercloud/index.md
 locales/zh-CN/aethercloud/reference/application-contracts.md
+locales/zh-CN/aethercloud/reference/cloudlink-ingress-deployment.md
 locales/zh-CN/aethercloud/reference/cloudlink-mqtt-v1.md
 locales/zh-CN/aethercloud/reference/http-api.md
 locales/zh-CN/aethercloud/reference/repository-layout.md
