@@ -6,7 +6,7 @@ updated: 2026-08-02
 
 # CLI 参考
 
-`aether`（版本 0.5.0）是 Aether 的统一管理工具，涵盖配置管理（`setup`、`sync`、`status`、`init`、`export`）和服务操作（`channels`、`models`、`rules`、`services`、`logs` 等）。下面每一节都由该二进制文件自身的 `--help` 输出生成。
+`aether`（版本 0.0.1）是 Aether 的统一管理工具，涵盖配置管理（`setup`、`sync`、`status`、`init`、`export`）和服务操作（`channels`、`models`、`rules`、`services`、`logs` 等）。下面每一节都由该二进制文件自身的 `--help` 输出生成。
 
 ```
 Usage: aether [OPTIONS] <COMMAND>
@@ -231,7 +231,7 @@ aether export -O /tmp/config-backup
 Usage: aether channels [OPTIONS] <COMMAND>
 ```
 
-子命令：`list`、`status`、`control`、`adjust`、`reload`、`health`、`create`、`update`、`delete`、`enable`、`disable`、`mappings`、`unmapped-points`、`write`、`points`。
+子命令：`list`、`status`、`reconcile`、`health`、`create`、`update`、`delete`、`enable`、`disable`、`mappings`、`unmapped-points`、`points`。
 
 ### `channels list`
 
@@ -450,7 +450,7 @@ Usage: aether channels points add [OPTIONS] --name <NAME> <CHANNEL_ID> <POINT_TY
 | `--expected-revision <N>` | 本次变更所期望的通道修订，取自最近一次通道读取 |
 | `--confirmed` | 确认这次受治理的点位拓扑变更 |
 
-点位拓扑以通道的修订为围栏，因此 `--expected-revision` 和 `--confirmed` 是必需的，与通道生命周期命令完全一样。用 `aether channels get <id>` 读取当前修订。
+点位拓扑以通道的修订为围栏，因此 `--expected-revision` 和 `--confirmed` 是必需的，与通道生命周期命令完全一样。用 `aether channels list` 读取当前修订。
 
 ```bash
 aether channels points add 1001 T 101 --name voltage --unit V --scale 0.1 \
@@ -1777,7 +1777,7 @@ MCP 桥接读取 `AETHER_ACCESS_TOKEN`，把它作为 `Authorization: Bearer` �
 
 ## 退出代码和 JSON 模式
 
-`aether` 0.4.0 的实测行为：
+`aether` 0.0.1 的实测行为：
 
 - **退出代码 0** — 操作成功。
 - **退出代码 1** — 操作失败（例如目标服务不可达）。在普通模式下，错误以 `Error: <message>` 的形式打印。

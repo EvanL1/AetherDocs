@@ -104,9 +104,19 @@ export default defineConfig({
               items: [{ autogenerate: { directory: 'crates' } }],
             },
             {
-              label: 'Extensions',
-              translations: { 'zh-CN': '扩展' },
-              items: [{ autogenerate: { directory: 'extensions' } }],
+              label: 'Kernel Libraries',
+              translations: { 'zh-CN': '内核库' },
+              items: [{ autogenerate: { directory: 'libs' } }],
+            },
+            {
+              label: 'Service Adapters',
+              translations: { 'zh-CN': '服务适配器' },
+              items: [{ autogenerate: { directory: 'services' } }],
+            },
+            {
+              label: 'Migration',
+              translations: { 'zh-CN': '迁移' },
+              items: [{ autogenerate: { directory: 'migration' } }],
             },
             {
               label: 'Security',
@@ -170,7 +180,7 @@ export default defineConfig({
             },
             {
               label: 'Conformance',
-              translations: { 'zh-CN': '符合性' },
+              translations: { 'zh-CN': '一致性' },
               slug: 'aethercontracts/conformance',
             },
             {

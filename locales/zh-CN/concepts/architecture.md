@@ -103,7 +103,7 @@ authenticated HTTP
 
 如果 aether-io 重启，UDS 通知通道会以指数退避（1–5 秒）自动重连，因此重启 aether-io 不需要重启 aether-automation。
 
-有两个性质保证热路径的安全：
+有三个性质保证热路径的安全：
 
 - **写入所有权**。aether-io 是共享内存中遥测/信号槽的唯一写入器；aether-automation 是控制/动作槽的唯一写入器。见[共享内存](/zh/concepts/shared-memory)。
 - **事件只是提示，SHM 才是事实**。事件使用方总是重新读取槽；aether-history 和 aether-uplink 保持基于间隔的采样语义。

@@ -66,7 +66,7 @@ Authorization: Bearer <access-token>
 
 每次订阅更新都带有 `values`、`ts` 和 `quality`，均以点位 ID 为键。样本比 `SHM_WRITER_STALE_AFTER_MS`（默认 30 秒）新时，`quality` 为 `good`；一旦不再满足，即为 `uncertain`。通道停止响应后，最后一个值会原样保留，因此单凭 `values` 无法区分实时读数和已冻结的读数——在依据数值采取行动之前，先按 `quality` 判定每个点位。
 
-每项受治理的变更都会先被记录，然后才报告为完成；每个服务通过 `GET /api/audit/events` 对自己的审计轨迹负责——经由网关可通过 `/io/api/audit/events` 和 `/automation/api/audit/events` 访问。可按 `request_id`、`actor_id`、`capability`、`outcome`（`rejected`、`attempted`、`succeeded`、`failed`）、`since_ms` 和 `until_ms` 过滤；用 `limit`（上限钳制为 1000）和 `offset` 分页。事件按从新到旧返回，`total` 统计的是全部匹配项，而不是返回的这一页。被拒绝的命令同样会被记录，因此一次被拒的尝试是可见的，而不是不留痕迹。无法识别的 `outcome` 会返回 400，而不是作为过滤条件被忽略，因为悄悄放宽审计查询，回答的是一个比所问更窄的问题。
+每项受治理的变更都会先被记录，然后才报告为完成；每个服务通过 `GET /api/audit/events` 对自己的审计轨迹负责——经由网关可通过 `/io/api/audit/events` 和 `/automation/api/audit/events` 访问。可按 `request_id`、`actor_id`、`capability`、`outcome`（`rejected`、`attempted`、`succeeded`、`failed`）、`since_ms` 和 `until_ms` 过滤；用 `limit`（上限钳制为 1000）和 `offset` 分页。事件按从新到旧返回，`total` 统计的是全部匹配项，而不是返回的这一页。被拒绝的命令同样会被记录，因此一次被拒的尝试是可见的，而不是不留痕迹。无法识别的 `outcome` 会返回 400，而不是作为过滤条件被忽略，因为悄悄放宽审计查询，回答的就不是所问的那个问题。
 
 每个访问令牌都带有必需的 `scope` 声明，列出它可以行使的权限。角色仍是上限，scope 在其范围内做选择，因此 scope 绝不会授予角色所没有的权限。缺少该声明的令牌会被拒绝，而不是被当作拥有全部权限。
 
@@ -82,9 +82,11 @@ scope 收窄的是命令，不是读取。任何有效令牌，无论 scope 如�
 网关在转发任何命名空间请求之前都要求提供访问 JWT，并且只为至少持有一项 io、automation 或 alarm 所强制执行的权限的令牌，把变更转发给这些服务。随后由所属服务应用针对具体操作的授权：
 
 - io 通道的创建、更新、删除、启用和禁用需要带有 `io.channel.manage` 的 Admin 或 Engineer Bearer JWT；
+- io 通道模板（`POST /io/api/templates`、`POST /io/api/templates/from-channel/{channel_id}`，以及对 `/io/api/templates/{id}` 的 `PUT` 或 `DELETE`）、单个通道的日志级别（`PUT /io/api/channels/{id}/logging`）和 `POST /io/api/routing/reload` 需要带有 `io.channel.manage` 的 Bearer JWT，以及 `x-aether-confirmed: true`。io 在该能力下对它们进行审计。每条事件都记录操作及其涉及的模板或通道，绝不记录请求体；应用模板时，模板 id 会记入它所做的点位变更；
 - 自动化设备操作接受 Bearer 访问 JWT，或专用的 `AetherService <token>` 上行链路凭据；
 - 自动化规则管理和手动执行需要 Admin 或 Engineer Bearer JWT，并具备该操作所记载的能力；
 - 告警规则变更和告警解除需要 Admin 或 Engineer Bearer JWT；
+- `POST /alarm/call-data` 会把每一条活动告警重放到上行链路，因此按上行发布来治理：它需要 `uplink.message.publish` 和 `x-aether-confirmed: true`，alarm 在该能力下对它进行审计。与对 alarm 的任何变更一样，网关只为同时持有一项 io、automation 或 alarm 所强制执行的权限的令牌转发它。重放在一个 20 秒的截止时间内运行。上行链路未能在这段时间内接受每一条告警时，它以 502 作答，并带有代码 `ALARM_REPLAY_INCOMPLETE` 和已送达的数量。不带该代码的 502 来自网关自身：请提供 `x-request-id`，重试之前先从审计轨迹中读取结果；
 - 历史配置和存储变更（`PUT /history/config`、`PUT /history/storage`、`POST /history/storage/test` 和 `POST /history/storage/reconnect`）需要带有 `history.config.manage` 的 Admin 或 Engineer Bearer JWT，以及 `x-aether-confirmed: true`；
 - 上行链路配置变更（`POST /uplink/mqtt/config`、`POST /uplink/mqtt/disconnect`、`POST /uplink/mqtt/reconnect`、`POST /uplink/certificate/upload` 和 `DELETE /uplink/certificate/{cert_type}`）需要带有 `uplink.config.manage` 的 Admin 或 Engineer Bearer JWT，以及 `x-aether-confirmed: true`。MQTT 配置中还保存着转发过滤器，以及上行链路用自身凭据调用的内部服务 URL，因此这项权限决定了哪些数据离开站点，以及该凭据被发往何处；
 - 由调用方触发的上行发布（`POST /uplink/alarm/broadcast` 会把所提供的告警消息加入队列，`POST /uplink/inst-sync` 会发送实例列表）需要带有 `uplink.message.publish` 的 Admin 或 Engineer Bearer JWT，以及 `x-aether-confirmed: true`；

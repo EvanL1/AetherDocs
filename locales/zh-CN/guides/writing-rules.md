@@ -20,7 +20,7 @@ SQLite `rules` 表中的一行规则包含：
 - **`trigger_config`** — 规则何时运行。有两种变体，由 `"type"` 区分：
   - `{"type": "interval", "interval_ms": 1000}` — 在调度器节拍上周期性评估。没有 `trigger_config` 的规则默认使用 1000 ms 的间隔（如果设置了 `cooldown_ms`，则以它作为周期）。
   - `{"type": "on_change", "point_refs": [{"instance": 1, "point_type": "measurement", "point": 0}], "time_deadband_ms": 200, "value_deadband": null}` — 订阅的点位发生变化时进行事件驱动的评估，由时间死区（两次触发之间的最小间隔）和可选的值死区（绝对变化量或百分比变化阈值）过滤。
-- **流程** — 逻辑本身：起始节点经由条件分支扇出到写入点位的节点，最后到达结束节点。每个节点都带有一个 `type`，这里只接受四个值：`start`、`end`、`custom`，除此之外别无其他。执行实际工作的节点始终是 `"type": "custom"`，工作的种类由 `data.type` 指定：
+- **流程** — 逻辑本身：起始节点经由条件分支扇出到写入点位的节点，最后到达结束节点。每个节点都带有一个 `type`，这里只接受三个值：`start`、`end`、`custom`，除此之外别无其他。执行实际工作的节点始终是 `"type": "custom"`，工作的种类由 `data.type` 指定：
 
   | `data.type` | 作用 |
   |-------------|------|

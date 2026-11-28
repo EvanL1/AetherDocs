@@ -14,7 +14,7 @@ AetherContracts 是 AetherEdge、AetherCloud 与独立实现共同使用的公�
 
 ## 当前发布版本
 
-`v0.1.0-alpha.3` 冻结了实验性的 CloudLink 线协议、配置档与 TCK 契约面，并提供 TypeScript、Rust、C 与 C++ 的夹具绑定。它不是生产 CloudLink 切换版本。
+`v0.1.0-alpha.4` 冻结了实验性的 CloudLink 线协议、配置档与 TCK 契约面，并提供 TypeScript、Rust、C 与 C++ 的夹具绑定。它不是生产 CloudLink 切换版本。
 
 该发布版本在经过签名、摘要锁定的制品中保留了历史上的使用方名称 AetherIot。仓库改名为 AetherEdge 之后，这些字节仍然不可变。后续发布版本可以更新产品展示名称，而不改变协议标识。
 
