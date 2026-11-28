@@ -34,6 +34,7 @@ const specPages = [
 ];
 
 const translatedPages = [
+  "index.md",
   "conformance.md",
   "integration.md",
   "GOVERNANCE.md",
