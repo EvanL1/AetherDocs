@@ -228,4 +228,4 @@ cargo test -p aether-schema-macro
 
 ## 许可证
 
-属于 AetherEMS 项目的一部分。
+属于 AetherEdge 项目的一部分。

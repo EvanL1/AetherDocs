@@ -114,7 +114,7 @@ scope 收窄的是命令，不是读取：任何有效令牌仍然可以通过�
 
 - `aether://packs/energy/knowledge/ess-primer` — Energy Pack 激活时的储能概念
 - `aether://packs/energy/knowledge/safe-operations` — Energy Pack 安全契约
-- `aether://docs/concepts/architecture` — 七个服务及其通信方式
+- `aether://docs/concepts/architecture` — 六个服务及其通信方式
 - `aether://docs/concepts/data-model` — 实例、通道、点位
 - `aether://docs/reference/mcp-tools` — 完整的工具参考
 
