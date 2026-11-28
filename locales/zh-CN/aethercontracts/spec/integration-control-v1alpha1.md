@@ -1,7 +1,7 @@
 ---
 title: "集成控制协议 v1 alpha 1"
 description: "默认关闭的受治理设备电源控制：固定意图、显式确认、边缘最终决定和分阶段回执。"
-updated: 2026-07-17
+updated: 2026-07-18
 id: integration-control-v1alpha1
 status: experimental-default-off
 version: 0.1.0-alpha.4
@@ -14,48 +14,43 @@ normative: true
 
 > 权威来源：[AetherContracts](https://github.com/EvanL1/AetherContracts/blob/main/spec/integration-control-v1alpha1.md)。
 
-集成控制是独立且默认关闭的 CloudLink 扩展，名称为
-`aether.cloudlink.integration-control.v1alpha1`。它不会改变只读拓扑和观测扩展，普通
-CloudLink 1.0 会话也不会自动获得控制能力。
+Integration Control 扩展定义一个默认拒绝的受治理动作：`device.power.set.v1`。它是一个独立的扩展，名为
+`aether.cloudlink.integration-control.v1alpha1`。它不改变只读的
+`aether.cloudlink.integration.v1alpha1` 拓扑与观测扩展，CloudLink 1.0 基础协商也绝不会启用控制。
 
-当前版本只允许一个语义动作：`device.power.set.v1`。协议没有“任意动作”入口，也不允许
-调用方提交 Home Assistant 域、服务名、服务参数、实例地址、令牌、脚本、模板或任意
-JSON。这样可以防止一个看似受限的电源动作被当作执行其他操作的容器。
+本发布版本有意不定义通用动作、Home Assistant 域、服务名、服务数据对象、提供方 URL、令牌、凭据引用、脚本、模板或任意 JSON 参数。生产方不能把这个固定动作当作承载其他提供方操作的容器。
 
-## 启用条件
+## 启用与发布顺序
 
-只有同时满足以下条件，云端才可以下发动作：
+该扩展默认关闭。只有同时满足以下全部条件，才允许发出动作提议：
 
-1. 边缘运行时清单明确声明控制扩展。
-2. 边缘消费方、持久作业账本、本地设备接入和本地安全策略均已投运。
-3. 云端已经观测到这份精确 Runtime Manifest，并显式启用控制消息生产方。
-4. 动作绑定当前通过认证的 CloudLink 会话。
+1. 边缘 Runtime Manifest 明确声明
+   `aether.cloudlink.integration-control.v1alpha1`。
+2. 边缘使用方、持久作业账本、本地 Integration 连接和本地安全策略均已投运。
+3. 云端已经观测到该确切的 Runtime Manifest 协议，并显式启用其生产方。
+4. 提议绑定到当前已认证的 CloudLink 会话。
 
-发布顺序必须先边缘、后云端。云端不能通过试发动作来探测边缘是否支持控制。不支持或未
-启用该扩展的边缘不应收到任何动作。关闭扩展会阻止新执行，但不会删除既有作业的审计和
-重放账本。
+发布顺序是边缘先行。云端绝不能通过发布动作来探测支持情况。不支持或已关闭该扩展的边缘不会收到任何动作消息。关闭扩展会阻止新的执行，但不会抹除先前已接纳作业的审计账本或重放账本。
 
-## 固定控制意图
+## 固定意图
 
-控制意图使用 `aether.integration-control.action-intent.v1alpha1`。目标只能包含：
+`IntegrationActionIntent` 是封闭对象，其结构定义为
+`aether.integration-control.action-intent.v1alpha1`。
 
-- `integration_id`：设备接入实例；
-- `snapshot_generation`：已经接纳的准确拓扑代次；
-- `entity_id`：稳定实体身份；
-- `point_key`：固定为 `is_on`。
+唯一的 `capability_id` 是 `device.power.set.v1`。其目标恰好包含：
 
-参数对象只能包含一个布尔值 `value`。边缘必须用完整拓扑解析目标：代次必须完全一致，
-实体必须存在，点位必须是布尔状态点；Home Assistant 映射目前只允许 `fan`、`light`
-和 `switch` 三类实体。
+- `integration_id`；
+- 已接纳的 `snapshot_generation`；
+- 稳定的 `entity_id`；
+- `point_key`，固定为 `is_on`。
 
-公共消息不包含当前 Home Assistant 实体地址。边缘在确认稳定身份和本地拓扑代次之后，
-才解析当前地址。即使用户重命名了实体，过期的云端意图也无法借此指向另一个设备。
+其参数对象只包含一个布尔成员 `value`。目标通过完整的已接纳 Integration 拓扑解析。代次必须完全一致，实体必须存在，点位必须是布尔状态点位，并且 Home Assistant 配置档只允许 `fan`、`light` 和 `switch` 三种实体类型。
 
-## 固定治理要求
+当前的提供方来源地址被有意省略。边缘只有在检查确切的本地拓扑代次之后，才根据稳定实体身份解析它。因此，提供方重命名无法重定向陈旧的云端提议。
 
-治理字段不能由调用方降低：
+治理元数据是固定的，不由调用方选择：
 
-| 要求         | 固定值                       |
+| 字段         | 必需值                       |
 | ------------ | ---------------------------- |
 | 执行方式     | `governed-job`               |
 | 默认授权     | `deny`                       |
@@ -67,70 +62,53 @@ JSON。这样可以防止一个看似受限的电源动作被当作执行其他�
 | 审计         | `required`                   |
 | 边缘最终决定 | `true`                       |
 
-意图还会携带有长度限制的授权和确认引用。它们只是云端治理证据，不能覆盖边缘本地策略。
-边缘在调用 Home Assistant 之前，仍要验证云端身份、用户确认、设备接入投运状态、准确
-目标和本地安全决定。
+带签名的意图还携带有界的授权引用和确认引用。这些引用不能覆盖本地策略。在调用任何提供方之前，边缘先验证云端权威、显式确认、已投运的 Integration、目标和本地安全决定。
 
-## 签名、到期与重放
+## 动作提议
 
-动作提议把网关、当前会话、凭据代次、作业身份、签发时间、强制到期时间、完整意图及其
-摘要绑定在一起。
+`integration-action-offer.schema.json` 是封闭的云端到边缘消息。它绑定网关、当前会话、凭据代次、作业身份、签发时间、强制到期时间、意图摘要、完整意图和云端认证。
 
-`intent_digest` 是对完整意图进行 RFC 8785 规范化后计算的 SHA-256，表示为
-`sha256:` 加 64 位小写十六进制文本。`cloud_authentication` 使用 Ed25519 对协议规定
-的准确字段投影签名。字段形状正确不代表签名有效；边缘必须用已经配置的云端公钥验证。
+`intent_digest` 是对完整意图对象的 RFC 8785 JCS UTF-8 字节计算的小写 SHA-256，编码为 `sha256:<64 lowercase hex digits>`。`cloud_authentication` 是对
+`profiles/cloudlink/v1alpha1/integration-control.json` 中精确有序字段投影的 Ed25519 签名。存在形状正确的签名并不等于已经验证；边缘必须用已配置的云端密钥进行验证。生产云端密钥的签发、轮换、撤销和验证方归属仍在规划中，因此该配置档仍属实验性。
 
-生产环境的云端密钥签发、轮换、撤销和验证方归属尚未冻结，因此该能力仍保持实验性和默认
-关闭状态。
+作业重放身份是 `(gateway_id, job_id)`。第一个被持久接纳的提议把该身份绑定到一个 `intent_digest`。以相同身份和摘要重复时返回已存储的回执，并且不得再次调用 Home Assistant。以另一个摘要复用该身份时以 `DIGEST_CONFLICT` 失败。超时、崩溃或含糊的提供方响应成为 `unknown`；这绝不能成为自动产生第二次物理效果的理由。
 
-作业重放身份是 `(gateway_id, job_id)`。第一次持久接纳会把它绑定到唯一意图摘要：
+提议只在 `evaluation_time_ms < expires_at_ms` 时有效。到期时间早于签发时间时以 `INVALID_EXPIRY_WINDOW` 失败；到达截止时间或其后的任何时间都以
+`MESSAGE_EXPIRED` 失败。
 
-- 相同作业和相同摘要的重放返回已存回执，不得再次调用 Home Assistant；
-- 相同作业使用不同摘要会以 `DIGEST_CONFLICT` 拒绝；
-- 超时、崩溃或接入方返回含糊结果时，结果是 `unknown`，不能自动重试物理动作。
+## Home Assistant 映射
 
-提议只在 `evaluation_time_ms < expires_at_ms` 时有效。到期时间早于签发时间会被拒绝；
-到期时刻及之后同样会被拒绝。
+边缘适配器在内部映射该布尔语义动作：
 
-## 边缘执行
+- `true` 选择其固定的提供方开启操作；
+- `false` 选择其固定的提供方关闭操作。
 
-布尔意图只在边缘内部映射：
+操作名称和任何提供方请求对象都不会出现在公开线协议上。调用方不能选择 Home Assistant 域、服务、目标语法或服务数据。提供方 URL 和凭据留在边缘本地机密存储中。
 
-- `true` 选择固定的开启操作；
-- `false` 选择固定的关闭操作。
-
-公共消息和调用方都不能选择 Home Assistant 的服务名、目标语法或服务参数。实例地址和
-凭据继续留在边缘本地密钥存储中。
-
-边缘必须先持久记录作业身份和意图摘要，再记录“准备尝试”的审计证据，之后才可调用接入方。
-本地策略拒绝或调用前审计写入失败时，不得发出设备请求。
+边缘实现必须先持久记录作业身份和意图摘要，再记录尝试阶段的审计证据，然后才调用提供方。调用前审计失败或本地策略检查失败都会阻止调用。
 
 ## 回执与证据
 
-回执通过已认证的 CloudLink 上行消息返回，并继承精确重放、业务摘要和连续持久确认规则。
-它会绑定作业、回执序号、能力、准确目标和意图摘要。
+`integration-action-receipt.schema.json` 是经过认证的边缘到云端交付，使用既有的 CloudLink 上行信封、重放身份、业务摘要和持久确认规则。其封闭载荷绑定作业、回执序号、能力、精确目标和意图摘要。
 
-允许的证据阶段只有：
+允许的证据阶段有：
 
-- `edge-accepted`：边缘接纳意图；
-- `edge-rejected`：边缘拒绝意图；
-- `provider-accepted`：Home Assistant 接纳请求；
-- `provider-rejected`：Home Assistant 拒绝请求；
-- `unknown`：结果无法确定。
+- `edge-accepted`；
+- `edge-rejected`；
+- `provider-accepted`；
+- `provider-rejected`；
+- `unknown`。
 
-所有回执的 `physical_outcome` 都固定为 `unknown`。协议没有“物理完成”或“执行成功”
-阶段。`provider-accepted` 只表示提供方接受请求，不能证明物理设备已经完成动作，也不能
-证明无线报文到达设备、执行器已经动作或目标状态已经出现。后续状态观测是另一条提供方
-证据，也不是独立的物理确认。
+每个回执都把 `physical_outcome` 固定为 `unknown`。本契约没有
+`physical-confirmed` 或 `succeeded` 阶段。在 Home Assistant 配置档中，成功的提供方响应只证明 Home Assistant 接受了请求。它不能证明无线报文已到达设备、执行器已经动作，或期望的物理状态现已存在。之后的状态观测是另一条提供方证据，仍然不是独立的物理确认。
 
-云端必须分别保存提供方接受、观测状态、物理确认和最终作业结论，不能把
-`provider-accepted` 直接显示为物理执行成功。
+因此，云端必须把 `provider-accepted`、观测到的状态、物理确认和最终作业结果保留为相互独立的事实。它不得把 `provider-accepted` 变成物理完成或物理执行成功。
 
-## 当前状态
+`failure_code` 存在时，是非空的大写契约标识符，最长 128 个字符。更长的值属于线结构无效，以 `FIELD_BOUND` 失败；使用方不得先接受生产方的无界值，再静默截断到自身解析器的上限。
 
-规范结构位于 `schemas/integration-control/v1alpha1/`，一致性测试固定了唯一动作、封闭
-参数、密钥边界、默认关闭、准确拓扑绑定、到期、重放冲突和回执阶段。
+## 一致性
 
-`0.1.0-alpha.4` 是尚未发布的开发目标，仍处于实验阶段，并且默认关闭；最新发布版本仍是
-`v0.1.0-alpha.3`，且不包含该控制扩展。alpha.4 源码不声明生产云端密钥生命周期、产品
-作业账本、Home Assistant 命令适配器、端到端消息代理证据或物理确认已经交付。
+规范性结构定义位于 `schemas/integration-control/v1alpha1/`，两个 CloudLink 入口结构定义位于
+`schemas/cloudlink/v1alpha1/`。测试夹具和 TCK 冻结唯一动作、封闭的参数面、机密边界、强制治理元数据、默认关闭的启用方式、精确拓扑绑定、到期、重放冲突、回执证据阶段，以及 Home Assistant 的提供方接受边界。
+
+本发布版本不声明生产云端密钥生命周期、产品作业账本、Home Assistant 命令适配器、端到端消息代理证据或物理确认。

@@ -1,23 +1,25 @@
 ---
 title: "部署拓扑"
-description: "AetherIoT 支持将物理权限保持在边缘的部署，同时仅在创造价值的地方添加云协调。"
+description: "AetherIoT 支持把物理权威保留在边缘、只在能创造价值的地方加入云端协调的部署方式。"
 updated: 2026-07-16
 ---
 
 # 部署拓扑
 
-AetherIoT支持将物理权限保留在边缘的部署，同时仅在创造价值的地方添加云协调。
+AetherIoT 支持把物理权威保留在边缘、只在能创造价值的地方加入云端协调的部署方式。
 
-## 仅限边缘站点
+## 纯边缘站点
+
 ```text
 field devices -> AetherEdge -> local applications
                     |
                     `-> embedded history and durable local outbox
 ```
 
-使用此拓扑进行评估、隔离站点和不需要云协调的应用程序。默认运行时不需要代理、PostgreSQL、云帐户、浏览器或 AI 客户端。
+这种拓扑适用于评估、隔离站点以及不需要云端协调的应用。默认运行时不需要消息代理、PostgreSQL、云账户、浏览器或 AI 客户端。
 
-## 使用 AetherCloud 的 Edge
+## 边缘与 AetherCloud 协同
+
 ```text
 field devices -> AetherEdge == CloudLink ==> AetherCloud -> operator clients
                     ^                         |
@@ -25,11 +27,12 @@ field devices -> AetherEdge == CloudLink ==> AetherCloud -> operator clients
                     `--- final local policy        and governed jobs
 ```
 
-AetherContracts 定义共享的 CloudLink 行为。 AetherCloud 记录带时间戳的预测并发送所需的状态或受治理的作业。 AetherEdge 在本地策略下验证、接受、拒绝、过期或应用该意图。
+AetherContracts 定义共享的 CloudLink 行为。AetherCloud 记录带时间戳的投影，并下发期望状态或受治理的作业。AetherEdge 依据本地策略校验、接受、拒绝、判定过期或应用这些意图。
 
-当前的 CloudLink alpha 路径是实验性的。传统边缘上行链路保持默认状态，直到身份验证、签名确认、崩溃持久性和联合一致性门通过。
+当前的 CloudLink alpha 路径是实验性的。在认证、签名确认、崩溃持久性和联合一致性门槛全部通过之前，旧版边缘上行链路仍是默认路径。
 
 ## 多云控制平面单元
+
 ```text
 tenant home cell
 ├── AetherCloud application modules
@@ -40,18 +43,18 @@ tenant home cell
     └── provider B
 ```
 
-一个部署堆栈拥有一种独立锁定的基础设施状态。单元不会创建租户范围或跨提供商的全局状态文件。每个提供商继续拥有其本机资源状态。
+一个部署栈拥有一份独立加锁的基础设施状态。单元不会创建租户级或跨提供方的全局状态文件。每个提供方继续拥有其原生的资源状态。
 
-## AetherEMS解决方案
+## AetherEMS 解决方案
 
-AetherEMS通过AetherEdge分层能源模型、工作流程和应用程序，并可以通过公共合约连接到AetherCloud。它无法更改边缘、云或合约权限边界。
+AetherEMS 在 AetherEdge 之上叠加能源模型、工作流和应用，并且可以通过公开契约连接到 AetherCloud。它不能改变边缘、云端或契约的权威边界。
 
-## 失败预期
+## 故障预期
 
-| 失败 | 所需行为 |
+| 故障 | 要求的行为 |
 | --- | --- |
-| 互联网或云不可用 | AetherEdge继续委托采集、本地历史记录、规则、警报、联锁和控制 |
-| 代理不可用 | 本地持久发件箱保留有限的工作； MQTT 交付不是应用程序收据 |
-| 提供程序 API 不可用 | AetherCloud 公开类型化失败，并且永远不会将其规范化为空的成功观察 |
-| AI 客户端不可用 | 确定性行为保持不变 |
-| 云作业被本地策略拒绝 | 拒绝仍然是可审计的事实；云意图永远不会绕过边缘 |
+| 互联网或云端不可用 | AetherEdge 继续执行已投运的采集、本地历史、规则、告警、联锁和控制 |
+| 消息代理不可用 | 本地持久发件箱保留有界的待处理工作；MQTT 交付不等于应用回执 |
+| 提供方 API 不可用 | AetherCloud 暴露带类型的失败，绝不把它归一化为一次空的成功观测 |
+| AI 客户端不可用 | 确定性行为不变 |
+| 云端作业被本地策略拒绝 | 拒绝仍是一条可审计的事实；云端意图永远不会绕过边缘 |

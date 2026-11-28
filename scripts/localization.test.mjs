@@ -78,7 +78,6 @@ describe('bilingual documentation', () => {
       .map((line) => line.trim())
       .filter((line) => line && !line.startsWith('#'));
     const expected = [
-      'locales/zh-CN/guides/home-assistant.md',
       'locales/zh-CN/guides/edge-contracts-cloud.md',
       'locales/zh-CN/aethercloud/concepts/home-assistant-integration.md',
       'locales/zh-CN/aethercloud/concepts/home-assistant-governed-control.md',
@@ -89,7 +88,6 @@ describe('bilingual documentation', () => {
       'locales/zh-CN/aethercontracts/SECURITY.md',
       'locales/zh-CN/aethercontracts/GOVERNANCE.md',
       'locales/zh-CN/crates/aether-integration-contract.md',
-      'locales/zh-CN/crates/aether-integration-control.md',
       'locales/zh-CN/recovery/configuration-rollback.md',
       'locales/zh-CN/recovery/gateway-identity-recovery.md',
       'locales/zh-CN/recovery/safe-stop-and-control-revocation.md',

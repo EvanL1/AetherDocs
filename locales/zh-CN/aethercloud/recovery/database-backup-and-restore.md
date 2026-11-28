@@ -13,7 +13,7 @@ status: planned
 
 ## 当前已经实现
 
-- 网关、CloudLink 会话、遥测、集成投影和集成控制已经具备部分 PostgreSQL 适配器或迁移基础。
+- 网关、CloudLink 会话、遥测、集成投影和集成控制已经具备 PostgreSQL 适配器或迁移基础。
 - 相关集成测试覆盖事务、租户行级安全、回滚、不确定提交后的恢复以及部分重启行为。
 - 一个独立部署的单元是其所拥有数据的事务权威。
 
@@ -36,4 +36,4 @@ status: planned
 
 所有恢复、故障转移、时间点回退或可能丢弃已提交证据的操作，都必须由数据库与安全人员批准。如果无法确定旧写入方已经隔离、备份身份尚未验证或租户隔离尚未通过，就不得让恢复后的数据库接受写入。
 
-继续阅读[PostgreSQL 持久化与多云单元](/zh/aethercloud/concepts/persistence-and-multi-cloud-cells)、[术语表](/zh/aethercloud/reference/terminology)和[物联网云路线图](/zh/aethercloud/guides/iot-cloud-roadmap)。
+继续阅读[PostgreSQL 持久化与多云单元](/zh/aethercloud/concepts/persistence-and-multi-cloud-cells)、[当前实现审计](https://github.com/EvanL1/AetherCloud/blob/main/docs/concepts/current-state-audit.md)和[运维可观测性模型](/zh/aethercloud/concepts/operational-observability)。

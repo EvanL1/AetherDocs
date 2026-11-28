@@ -1,26 +1,30 @@
 ---
 title: "aether-dataplane"
-description: "`aether-dataplane` 是 Aether 的业务中立共享内存核心。它可以由嵌入式网关使用，无需 Redis、PostgreSQL、SQLx、路由..."
-updated: 2026-07-14
+description: "aether-dataplane 是 Aether 与业务无关的共享内存核心，嵌入式网关无需 Redis、PostgreSQL、SQLx、路由模型或任何 HTTP 栈即可使用。"
+updated: 2026-08-11
 ---
 
 # aether-dataplane
 
-`aether-dataplane` 是 Aether 的业务中立共享内存核心。它可由嵌入式网关使用，无需 Redis、PostgreSQL、SQLx、路由模型或任何 HTTP 堆栈。
+`aether-dataplane` 是 Aether 与业务无关的共享内存核心。嵌入式网关可以直接使用它，无需 Redis、PostgreSQL、SQLx、路由模型或任何 HTTP 栈。
 
-它拥有：
+它负责：
 
-- 稳定的 64 字节标头和 32 字节对齐的 `PointSlot` 布局；
-- seqlock 一致读取和单写入器原子更新；
-- 只读具有 RAII 清理功能的可写 mmap 所有者；
-- 进程本地脏槽跟踪；
-- 槽分配位图和生成路径助手；
-- 抗撕裂快照序列化。
+- v5 的 64 字节 `ShmHeader` 和按 32 字节对齐的 `PointSlot` 布局；
+- seqlock 一致性读取和单写入器原子更新；
+- 带 RAII 清理的只读和可写 mmap 所有者；
+- 由所有者控制的心跳和代次隔离；
+- 点位质量持久化和代次路径辅助函数；
+- 按容量区分、带版本的订阅位图，用于本地唤醒提示；
+- 与 ABI 无关、抗撕裂并以持久化重命名落盘的快照序列化。
 
-Mmap 构造函数拒绝无法覆盖其声明容量的映射，或者在公开任何标头或槽引用之前其活动槽计数超过该容量的映射。公共故障使用 `DataplaneError`，允许主机区分无效布局、无效路径和操作系统 I/O 故障。只读读取器和通用 `SlotIo` 特征将标头值公开为 `HeaderSnapshot`，而不是可写原子单元。逻辑清单验证仍然是组合层的工作。
+mmap 构造函数要求物理长度与所声明的活动槽数量精确相符（`64 + 32 × slot_count`），之后才会暴露任何标头或槽的引用。`ShmHeader` 只携带魔数/版本、`slot_count`、所有者心跳、`layout_hash`、写入器代次、发布纪元和保留字节。`PointSlot` 携带值、原始值、时间戳、序列号和质量。其中没有脏状态，没有物理备用容量字段，写入点位时也不会自动更新心跳。
+
+生产读取只做一次 seqlock 尝试。发生竞争时向适配器返回 `None`；数据平面不会在重试循环里自旋。公开的失败使用 `DataplaneError`，使宿主可以区分无效布局、无效路径和操作系统 I/O 失败。只读读取器和通用的 `SlotIo` trait 以 `HeaderSnapshot` 的形式暴露标头值，绝不以可写原子单元的形式暴露。逻辑清单的校验仍是组合层的职责。
+
 ```bash
 cargo test -p aether-dataplane
 cargo tree -p aether-dataplane --edges normal
 ```
 
-之前的 `aether-rtdb-shm` 聚合箱在其滚动 v4 兼容性契约通过后已退役。行业中立的代码直接依赖于这个箱子；通道感知组合属于 `aether-shm-bridge`。
+规范的默认文件是 `aether-live-state.shm`。v5 布局是唯一被接受的物理格式。快照 v1 是独立的 `AETHSNAP` 格式，不序列化心跳、写入器代次、发布纪元或 seqlock 状态；更早的 mmap 和快照表示会被拒绝。与行业无关的代码直接依赖此 crate；感知通道的组合属于 `aether-shm-bridge`。

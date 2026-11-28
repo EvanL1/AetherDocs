@@ -1,40 +1,42 @@
 ---
 title: "HTTP API"
-description: "统一远程网关、本地服务 OpenAPI、身份验证和兼容性约定"
+description: "唯一的远程网关、各服务自有的 OpenAPI、身份验证与兼容性约定"
 updated: 2026-07-14
 ---
 
 # HTTP API
 
-AetherEdge 运行六项 HTTP 服务，但远程应用程序只有一个网络边界：端口 6005 上的 `aether-api`。本页介绍网关、其服务本地合约以及在其上应用的安全约定。
+AetherEdge 运行六个 HTTP 服务，但远程应用只有一个网络边界：6005 端口上的 `aether-api`。本页说明该网关、各服务自有的契约，以及贯穿其中的安全约定。
 
-> 每个运行中服务生成的 OpenAPI 文档，都是其路径、参数、请求与响应结构、
-> 状态码、媒体类型和操作级安全要求的权威来源。可以使用配套的 Swagger UI
-> 探索和调用这些操作。
+> 每个服务生成的 OpenAPI 文档，都是其路径、参数、请求与响应结构定义、
+> 状态码、媒体类型和操作级安全要求的权威来源。
+> `aether-api` 是 Swagger UI 的唯一所有者：
+> 它通过固定的网关路径呈现全部六份文档。
 
 ## 内置文档
 
-| 服务 | 默认边界 | Swagger 界面 | OpenAPI JSON |
+| 服务 | 默认边界 | 环回源文档 | 网关 Swagger 文档 |
 |---|---|---|---|
-| `aether-io` | 环回 | `http://127.0.0.1:6001/docs` | `http://127.0.0.1:6001/openapi.json` |
-| `aether-automation` | 环回 | `http://127.0.0.1:6002/docs` | `http://127.0.0.1:6002/openapi.json` |
-| `aether-history` | 环回 | `http://127.0.0.1:6004/docs` | `http://127.0.0.1:6004/openapi.json` |
-| `aether-api` | 远程网关 | `http://<edge-host>:6005/docs` | `http://<edge-host>:6005/openapi.json` |
-| `aether-uplink` | 环回 | `http://127.0.0.1:6006/docs` | `http://127.0.0.1:6006/openapi.json` |
-| `aether-alarm` | 环回 | `http://127.0.0.1:6007/docs` | `http://127.0.0.1:6007/openapi.json` |
+| `aether-io` | 环回 | `http://127.0.0.1:6001/openapi.json` | `http://<edge-host>:6005/openapi/io.json` |
+| `aether-automation` | 环回 | `http://127.0.0.1:6002/openapi.json` | `http://<edge-host>:6005/openapi/automation.json` |
+| `aether-history` | 环回 | `http://127.0.0.1:6004/openapi.json` | `http://<edge-host>:6005/openapi/history.json` |
+| `aether-api` | 远程网关 | — | `http://<edge-host>:6005/openapi/gateway.json` |
+| `aether-uplink` | 环回 | `http://127.0.0.1:6006/openapi.json` | `http://<edge-host>:6005/openapi/uplink.json` |
+| `aether-alarm` | 环回 | `http://127.0.0.1:6007/openapi.json` | `http://<edge-host>:6005/openapi/alarm.json` |
 
-Swagger 是通过每项服务的 `swagger-ui` Cargo 功能选择加入的。要将其包含在安装程序构建的所有六个服务中，请使用：
+Swagger 只能通过 `aether-api` 的 `swagger-ui` Cargo 特性选择启用。要在安装包构建中包含这个唯一的网关界面，请使用：
+
 ```bash
 ./scripts/build-installer.sh <version> <arch> -s rust --enable-swagger
 ```
 
-启用后，`/docs` 和 `/openapi.json` 是公开路由。Swagger 不会绕过受保护操作的身份验证，但会公开接口结构及其他内部 API 信息。仅在受信任的调试或开发网络中启用它。
+启用后，`http://<edge-host>:6005/docs` 提供一个文档选择器，涵盖网关和全部五个环回服务。网关会把各服务的路径改写到其经过身份验证的 `/api/v1/<service>` 命名空间下，因此 Swagger 的“Try it out”绝不会指向环回端口。网关文档是公开路由，但受保护的操作仍然需要其声明的凭据。只在受信任的投运或开发网络中启用该界面。
 
-## 曝光边界
+## 暴露边界
 
-只有 `aether-api` 是面向远程的服务。其经过身份验证的应用程序网关公开五个固定命名空间，并仅将它们转发到配置的环回服务：
+只有 `aether-api` 是面向远程的服务。其经过身份验证的应用网关公开五个固定命名空间，并且只把它们转发到已配置的环回服务：
 
-| 远程命名空间 | 服务本地业主 |
+| 远程命名空间 | 服务本地所有者 |
 |---|---|
 | `/api/v1/io/*` | `aether-io` |
 | `/api/v1/automation/*` | `aether-automation` |
@@ -42,68 +44,94 @@ Swagger 是通过每项服务的 `swagger-ui` Cargo 功能选择加入的。要�
 | `/api/v1/uplink/*` | `aether-uplink` |
 | `/api/v1/alarm/*` | `aether-alarm` |
 
-目标是由命名空间选择的，而不是由调用者输入选择的。启动验证仅接受显式环回 HTTP 源。网关保留原始签名的承载令牌以及一小组记录的命令和条件请求标头；它丢弃调用者提供的参与者标头并清理上游传输错误。直接服务端口保留在内部，不得从设备发布。
+转发目标由命名空间决定，绝不由调用方输入决定。启动校验只接受显式的环回 HTTP 源。网关保留原始的已签名 Bearer 令牌，以及少量已记录在案的命令请求头和条件请求头；它会丢弃调用方提供的操作者请求头，并对上游传输错误做脱敏处理。各服务的直连端口仍属内部端口，不得从设备上对外发布。
 
-生成的应用程序和下游产品接口在端口 6005 上使用相应的网关前缀路径。在当前整合阶段，服务本地 OpenAPI 仍是精确的操作契约；客户端通过上面的固定命名空间转换其内部路径。这不会使服务本地端口成为受支持的客户端接口。缺少的操作仍然必须通过所属应用程序边界添加，而不能由界面自行发明、直接附加到 SHM 或实现为存储写入。
+生成的应用和下游产品界面使用 6005 端口上对应的带网关前缀的路径。经网关代理的 OpenAPI 保留每个服务的操作结构定义和安全声明，只把受支持的路径改写到该固定命名空间下。这并不会让服务本地端口成为受支持的客户端接口。缺失的操作仍然必须通过所属的应用边界添加，而不是由界面自行发明、直接挂接到 SHM，或实现为一次存储写入。
 
-环回是部署边界，而不是身份凭证。 IO 通道调试加上选定的自动化和警报命令在操作边界进行身份验证，但 io、历史、上行链路、自动化和警报中的许多其他本地管理路由仍然依赖于主机隔离。不要因为直接服务端口的某些操作声明了承载方案而推断其公开是安全的。
+环回是部署边界，不是身份凭据。IO 通道投运以及部分自动化和告警命令会在操作边界上进行身份验证，但 io、history、uplink、automation 和 alarm 中的许多其他本地管理路由仍然依赖主机隔离。不要因为某个服务的部分操作声明了 Bearer 方案，就推断其直连端口可以安全暴露。
 
-当前完整通道配置查询可以包括协议参数和每通道日志记录配置。它仍然存在兼容性债务，等待经过编辑、经过身份验证的应用程序查询功能。保持 io 端口处于环回状态，并且不要将该响应代理给不受信任的客户端。
+当前的完整通道配置查询可能包含协议参数和每个通道的日志配置。在提供经过脱敏、经过身份验证的应用查询能力之前，它仍是一项兼容性债务。请让 io 端口保持在环回上，不要把该响应代理给不受信任的客户端。
 
-## 认证模型
+## 身份验证模型
 
-`aether-api` 使用签名的访问 JWT 保护其管理路由。 REST 客户端仅在标准标头中发送它：
+`aether-api` 使用已签名的访问 JWT 保护其管理路由。REST 客户端只在标准请求头中发送它：
+
 ```http
 Authorization: Bearer <access-token>
 ```
 
-登录、刷新令牌生命周期端点、服务运行状况以及编译后的文档路由构成网关 OpenAPI 文档描述的公共传输表面。除非明确启用，否则公共注册将被禁用。所需的 `JWT_SECRET_KEY` 必须至少包含 32 个字节，并且必须在源代码控制之外进行管理。
+登录、刷新令牌生命周期端点、服务健康检查，以及（在编译进来时）文档路由，构成了网关 OpenAPI 文档所描述的公开传输面。除非显式启用，否则公开注册处于禁用状态。必需的 `JWT_SECRET_KEY` 至少要有 32 字节，并且必须在源代码管理之外进行管理。
 
-网关 WebSocket 也经过身份验证。仅当实际的 WebSocket 升级时才接受其记录的 `?token=...` 后备； REST 查询字符串标记被拒绝。不支持 WebSocket 控件写入。
+网关 WebSocket 同样需要身份验证。文档中记载的 `?token=...` 回退方式只在真正的 WebSocket 升级请求中被接受；REST 查询字符串中的令牌会被拒绝。不支持通过 WebSocket 写入控制。
 
-网关在转发任何命名空间请求之前需要访问 JWT。然后，所属服务应用特定于操作的授权：
+每次订阅更新都带有 `values`、`ts` 和 `quality`，均以点位 ID 为键。样本比 `SHM_WRITER_STALE_AFTER_MS`（默认 30 秒）新时，`quality` 为 `good`；一旦不再满足，即为 `uncertain`。通道停止响应后，最后一个值会原样保留，因此单凭 `values` 无法区分实时读数和已冻结的读数——在依据数值采取行动之前，先按 `quality` 判定每个点位。
 
-- io 通道创建、更新、删除、启用和禁用需要具有 `io.channel.manage` 的管理员或工程师承载 JWT；
-- 自动化设备操作接受承载访问 JWT 或专用的 `AetherService <token>` 上行链路凭据；
-- 自动化规则管理和手动执行需要具有记录的功能的管理员或工程师承载 JWT操作；
-- 警报规则突变和警报解决需要管理员或工程师承载 JWT；
-- 转发的身份标头和环回可达性不满足这些受保护的命令边界。
+每项受治理的变更都会先被记录，然后才报告为完成；每个服务通过 `GET /api/audit/events` 对自己的审计轨迹负责——经由网关可通过 `/io/api/audit/events` 和 `/automation/api/audit/events` 访问。可按 `request_id`、`actor_id`、`capability`、`outcome`（`rejected`、`attempted`、`succeeded`、`failed`）、`since_ms` 和 `until_ms` 过滤；用 `limit`（上限钳制为 1000）和 `offset` 分页。事件按从新到旧返回，`total` 统计的是全部匹配项，而不是返回的这一页。被拒绝的命令同样会被记录，因此一次被拒的尝试是可见的，而不是不留痕迹。无法识别的 `outcome` 会返回 400，而不是作为过滤条件被忽略，因为悄悄放宽审计查询，回答的是一个比所问更窄的问题。
 
-## 受控命令
+每个访问令牌都带有必需的 `scope` 声明，列出它可以行使的权限。角色仍是上限，scope 在其范围内做选择，因此 scope 绝不会授予角色所没有的权限。缺少该声明的令牌会被拒绝，而不是被当作拥有全部权限。
 
-可以更改通道配置、设备、规则、处理或警报状态的命令，会在 OpenAPI 中声明其风险、权限、幂等性、确认和审核策略。应用程序命令边界强制执行这些声明；HTTP 处理程序不得直接写入 SHM 或存储。
+网关自身的管理路由各需要一项具名权限。持有其他命令权限并不能打开它们：
 
-对于受保护的变更，请严格遵循操作结构。根据操作的不同，显式确认会通过 `x-aether-confirmed: true` 或请求正文传递。在支持时提供 `x-request-id`，使重试和审核记录共享稳定的关联 ID。不要假设系统会通过未声明的标头转发确认或身份。
+- `gateway.administer`（仅 Admin）覆盖用户目录和用户变更、令牌统计与清理、`/api/v1/config` 下的全部操作（检查、导出、导入、升级、服务重启）、主机网络变更、`/api/admin` 下的日志管理、`POST /api/v1/broadcast`，以及通过 `PUT /api/v1/auth/me` 更改角色或激活状态；
+- `gateway.operate`（Admin 和 Engineer）覆盖首页点位的编辑和重置。
 
-已接纳的受控命令会在 OpenAPI 描述的响应中包含 `request_id` 和审核结果。如果调度或持久化成功，但最终审核记录追加失败，则操作仍会被接纳，其审核状态会标记为不完整且不可重试。此时应保留关联 ID，不要自动再次提交命令。若连操作尝试都无法记录，系统会在调度前拒绝该操作。
+登录会向 Admin 签发这两项权限，向 Engineer 签发 `gateway.operate`。收窄到例如 `uplink.message.publish` 的令牌只能做这一件事，在这些路由上什么也做不了。请把 `gateway.administer` 视为对主机的完全权限：持有者可以导入配置、安装升级，并更改任何账户的角色。
 
-设备命令接受意味着本地命令平面接受了请求；它并不能证明物理设备执行了它。使用反馈遥测进行闭环确认。
+scope 收窄的是命令，不是读取。任何有效令牌，无论 scope 如何，都可以通过网关读取，包括服务配置和审计轨迹。
 
-对于通道调试，SQLite 中的期望配置与活动协议运行时有意保持独立。现有资源变更可以使用可选的 `x-aether-expected-revision` 提供比较并交换保护。提交期望状态后，已接纳的响应可能报告等待激活或运行时投影降级；应通过 `request_id` 和 `resulting_revision` 协调，而不是自动重复非幂等变更。确切的标头、回执字段和每项操作的状态码由 io Swagger 文档定义。
+网关在转发任何命名空间请求之前都要求提供访问 JWT，并且只为至少持有一项 io、automation 或 alarm 所强制执行的权限的令牌，把变更转发给这些服务。随后由所属服务应用针对具体操作的授权：
+
+- io 通道的创建、更新、删除、启用和禁用需要带有 `io.channel.manage` 的 Admin 或 Engineer Bearer JWT；
+- 自动化设备操作接受 Bearer 访问 JWT，或专用的 `AetherService <token>` 上行链路凭据；
+- 自动化规则管理和手动执行需要 Admin 或 Engineer Bearer JWT，并具备该操作所记载的能力；
+- 告警规则变更和告警解除需要 Admin 或 Engineer Bearer JWT；
+- 历史配置和存储变更（`PUT /history/config`、`PUT /history/storage`、`POST /history/storage/test` 和 `POST /history/storage/reconnect`）需要带有 `history.config.manage` 的 Admin 或 Engineer Bearer JWT，以及 `x-aether-confirmed: true`；
+- 上行链路配置变更（`POST /uplink/mqtt/config`、`POST /uplink/mqtt/disconnect`、`POST /uplink/mqtt/reconnect`、`POST /uplink/certificate/upload` 和 `DELETE /uplink/certificate/{cert_type}`）需要带有 `uplink.config.manage` 的 Admin 或 Engineer Bearer JWT，以及 `x-aether-confirmed: true`。MQTT 配置中还保存着转发过滤器，以及上行链路用自身凭据调用的内部服务 URL，因此这项权限决定了哪些数据离开站点，以及该凭据被发往何处；
+- 由调用方触发的上行发布（`POST /uplink/alarm/broadcast` 会把所提供的告警消息加入队列，`POST /uplink/inst-sync` 会发送实例列表）需要带有 `uplink.message.publish` 的 Admin 或 Engineer Bearer JWT，以及 `x-aether-confirmed: true`；
+- `aether-history` 和 `aether-uplink` 自身没有命令边界，因此网关会在转发之前对上述历史和上行链路变更进行授权和审计。这两个服务上的任何其他非读取路由都按同样方式处理，归入该服务的配置能力之下；
+- 转发而来的身份请求头和环回可达性都不能满足这些受保护的命令边界。
+
+## 受治理命令
+
+能够更改通道配置、设备、规则、处理或告警状态的命令，会在 OpenAPI 中声明其风险、权限、幂等性、确认和审计策略。应用命令边界负责强制执行这些声明；HTTP 处理函数不得直接写入 SHM 或存储。
+
+对于受保护的变更，请严格遵循操作的结构定义。视操作而定，显式确认通过 `x-aether-confirmed: true` 或请求体传递。文档有相应说明时请提供 `x-request-id`，让重试和审计记录共用一个稳定的关联 ID。绝不要假设确认或身份可以通过未声明的请求头转发。
+
+已被接受的受治理命令，会在 OpenAPI 所描述的响应中包含其 `request_id` 和审计结果。如果下发或持久化已经成功，但最终审计记录追加失败，该操作仍视为已接受，其审计状态会被标记为不完整且不可重试。请保留关联 ID，不要自动再次提交该命令。如果连“已尝试”这条审计都无法记录，则会在下发之前失败关闭。
+
+由网关审计的历史或上行链路变更会保留服务的响应体。网关会附加它所记录的 `x-request-id`（拒绝时也会附加），并在已转发的变更上附加 `x-aether-audit: recorded` 或 `incomplete`。当拒绝或尝试无法被记录时，它不做转发，直接以 `503 COMMAND_AUDIT_UNAVAILABLE` 作答。即使调用方先断开连接，最终记录也会写入。带有 `response_status=502; upstream_outcome=unknown` 的 `failed` 事件表示转发在传输途中中断，因此重试之前请先回读该服务的配置。审计明细只记录操作名称和响应状态，绝不记录请求体，因此存储凭据、消息代理密码和证书文件都不会进入审计轨迹。在各服务共用一个 SQLite 数据库的情况下（受支持的安装方式均如此），请在 `/api/v1/io/api/audit/events` 上用 `capability=history.config.manage`、`capability=uplink.config.manage` 或 `capability=uplink.message.publish` 读取这些事件。
+
+设备命令被接受，表示本地命令平面接受了该请求；这并不证明物理设备已经执行。请使用反馈遥测进行闭环确认。
+
+对于通道投运，SQLite 中的期望配置与正在运行的协议运行时是有意区分开的。对已有资源的变更，只有带上必需的 `x-aether-expected-revision` 比较并设置保护才能继续，该修订取自最近一次通道读取。缺少修订的请求会被拒绝，而不会被自动提升为数据库当前的最新修订。期望状态提交之后，已接受的响应可能报告运行时投影处于等待激活或降级状态；请依据 `request_id` 和 `resulting_revision` 进行对账，而不要自动重复这一非幂等变更。确切的请求头、回执字段和各操作的状态码由 I/O OpenAPI 文档定义。
+
+自动化规则变更的请求体同样需要 `expected_revision`，其值取自最近一次规则查询的 ETag 或 `x-aether-configuration-revision`。调用方省略修订时，服务绝不会用自己当前的最新修订来代替。
 
 ## 响应兼容性
 
-大多数业务处理程序返回共享成功信封：
+大多数业务处理函数返回共用的成功信封：
+
 ```json
 { "success": true, "data": { "...": "..." }, "metadata": { "...": "..." } }
 ```
 
-当为空时，`metadata` 被省略。运行状况探测、服务横幅、WebSocket 升级、CSV 导出和严格的数据处理响应有意使用自己的表示形式。
+`metadata` 为空时会被省略。健康探测、服务横幅、WebSocket 升级、CSV 导出以及严格的数据处理响应有意使用各自的表示形式。
 
-错误响应仍在迁移，并且可能使用以下兼容性形状之一：
+错误响应仍在迁移中，可能使用以下兼容形式之一：
 
 - `{ "success": false, "error": { "code": 400, "message": "..." } }`；
 - `{ "success": false, "message": "..." }`；
-- 版本化数据处理 `{ "error": { "code": "...", ... } }`表单；
-- 与 `error_code`、`category` 和 `retryable` 的平面 `AetherError` 映射。
+- 带版本的数据处理 `{ "error": { "code": "...", ... } }` 形式；
+- 带有 `error_code`、`category` 和 `retryable` 的扁平 `AetherError` 映射。
 
-客户端必须将操作的 OpenAPI 状态和响应内容类型视为权威，并容忍记录的兼容性形状。请勿从其他服务推断通用错误架构。
+客户端必须把该操作的 OpenAPI 状态码和响应内容类型视为权威，并容忍文档所记载的兼容形式。不要根据另一个服务推断出通用的错误结构定义。
 
-## 贡献者合约
+## 贡献者契约
 
-当路由、架构、安全规则、响应或功能门发生更改时，请在同一更改中更新所属服务生成的 OpenAPI 注释和测试。远程示例必须使用网关前缀形式，而本地合约测试可以使用拥有的环回服务。不要将第二个端点列表添加到 Markdown。运行六项服务奇偶校验：
+当路由、结构定义、安全规则、响应或功能开关发生变化时，请在同一次变更中更新所属服务生成的 OpenAPI 注解和测试。远程示例必须使用带网关前缀的形式，本地契约测试则可以使用所属的环回服务。不要在 Markdown 中再添加一份端点列表。运行六服务一致性检查：
+
 ```bash
 ./scripts/check-openapi-contracts.sh
 ```
 
-此检查会编译可选的 Swagger 功能，并验证每个服务拥有的 Router/OpenAPI 契约。它也会在 Rust 持续集成工作流中运行。
+该检查会验证每个服务自有的 OpenAPI 契约，并编译唯一的网关 Swagger UI。它也在 Rust CI 工作流中运行。
