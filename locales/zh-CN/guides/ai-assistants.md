@@ -95,10 +95,12 @@ MCP 服务器不必运行在边缘设备上。每个工具都只与唯一的 API
 **凭据才是边界，所以要收窄凭据**。每个访问令牌都带有一个 `scope` 声明，列出它可以行使的权限。角色仍是上限，scope 在上限之内做选择，因此 scope 永远无法授予角色本来没有的权限。scope 只含读取权限的令牌一旦用于写入，会在网关被拒绝，并在每个服务处再次被拒绝，无论请求走哪条路径：
 
 ```json
-{ "user_id": 42, "role": "Engineer", "scope": ["data_processing.read"], "type": "access", "exp": 4102444800, "iat": 1 }
+{ "user_id": 42, "username": "assistant", "role": "Engineer", "scope": ["data_processing.read"], "type": "access", "exp": 4102444800, "iat": 1 }
 ```
 
 `scope` 是必填项。未声明权限的令牌会被拒绝，而不是被当作拥有全部权限：省略 scope 等同于隐式授权，这正是该声明要堵住的失败开放路径。登录签发的令牌带有其角色可以持有的全部权限；对于任何只应读取、绝不应下发命令的助手，请为它签发收窄后的令牌，并用 `--allow-write` 决定模型能看到什么，而不是它被允许做什么。
+
+scope 收窄的是命令，不是读取：任何有效令牌仍然可以通过网关读取。网关自身的管理路由需要按名称持有 `gateway.administer` 或 `gateway.operate`，因此 scope 只含一条命令（例如 `alarm.alert.resolve`）的 Admin 令牌无法管理用户、导入配置或启动升级。见 [HTTP API 与 Swagger](/zh/reference/http-api#身份验证模型)。
 
 以 `--allow-write` 启动服务器是一个有意为之的动作，但该标志只是注册门禁，不是对任何命令的确认。MCP 调用方仍须在每次调用时传入 `confirmed: true`，应用也会在分发之前拒绝未授权或无法审计的请求。MCP 桥接读取 `AETHER_ACCESS_TOKEN`，把它作为 `Authorization: Bearer` 凭据发送给服务，并为每个受治理请求生成一个 `X-Request-ID`。它拒绝把该凭据附加到非环回的明文 HTTP 上；远程写入需要经过证书校验的 HTTPS 入口。请保留返回的 `request_id` 和任何 `command_id`：超时以及审计或发布不完整的响应，都不是可以安全自动重试的信号。设备命令响应成功，表示本地命令平面接受了该命令，并不能证明物理设备已经执行。路由响应表示物理目标已被持久化并发布，它不会执行设备命令。**启用写入之前，请先阅读[应用与智能体的安全操作](/zh/guides/safe-operations)**。如果命令响应报告 `audit.status="incomplete"`，说明命令已被接受：保留其 `request_id`/`command_id`，不要重试。通道变更成功时也可能报告运行时投影降级。请保留其 `request_id` 和 `resulting_revision`，检查 `reconciliation_required`，不要自动重试这条非幂等的投运命令。
 

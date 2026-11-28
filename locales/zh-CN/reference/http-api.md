@@ -70,7 +70,16 @@ Authorization: Bearer <access-token>
 
 每个访问令牌都带有必需的 `scope` 声明，列出它可以行使的权限。角色仍是上限，scope 在其范围内做选择，因此 scope 绝不会授予角色所没有的权限。缺少该声明的令牌会被拒绝，而不是被当作拥有全部权限。
 
-网关在转发任何命名空间请求之前都要求提供访问 JWT。随后由所属服务应用针对具体操作的授权：
+网关自身的管理路由各需要一项具名权限。持有其他命令权限并不能打开它们：
+
+- `gateway.administer`（仅 Admin）覆盖用户目录和用户变更、令牌统计与清理、`/api/v1/config` 下的全部操作（检查、导出、导入、升级、服务重启）、主机网络变更、`/api/admin` 下的日志管理、`POST /api/v1/broadcast`，以及通过 `PUT /api/v1/auth/me` 更改角色或激活状态；
+- `gateway.operate`（Admin 和 Engineer）覆盖首页点位的编辑和重置。
+
+登录会向 Admin 签发这两项权限，向 Engineer 签发 `gateway.operate`。收窄到例如 `uplink.message.publish` 的令牌只能做这一件事，在这些路由上什么也做不了。请把 `gateway.administer` 视为对主机的完全权限：持有者可以导入配置、安装升级，并更改任何账户的角色。
+
+scope 收窄的是命令，不是读取。任何有效令牌，无论 scope 如何，都可以通过网关读取，包括服务配置和审计轨迹。
+
+网关在转发任何命名空间请求之前都要求提供访问 JWT，并且只为至少持有一项 io、automation 或 alarm 所强制执行的权限的令牌，把变更转发给这些服务。随后由所属服务应用针对具体操作的授权：
 
 - io 通道的创建、更新、删除、启用和禁用需要带有 `io.channel.manage` 的 Admin 或 Engineer Bearer JWT；
 - 自动化设备操作接受 Bearer 访问 JWT，或专用的 `AetherService <token>` 上行链路凭据；
