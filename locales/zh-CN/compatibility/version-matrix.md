@@ -27,10 +27,10 @@ updated: 2026-11-17
 | Rust SDK 软件包 | `aether-edge-sdk` 保持不变 |
 | Rust 导入 | `aether_sdk` 保持不变 |
 | CLI 和服务二进制文件 | `aether` 和 `aether-*` 保持不变 |
-| 安装程序 | `AetherEdge-<arch>-<version>.run` 保持不变 |
+| 安装器 | `AetherEdge-<arch>-<version>.run` 保持不变 |
 | 配置键和环境变量键 | 现有 `aether` 和 `AETHER_*` 标识符保持不变 |
 | CloudLink 和契约标识符 | 保持不变 |
-| AetherContracts alpha.3 工件 | 保持逐字节不可变，并可能保留历史 AetherIot 名称 |
+| AetherContracts alpha.3 制品 | 保持逐字节不可变，并可能保留历史 AetherIot 名称 |
 
 ## 发布规则
 

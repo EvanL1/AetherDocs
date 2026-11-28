@@ -8,7 +8,7 @@ updated: 2026-07-18
 
 实验性、按摘要固定的公开 AetherContracts CloudLink 子集的与传输无关的实现。它提供严格的封闭式 JSON 解码、RFC 8785 业务摘要、会话/版本/纪元校验、稳定的交付信封、运行时清单校验和复用，以及如实的 `PointSample` 映射。
 
-此 crate 不包含 MQTT 客户端，也不包含设备控制消息。配套的 AetherCloud 编解码器使用同一批导入的测试夹具，但三个公开的行为工件和全部生产互操作性门槛仍未关闭。当前行为与生产限制见 [CloudLink MQTT 参考](/zh/reference/cloudlink-mqtt-v1)。
+此 crate 不包含 MQTT 客户端，也不包含设备控制消息。配套的 AetherCloud 编解码器使用同一批导入的测试夹具，但三个公开的行为制品和全部生产互操作性门槛仍未关闭。当前行为与生产限制见 [CloudLink MQTT 参考](/zh/reference/cloudlink-mqtt-v1)。
 
 ## 网关签名的上行消息
 

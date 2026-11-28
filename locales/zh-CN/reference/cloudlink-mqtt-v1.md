@@ -132,7 +132,7 @@ SessionChallengeRequest
 | `PointSample::value` | `value` | 必须为有限值 |
 | `PointSample::timestamp` | `source_timestamp_ms` | 源端 Unix 毫秒数 |
 | `PointSample::quality` | `quality` | 由契约保留 |
-| SHM 发布纪元 | `topology.publication_epoch` | 点位/健康数据一致世代的见证 |
+| SHM 发布纪元 | `topology.publication_epoch` | 点位/健康数据一致代次的见证 |
 | 拓扑快照摘要 | `topology.snapshot_digest` | 标识确切的已发布路由快照 |
 
 SHM v5 在值、原始值和时间戳之外，还编码了采集质量。其读取适配器和上行链路适配器会保留该质量；未知的物理质量码属于无效数据，而不是报告 `good` 的借口。

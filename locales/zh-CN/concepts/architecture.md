@@ -56,7 +56,7 @@ SQLite
   └─ fixed 2-scan post-activation authority witness
 ```
 
-一次完整的协调只读取一遍通道表和四张带类型的点位表，与通道数量无关。运行时投影之后，再用一次通道修订号/启用状态扫描和一次墓碑扫描，验证所投影的世代仍然具有权威性；出现漂移时会隔离受影响的运行时，而不是让过期的采集继续在线。这份自有的快照在投影过程中按值传递，协议运行时绝不会重新打开 SQLite。
+一次完整的对账只读取一遍通道表和四张带类型的点位表，与通道数量无关。运行时投影之后，再用一次通道修订号/启用状态扫描和一次墓碑扫描，验证所投影的代次仍然具有权威性；出现漂移时会隔离受影响的运行时，而不是让过期的采集继续在线。这份自有的快照在投影过程中按值传递，协议运行时绝不会重新打开 SQLite。
 
 被选中的适配器拥有自己严格的参数结构定义、映射结构定义和具体的带类型地址。因此 `ChannelManager` 没有 SQLite 连接池、协议分支或映射预处理；它只添加共享的运行时策略、日志、命令防护、生命周期/任务发布和 SHM 接线。SHM 采集路径只接受带有 `aether_domain::PointQuality` 的有限数值或布尔型 T/S 样本；文本、缺失值和非有限值会在写入实时状态之前失败关闭。
 
@@ -113,10 +113,10 @@ authenticated HTTP
 
 aether-io 拥有点位/健康 SHM 的发布权，通常最先启动。它用同一个非零纪元和最终的提交见证发布两个平面；aether-automation 只能附加到与其从 SQLite 派生的清单相符、且属于同一次已提交发布的文件。
 
-这个顺序由应用代码强制执行，而不是让每个外围服务都依赖 Redis。外围的 SHM 读取器惰性打开，可以先于 aether-io 启动；写入器缺失是一种在读取时可重试的状况。aether-io 重启时，新的点位世代和健康世代会被完整初始化，并以原子重命名的方式覆盖各自的规范路径。现有使用方继续持有旧的 inode，直到它们的周期性身份检查重新打开新的世代，并且它们的订阅位图不会被截断：
+这个顺序由应用代码强制执行，而不是让每个外围服务都依赖 Redis。外围的 SHM 读取器惰性打开，可以先于 aether-io 启动；写入器缺失是一种在读取时可重试的状况。aether-io 重启时，新的点位代次和健康代次会被完整初始化，并以原子重命名的方式覆盖各自的规范路径。现有使用方继续持有旧的 inode，直到它们的周期性身份检查重新打开新的代次，并且它们的订阅位图不会被截断：
 
-1. aether-automation 对 aether-io 没有 HTTP 存活依赖。它从 SQLite 加载规范拓扑，创建一个惰性的 SHM 世代，在写入器离线时也能完成启动。
-2. 当 aether-automation 打开实时状态时，`ShmReadTopologyGeneration` 会检查两个物理标头和提交见证。哈希、槽数量、纪元或写入器世代不匹配时，实时状态保持可重试的不可用状态，直到服务发布一个完整的世代。
+1. aether-automation 对 aether-io 没有 HTTP 存活依赖。它从 SQLite 加载规范拓扑，创建一个惰性的 SHM 代次，在写入器离线时也能完成启动。
+2. 当 aether-automation 打开实时状态时，`ShmReadTopologyGeneration` 会检查两个物理标头和提交见证。哈希、槽数量、纪元或写入器代次不匹配时，实时状态保持可重试的不可用状态，直到服务发布一个完整的代次。
 
 ## 配置流程
 
@@ -124,7 +124,7 @@ aether-io 拥有点位/健康 SHM 的发布权，通常最先启动。它用同�
 config/*.yaml ──► aether sync ──► SQLite (aether.db) ──► services load at startup
 ```
 
-配置以 YAML（以及 CSV 点表）的形式编写在 `config/` 下。`aether` CLI 解析它并写入共享的 SQLite 数据库（`tools/aether/src/core/syncer.rs`）；服务只从 SQLite 读取，没有任何服务 crate 解析 YAML。每个服务容器都收到同一个指向 `aether.db` 的 `AETHER_DB_PATH`。aether-io 会根据 SQLite 自动协调通道运行时、点位/健康布局、协议映射和路由投影；受治理的显式协调仍然可用于操作员恢复。
+配置以 YAML（以及 CSV 点表）的形式编写在 `config/` 下。`aether` CLI 解析它并写入共享的 SQLite 数据库（`tools/aether/src/core/syncer.rs`）；服务只从 SQLite 读取，没有任何服务 crate 解析 YAML。每个服务容器都收到同一个指向 `aether.db` 的 `AETHER_DB_PATH`。aether-io 会根据 SQLite 自动对账通道运行时、点位/健康布局、协议映射和路由投影；受治理的显式对账仍然可用于操作员恢复。
 
 ## 状态存放在哪里
 
@@ -141,4 +141,4 @@ config/*.yaml ──► aether sync ──► SQLite (aether.db) ──► servi
 - [数据处理流程](/zh/concepts/data-processing-flow) — 数据组装和派生结果流程
 - [规则引擎](/zh/concepts/rule-engine) — aether-automation 如何评估和执行规则
 - [数据模型](/zh/concepts/data-model) — 产品、实例、点位
-- [部署指南](/zh/guides/deployment) — Docker Compose 和安装程序
+- [部署指南](/zh/guides/deployment) — Docker Compose 和安装器

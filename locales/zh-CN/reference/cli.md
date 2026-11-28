@@ -68,7 +68,7 @@ SHA-256 计划 ID 绑定了目标路径、安全文件的指纹、检测到的�
 
 ## aether runtime-manifest
 
-在安装 Pack 或启动服务之前，校验由组合提供的运行时元数据。不带 `--path` 时，该命令读取 `<config-path>/runtime-manifest.json`，并且还要求其目标操作系统和架构与当前进程一致。显式给出工件路径时，则校验结构定义、Aether 版本、已知的能力/特性、由特性精确推导出的协议以及校验和，而不把暂存的工件绑定到执行校验的主机。
+在安装 Pack 或启动服务之前，校验由组合提供的运行时元数据。不带 `--path` 时，该命令读取 `<config-path>/runtime-manifest.json`，并且还要求其目标操作系统和架构与当前进程一致。显式给出制品路径时，则校验结构定义、Aether 版本、已知的能力/特性、由特性精确推导出的协议以及校验和，而不把暂存的制品绑定到执行校验的主机。
 
 ```bash
 aether runtime-manifest
@@ -102,18 +102,18 @@ aether comtrade export-csv \
 
 ## aether cloud
 
-生成或查看本地的 AetherCloud 网关注册身份。这些命令不会启动 CloudLink，也不报告 MQTT 连接状态。
+生成或查看本地的 AetherCloud 网关登记身份。这些命令不会启动 CloudLink，也不报告 MQTT 连接状态。
 
 ```text
 Usage: aether cloud [OPTIONS] <COMMAND>
 
 Commands:
   enroll  生成或复用本地密钥，并向 AetherCloud 提交一次认领
-  status  读取本地网关注册状态，不联系 AetherCloud
+  status  读取本地网关登记状态，不联系 AetherCloud
   help    打印本消息或指定子命令的帮助
 ```
 
-交互式注册通过隐藏输入的提示符读取注册令牌：
+交互式登记通过隐藏输入的提示符读取登记令牌：
 
 ```bash
 aether cloud enroll \
@@ -130,11 +130,11 @@ aether cloud status
 aether --json cloud status
 ```
 
-status 报告不可变的 Cloud scope、公钥指纹、注册状态以及可选的已认领修订。它从不报告私钥、注册令牌、完整公钥，也不会编造 CloudLink 在线状态。状态机、重试行为、存储基线和暂行的 HTTP 契约见 [AetherCloud 网关注册](/zh/reference/gateway-enrollment)。
+status 报告不可变的 Cloud scope、公钥指纹、登记状态以及可选的已认领修订。它从不报告私钥、登记令牌、完整公钥，也不会编造 CloudLink 在线状态。状态机、重试行为、存储基线和暂行的 HTTP 契约见 [AetherCloud 网关登记](/zh/reference/gateway-enrollment)。
 
 ## aether packs
 
-构建或安装仅含 Pack 的工件。这些是本地文件系统操作；`--host` 会被忽略。
+构建或安装仅含 Pack 的制品。这些是本地文件系统操作；`--host` 会被忽略。
 
 ```text
 Usage: aether packs [OPTIONS] <COMMAND>
@@ -1151,7 +1151,7 @@ aether shm get inst:9:M:101
 
 ### `shm info`
 
-直接检查已提交的点位平面和通道健康平面，不经过 HTTP，也不需要运行中的观察器守护进程。该命令校验两个物理文件、持久的拓扑见证、发布纪元、写入器世代、心跳年龄，并执行一次汇总的槽位/质量扫描。它从不刷新心跳、修复文件或发布世代。
+直接检查已提交的点位平面和通道健康平面，不经过 HTTP，也不需要运行中的观察器守护进程。该命令校验两个物理文件、持久的拓扑见证、发布纪元、写入器代次、心跳年龄，并执行一次汇总的槽位/质量扫描。它从不刷新心跳、修复文件或发布代次。
 
 ```
 Usage: aether shm info [OPTIONS]
@@ -1224,7 +1224,7 @@ aether shm serve
 # Open http://127.0.0.1:6070
 ```
 
-这个自包含的页面每秒刷新一次，显示权威状态、发布纪元、两个写入器的心跳、精确的平面大小和世代、点位质量分布、有界的带类型实时点位预览，以及带稳定代码的发现项。它的 JSON 来源是同源的只读端点 `/api/v1/observation`。服务器拒绝 `0.0.0.0`、局域网和公网绑定地址；它没有变更路由、外部资源、CORS 授权或持久状态。当 `--db-path` 能解析到与实时 SHM 布局匹配的 SQLite 清单时，点位预览可用；解析不到时，平面可观测性仍然可用。
+这个自包含的页面每秒刷新一次，显示权威状态、发布纪元、两个写入器的心跳、精确的平面大小和代次、点位质量分布、有界的带类型实时点位预览，以及带稳定代码的发现项。它的 JSON 来源是同源的只读端点 `/api/v1/observation`。服务器拒绝 `0.0.0.0`、局域网和公网绑定地址；它没有变更路由、外部资源、CORS 授权或持久状态。当 `--db-path` 能解析到与实时 SHM 布局匹配的 SQLite 清单时，点位预览可用；解析不到时，平面可观测性仍然可用。
 
 ## aether doctor
 

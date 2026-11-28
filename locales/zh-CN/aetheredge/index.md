@@ -26,6 +26,6 @@ AetherEdge 是开源、与行业无关的 Linux 边缘运行时、内核、CLI �
 
 ## 保持稳定的兼容名称
 
-仓库的显示名称改为 AetherEdge。现有的 crate 名称、二进制文件名称、`aether` CLI、`aether-edge-sdk`、配置键、服务标识、安装程序名称和协议标识符在本次迁移中都不变。
+仓库的显示名称改为 AetherEdge。现有的 crate 名称、二进制文件名称、`aether` CLI、`aether-edge-sdk`、配置键、服务标识、安装器名称和协议标识符在本次迁移中都不变。
 
 请先选择匹配的[用户旅程](/zh/overview/user-journeys)，然后按[入门指南](/zh/guides/getting-started)启动一个安全的空运行时，按[连接设备](/zh/guides/connect-devices)投运一个通道，或者按[智能体快速入门](https://docs.aetheriot.ai/zh/agent-quickstart/)搭建只读助手工作流。已有部署可以使用[迁移指南](/zh/migration/aetheriot-to-aetheredge)。

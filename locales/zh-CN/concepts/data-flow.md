@@ -11,11 +11,11 @@ Aether 沿两条相互独立的路径传递数据。**上行**路径把测量点
 ## 上行（设备 → 使用方）
 
 1. 协议帧到达某个通信通道，aether-io 中该通道的协议适配器把它解码为点位值。
-2. aether-io 通过 `ShmAcquisitionStateWriter`（`libs/aether-shm-bridge/src/acquisition_writer.rs`）提交每个带类型的 T/S 批次。适配器在修改前后校验不可变的清单和写入器世代；按槽索引的写入是私有的实现细节。
+2. aether-io 通过 `ShmAcquisitionStateWriter`（`libs/aether-shm-bridge/src/acquisition_writer.rs`）提交每个带类型的 T/S 批次。适配器在修改前后校验不可变的清单和写入器代次；按槽索引的写入是私有的实现细节。
 3. **事件路径（立即）**。每次槽写入之后，`PointWatchPublisher`（`libs/aether-shm-bridge/src/point_watch.rs`）都会检查每个事件使用方各自拥有的独立位图。命中时，一个有界队列会向该使用方的 UDS 发送一个 `PointWatchEvent`。aether-automation、aether-alarm 和 aether-api 无法窃取或覆盖彼此的订阅。事件只是一个唤醒提示；每个使用方都会重新读取 SHM，丢失的事件由轮询修复。
-4. **直接读取路径**。使用方从同一份 SQLite 拓扑快照解析通道/实例坐标，并重新读取对应的 SHM 槽。历史服务和上行服务把它们确切配置的点位和所需路由绑定到同一个已提交的点位/健康纪元，然后在一整轮采集/上传过程中固定这个不可变的世代。事件不会悄悄改变它们的节奏。
+4. **直接读取路径**。使用方从同一份 SQLite 拓扑快照解析通道/实例坐标，并重新读取对应的 SHM 槽。历史服务和上行服务把它们确切配置的点位和所需路由绑定到同一个已提交的点位/健康纪元，然后在一整轮采集/上传过程中固定这个不可变的代次。事件不会悄悄改变它们的节奏。
 
-生产环境的 `aether-uplink` 组合仍然使用已弃用的旧版 MQTT 主题及其通用的 `FileOutbox` 交付边界。实验性的 CloudLink 路径把同一个被固定的世代转换为 `PointSample` 事实，加上发布纪元和拓扑摘要，并把规范的业务内容放入独立的 `CloudLinkSpool`。MQTT QoS 1/PUBACK 只推进传输状态；与之匹配的云端持久应用 ACK 是删除记录的唯一依据。连接断开时，记录在相同的流位置/批次 ID/摘要下保持可重放，并且不会阻塞任何 SHM 使用方。
+生产环境的 `aether-uplink` 组合仍然使用已弃用的旧版 MQTT 主题及其通用的 `FileOutbox` 交付边界。实验性的 CloudLink 路径把同一个被固定的代次转换为 `PointSample` 事实，加上发布纪元和拓扑摘要，并把规范的业务内容放入独立的 `CloudLinkSpool`。MQTT QoS 1/PUBACK 只推进传输状态；与之匹配的云端持久应用 ACK 是删除记录的唯一依据。连接断开时，记录在相同的流位置/批次 ID/摘要下保持可重放，并且不会阻塞任何 SHM 使用方。
 ```
 Device ──frame──► aether-io protocol adapter (decode)
                         │
@@ -35,7 +35,7 @@ Device ──frame──► aether-io protocol adapter (decode)
 1. 外部的 HTTP、CLI 或 MCP 控制调用在 aether-automation 中变成与传输无关的 `RequestContext`。`ControlApplication` 检查 `device.control` 权限和显式确认，在本地 SQLite 中持久化一条强制的“已尝试”审计事件，然后才调用命令分发器。在分阶段迁移期间，内部的确定性规则动作直接进入现有的分发器路径。
 2. 分发器调用 aether-automation 的 `execute_action`（`services/automation/src/instance_data.rs`），它根据内存中的路由缓存（由 `aether sync` 填充的 `route:m2c` 表的镜像），把实例动作点位解析为其通道命令点位，并且**只解析一次**。解析出的目标会贯穿调用的其余部分，因此并发的路由重载不能在中途改变这个决定。
 3. 离线闸门读取通道健康 SHM 段。通道离线时，在写入任何内容之前就以 `ChannelUnreachable` 拒绝这次写入。
-4. 值校验通过后，`ShmDeviceCommandSink`（`libs/aether-shm-bridge/src/command_sink.rs`）镜像 C 或 A 槽。写入前后都会检查写入器世代和规范路径；不匹配意味着 aether-io 已经重启并重建了共享内存段，因此这次写入被丢弃、下发失败，而不是落入过期的布局。
+4. 值校验通过后，`ShmDeviceCommandSink`（`libs/aether-shm-bridge/src/command_sink.rs`）镜像 C 或 A 槽。写入前后都会检查写入器代次和规范路径；不匹配意味着 aether-io 已经重启并重建了共享内存段，因此这次写入被丢弃、下发失败，而不是落入过期的布局。
 5. 同一个命令适配器通过 Unix 域套接字发送一个固定大小的 56 字节帧。通知携带通道/点位坐标、值的位模式、发出/过期时间戳，以及用于去重的生产者 ID 加序列号。如果 aether-io 不可用，通知器会以指数退避（1–5 秒）重连。原生部署默认使用 `/tmp/aether-m2c.sock`；Docker 把 `AETHER_M2C_SOCKET` 设置为 `/shm/aether/aether-m2c.sock`，使两个相互隔离的容器都能看到这个套接字。
 6. aether-io 的 `ShmCommandListener`（`services/io/src/core/channels/shm_listener.rs`）接收通知，拒绝已过期的帧，按序列号去重，并把命令转发到所属通道的队列。在协议下发之前，`CommandGuard` 会立即验证该可写点位存在，并且值满足其最小值/最大值/步长策略；只有这样，协议适配器才能把它写到现场总线。
 
@@ -65,7 +65,7 @@ DataProcessingApplication
 
 结果记录其输入水位线、输入摘要、处理器出处、质量、状态和过期时间。它是派生证据而不是测量值：它不会被写入归 IO 所有的 T/S 段。如果自动化服务要使用这个结果，需要由另一个独立的规划/控制用例先校验新鲜度和安全性，现有的受审计命令路径才能据此行动。因此，处理器丢失只是去掉了一项可选的参考性输入，不会中断采集或本地安全规则。完整的契约见[数据处理流程](/zh/concepts/data-processing-flow)。
 
-事件时间上的 `as_of` 本身并不是一个历史知识截面。当前的历史库没有摄取/来源纪元，工件出处也没有训练/可用时间截面，因此时间点评估使用冻结的历史和工件输入，而不是为了一个旧的帧去查询今天仍可变的数据源。
+事件时间上的 `as_of` 本身并不是一个历史知识截面。当前的历史库没有摄取/来源纪元，制品出处也没有训练/可用时间截面，因此时间点评估使用冻结的历史和制品输入，而不是为了一个旧的帧去查询今天仍可变的数据源。
 
 ## 延迟预算
 

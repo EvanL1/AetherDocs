@@ -114,7 +114,7 @@ claude mcp add aether -- aether mcp
 claude mcp add aether -- aether mcp --allow-write
 ~~~
 
-在连接真实硬件前，请先阅读[应用与智能体安全操作](/zh/guides/safe-operations/)。
+在连接真实硬件前，请先阅读[应用与智能体的安全操作](/zh/guides/safe-operations/)。
 
 **成功标准**：客户端的 `tools/list` 响应中包含 `channels_list`。默认服务只提供读取工具。
 

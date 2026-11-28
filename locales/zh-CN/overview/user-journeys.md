@@ -69,7 +69,7 @@ aether doctor
 aether-api:6005
 ```
 
-IO、automation、history、uplink 和 alarm API 始终只监听回环地址。客户端不得暴露这些端口，也不得直接写入 SHM 或 SQLite。
+IO、automation、history、uplink 和 alarm API 始终只监听环回地址。客户端不得暴露这些端口，也不得直接写入 SHM 或 SQLite。
 
 ## 3. 安全连接第一台设备
 

@@ -20,9 +20,9 @@ updated: 2026-07-16
 - `aether` CLI 和 `aether-*` 二进制文件。
 - Rust crate 名称和导入名称，包括 `aether-edge-sdk` 和 `aether_sdk`。
 - 配置键、环境变量、服务标识和磁盘路径，除非另有单独的兼容性决策更改它们。
-- 安装程序名称 `AetherEdge-<arch>-<version>.run`。
+- 安装器名称 `AetherEdge-<arch>-<version>.run`。
 - CloudLink、Thing Model、结构定义、TCK 和失败代码标识符。
-- 已发布的标签、发布资产、证明以及按摘要固定的 AetherContracts alpha.3 工件。
+- 已发布的标签、发布资产、证明以及按摘要固定的 AetherContracts alpha.3 制品。
 
 ## 更新现有克隆
 
@@ -46,4 +46,4 @@ git remote -v
 
 ## 回滚
 
-如果某个发布、CI、包使用方或文档部署无法解析新的仓库身份，请暂停推进并恢复原来的 GitHub 仓库名称。保留 AetherIoT 产品系列文档和稳定的软件标识符；只回退面向仓库的 URL 和源码归档示例。切勿通过改写已发布的工件来模拟回滚。
+如果某个发布、CI、包使用方或文档部署无法解析新的仓库身份，请暂停推进并恢复原来的 GitHub 仓库名称。保留 AetherIoT 产品系列文档和稳定的软件标识符；只回退面向仓库的 URL 和源码归档示例。切勿通过改写已发布的制品来模拟回滚。

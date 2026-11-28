@@ -20,7 +20,7 @@ AetherIoT
 AetherEMS            industry solution built on the platform
 ```
 
-原名 `EvanL1/AetherIot` 的边缘仓库迁移到 `EvanL1/AetherEdge`。现有的 `aether-*` crate 和二进制文件、`aether` CLI、`aether-edge-sdk`、配置标识符、安装程序名称和 CloudLink 契约标识符保持稳定。
+原名 `EvanL1/AetherIot` 的边缘仓库迁移到 `EvanL1/AetherEdge`。现有的 `aether-*` crate 和二进制文件、`aether` CLI、`aether-edge-sdk`、配置标识符、安装器名称和 CloudLink 契约标识符保持稳定。
 
 ## 权威不随名称转移
 
